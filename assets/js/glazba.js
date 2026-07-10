@@ -140,21 +140,6 @@ var RASPORED = [
             '<span class="home-gig-time">' + r.vrijeme + ' h' + (isTonight ? ' · večeras' : '') + '</span>' +
           '</a>';
       }).join('');
-
-      /* na touch uređajima nema hovera — prvi dodir okrene karticu i
-         pokaže fotku izvođača, drugi dodir vodi na stranicu glazbe */
-      if (window.matchMedia('(hover: none)').matches) {
-        var cards = homeGigs.querySelectorAll('.home-gig');
-        cards.forEach(function(card){
-          card.addEventListener('click', function(e){
-            if (!card.classList.contains('is-flipped')) {
-              e.preventDefault();
-              cards.forEach(function(c){ if (c !== card) c.classList.remove('is-flipped'); });
-              card.classList.add('is-flipped');
-            }
-          });
-        });
-      }
     }
   }
 
