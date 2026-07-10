@@ -854,12 +854,17 @@ a{ color: inherit; text-decoration: none; }
 .price-item.has-detail .price-item-row:focus-visible{ background: rgba(53,180,238,0.07); outline: none; }
 .price-item.has-detail:hover::before,
 .price-item.is-open::before{ background-color: var(--azure); }
-.price-item.has-detail .price-item-row::after{
-  content: ''; width: 13px; height: 13px; margin-left: auto; flex: none;
-  background-color: rgba(244,236,219,0.35);
+/* every row reserves the chevron slot so price columns line up whether
+   or not the item expands; only expandable rows actually show it */
+.price-item .price-item-row::after{
+  content: ''; width: 13px; height: 13px; flex: none;
+  background-color: transparent;
   -webkit-mask: var(--icon-chevron) center / contain no-repeat;
   mask: var(--icon-chevron) center / contain no-repeat;
   transition: transform 0.3s ease, background-color 0.2s ease;
+}
+.price-item.has-detail .price-item-row::after{
+  background-color: rgba(244,236,219,0.35);
 }
 .price-item.has-detail .price-item-row:hover::after{ background-color: var(--azure); }
 .price-item.is-open .price-item-row::after{ transform: rotate(180deg); background-color: var(--azure); }
@@ -867,7 +872,10 @@ a{ color: inherit; text-decoration: none; }
 .price-item-name{ flex: 1; }
 .price-item-name strong{ font-weight: 500; color: var(--cream); }
 .price-item-name em{ display: block; font-style: normal; font-size: 0.78rem; color: rgba(244,236,219,0.5); margin-top: 0.15rem; }
-.price-item-price{ font-family: var(--font-ui); font-weight: 600; color: var(--gold-soft); white-space: nowrap; }
+.price-item-price{
+  font-family: var(--font-ui); font-weight: 600; color: var(--gold-soft);
+  white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums;
+}
 
 .price-item--signature::before{ background-color: var(--azure); }
 .price-item--signature .price-item-price{ color: var(--azure); }
