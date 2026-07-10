@@ -9,6 +9,7 @@
       nav.classList.toggle('is-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       toggle.setAttribute('aria-label', open ? closeLabel : openLabel);
+      if (open) document.body.classList.remove('nav-hidden');
     }
 
     toggle.addEventListener('click', function(){
@@ -25,6 +26,46 @@
         toggle.focus();
       }
     });
+  }
+
+  /* ---- keep --nav-h in sync with the real header height, so anything
+     that sticks below it (e.g. the price-list category bar) never
+     guesses a stale pixel value ---- */
+  if (nav) {
+    function setNavHeightVar(){
+      document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+    }
+    setNavHeightVar();
+    window.addEventListener('resize', setNavHeightVar);
+
+    /* ---- hide header on scroll-down, reveal on scroll-up (mobile only,
+       gated in CSS) — dead zone near the top so it never flickers ---- */
+    var lastY = window.scrollY;
+    var ticking = false;
+    var DELTA = 8;
+
+    function onScroll(){
+      var y = window.scrollY;
+      var diff = y - lastY;
+      if (Math.abs(diff) > DELTA) {
+        if (y <= nav.offsetHeight) {
+          document.body.classList.remove('nav-hidden');
+        } else if (diff > 0) {
+          document.body.classList.add('nav-hidden');
+        } else {
+          document.body.classList.remove('nav-hidden');
+        }
+        lastY = y;
+      }
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function(){
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    }, { passive: true });
   }
 
   document.querySelectorAll('.price-nav a').forEach(function(link){
@@ -123,6 +164,31 @@
       }, { threshold: 0.5 });
       counters.forEach(function(el){ countObserver.observe(el); });
     }
+  }
+
+  /* ---- collapse the second visit card by default on mobile so the
+     section doesn't open fully expanded (both stay open on desktop,
+     matching the pre-accordion layout, and unaffected without JS) ---- */
+  var findDetails = document.querySelector('.visit-col-find');
+  if (findDetails && window.matchMedia('(max-width: 760px)').matches) {
+    findDetails.removeAttribute('open');
+  }
+
+  /* ---- atmosphere carousel dots (mobile swipe indicator) ---- */
+  var gallery = document.querySelector('.atmosphere-gallery');
+  var dots = document.querySelectorAll('.atmosphere-dot');
+  if (gallery && dots.length && 'IntersectionObserver' in window) {
+    var galleryImages = gallery.querySelectorAll('img');
+    var dotObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (!entry.isIntersecting) return;
+        var index = Array.prototype.indexOf.call(galleryImages, entry.target);
+        if (index === -1) return;
+        dots.forEach(function(d){ d.classList.remove('is-active'); });
+        if (dots[index]) dots[index].classList.add('is-active');
+      });
+    }, { root: gallery, threshold: 0.6 });
+    galleryImages.forEach(function(img){ dotObserver.observe(img); });
   }
 
   if (prefersReduced || !('IntersectionObserver' in window)) {

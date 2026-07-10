@@ -143,6 +143,7 @@ a{ color: inherit; text-decoration: none; }
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(53,180,238,0.35);
   box-shadow: 0 1px 18px -6px rgba(53,180,238,0.25);
+  transition: transform 0.3s ease;
 }
 .nav-inner{
   max-width: var(--container);
@@ -194,6 +195,10 @@ a{ color: inherit; text-decoration: none; }
   .nav-inner > .btn-small{ display: none; }
   .nav-toggle{ display: flex; }
   .site-nav.is-open .mobile-nav{ display: flex; }
+
+  body.nav-hidden .site-nav{ transform: translateY(-100%); }
+  body.nav-hidden .site-nav.is-open{ transform: translateY(0); }
+  body.nav-hidden .price-nav{ top: 0; }
 }
 
 /* ================= Hero ================= */
@@ -470,13 +475,35 @@ a{ color: inherit; text-decoration: none; }
 .atmosphere-gallery img:hover{ transform: scale(1.035); }
 .mosaic-tall{ grid-column: 1; grid-row: 1 / 3; }
 
+/* below the mosaic breakpoint, five stacked full-width images made the
+   section feel endless — swap to a swipeable horizontal carousel */
+.atmosphere-dots{ display: none; }
 @media (max-width: 760px){
-  .atmosphere-gallery{ grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-  .mosaic-tall{ grid-column: 1 / 3; grid-row: auto; height: 280px; }
+  .atmosphere-gallery{
+    display: flex; grid-template-columns: unset; grid-template-rows: unset;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    gap: 0.9rem; margin: 0 -1.75rem; padding: 0 1.75rem 0.25rem;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .atmosphere-gallery::-webkit-scrollbar{ display: none; }
+  .atmosphere-gallery img{
+    flex: 0 0 78%; width: 78%; height: 340px;
+    scroll-snap-align: center;
+  }
+  .mosaic-tall{ grid-column: unset; grid-row: unset; }
+
+  .atmosphere-dots{
+    display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.25rem;
+  }
+  .atmosphere-dot{
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(244,236,219,0.25);
+    transition: background-color 0.25s ease, transform 0.25s ease;
+  }
+  .atmosphere-dot.is-active{ background: var(--gold); transform: scale(1.35); }
 }
 @media (max-width: 480px){
-  .atmosphere-gallery{ grid-template-columns: 1fr; }
-  .mosaic-tall{ grid-column: 1; height: auto; }
+  .atmosphere-gallery img{ flex-basis: 86%; width: 86%; height: 300px; }
 }
 
 /* ================= Visit ================= */
@@ -551,6 +578,24 @@ a{ color: inherit; text-decoration: none; }
   font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
   margin: 0 0 1.1rem;
 }
+
+/* summary row acts as the card header; on mobile it's the tappable
+   accordion trigger, on desktop it's inert (both cards always open) */
+.visit-col-summary{
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; gap: 1rem;
+}
+.visit-col-summary::-webkit-details-marker{ display: none; }
+.visit-col-summary .visit-icon-badge{ margin-bottom: 0; flex: none; }
+.visit-col-summary .visit-col-title{ margin: 0; flex: 1; }
+.visit-col-chevron{
+  width: 20px; height: 20px; flex: none; color: var(--gold);
+  fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform 0.25s ease;
+}
+.visit-col[open] .visit-col-chevron{ transform: rotate(180deg); }
+.visit-col-body{ margin-top: 1.5rem; }
+
 .hours-list{ margin: 0; }
 .hours-list > div{
   display: flex; justify-content: space-between; gap: 1rem;
@@ -562,7 +607,7 @@ a{ color: inherit; text-decoration: none; }
 .hours-list dd{ margin: 0; font-family: var(--font-display); font-size: 1.1rem; }
 .visit-address{ font-size: 1rem; color: rgba(244,236,219,0.78); max-width: 34ch; margin: 0 0 1.5rem; }
 
-.visit-col-find{ display: flex; flex-direction: column; gap: 1.75rem; }
+.visit-col-find .visit-col-body{ display: flex; flex-direction: column; gap: 1.75rem; }
 .visit-col-find-text{ flex: none; }
 
 .map-static{
@@ -578,12 +623,19 @@ a{ color: inherit; text-decoration: none; }
 .map-static:hover img{ transform: scale(1.03); filter: brightness(1.05); }
 
 @media (max-width: 760px){
-  .visit-grid{ grid-template-columns: 1fr; gap: 2rem; }
+  .visit-grid{ grid-template-columns: 1fr; gap: 1.25rem; }
   .visit-mark{ width: 70vw; opacity: 0.04; }
 }
 @media (max-width: 480px){
   .visit-col{ padding: 1.75rem 1.5rem 2rem; }
   .map-static{ height: 170px; }
+}
+
+/* above the stacking breakpoint, both cards stay permanently open —
+   the accordion trigger is mobile-only affordance */
+@media (min-width: 761px){
+  .visit-col-summary{ cursor: default; pointer-events: none; }
+  .visit-col-chevron{ display: none; }
 }
 
 /* ================= Closing CTA ================= */
@@ -629,13 +681,14 @@ a{ color: inherit; text-decoration: none; }
 .price-intro{ color: rgba(244,236,219,0.72); max-width: 54ch; margin: 0 auto; }
 
 .price-nav{
-  position: sticky; top: 61px;
+  position: sticky; top: var(--nav-h, 61px);
   z-index: 50;
   background: rgba(23,17,13,0.94);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-top: 1px solid rgba(201,160,99,0.15);
   border-bottom: 1px solid rgba(53,180,238,0.3);
+  transition: top 0.3s ease;
 }
 .price-nav-inner{
   display: flex; gap: 0.6rem; overflow-x: auto;
@@ -750,5 +803,4 @@ a{ color: inherit; text-decoration: none; }
 
 @media (max-width: 700px){
   .price-items{ grid-template-columns: 1fr; }
-  .price-nav{ top: 57px; }
 }
