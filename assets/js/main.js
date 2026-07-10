@@ -166,14 +166,6 @@
     }
   }
 
-  /* ---- collapse the second visit card by default on mobile so the
-     section doesn't open fully expanded (both stay open on desktop,
-     matching the pre-accordion layout, and unaffected without JS) ---- */
-  var findDetails = document.querySelector('.visit-col-find');
-  if (findDetails && window.matchMedia('(max-width: 760px)').matches) {
-    findDetails.removeAttribute('open');
-  }
-
   /* ---- atmosphere carousel dots (mobile swipe indicator) ---- */
   var gallery = document.querySelector('.atmosphere-gallery');
   var dots = document.querySelectorAll('.atmosphere-dot');

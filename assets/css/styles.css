@@ -576,30 +576,17 @@ a{ color: inherit; text-decoration: none; }
 }
 .visit-col-title{
   font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
-  margin: 0 0 1.1rem;
+  margin: 0;
 }
-
-/* summary row acts as the card header; on mobile it's the tappable
-   accordion trigger, on desktop it's inert (both cards always open) */
-.visit-col-summary{
-  list-style: none; cursor: pointer;
-  display: flex; align-items: center; gap: 1rem;
+.visit-col-head{
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
 }
-.visit-col-summary::-webkit-details-marker{ display: none; }
-.visit-col-summary .visit-icon-badge{ margin-bottom: 0; flex: none; }
-.visit-col-summary .visit-col-title{ margin: 0; flex: 1; }
-.visit-col-chevron{
-  width: 20px; height: 20px; flex: none; color: var(--gold);
-  fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-  transition: transform 0.25s ease;
-}
-.visit-col[open] .visit-col-chevron{ transform: rotate(180deg); }
-.visit-col-body{ margin-top: 1.5rem; }
+.visit-col-head .visit-icon-badge{ margin-bottom: 0; flex: none; }
 
 .hours-list{ margin: 0; }
 .hours-list > div{
   display: flex; justify-content: space-between; gap: 1rem;
-  padding: 0.65rem 0; border-bottom: 1px solid rgba(201,160,99,0.16);
+  padding: 0.6rem 0; border-bottom: 1px solid rgba(201,160,99,0.16);
   font-size: 0.98rem;
 }
 .hours-list > div:last-child{ border-bottom: none; }
@@ -607,7 +594,7 @@ a{ color: inherit; text-decoration: none; }
 .hours-list dd{ margin: 0; font-family: var(--font-display); font-size: 1.1rem; }
 .visit-address{ font-size: 1rem; color: rgba(244,236,219,0.78); max-width: 34ch; margin: 0 0 1.5rem; }
 
-.visit-col-find .visit-col-body{ display: flex; flex-direction: column; gap: 1.75rem; }
+.visit-col-find{ display: flex; flex-direction: column; gap: 1.75rem; }
 .visit-col-find-text{ flex: none; }
 
 .map-static{
@@ -622,20 +609,26 @@ a{ color: inherit; text-decoration: none; }
 }
 .map-static:hover img{ transform: scale(1.03); filter: brightness(1.05); }
 
+/* below the stacking breakpoint, the two cards read as one unified
+   panel: no gap between them, shared border, only the outer corners
+   rounded, with a hairline divider standing in for the seam */
 @media (max-width: 760px){
-  .visit-grid{ grid-template-columns: 1fr; gap: 1.25rem; }
+  .visit-grid{ grid-template-columns: 1fr; gap: 0; }
   .visit-mark{ width: 70vw; opacity: 0.04; }
+  .visit-col{
+    border-radius: 0; border-bottom: none;
+    padding: 1.9rem 1.75rem;
+    box-shadow: none;
+  }
+  .visit-col:first-child{ border-radius: 20px 20px 0 0; }
+  .visit-col:last-child{
+    border-radius: 0 0 20px 20px; border-bottom: 1px solid rgba(201,160,99,0.32);
+    box-shadow: 0 30px 60px -32px rgba(0,0,0,0.75);
+  }
 }
 @media (max-width: 480px){
-  .visit-col{ padding: 1.75rem 1.5rem 2rem; }
+  .visit-col{ padding: 1.6rem 1.4rem; }
   .map-static{ height: 170px; }
-}
-
-/* above the stacking breakpoint, both cards stay permanently open —
-   the accordion trigger is mobile-only affordance */
-@media (min-width: 761px){
-  .visit-col-summary{ cursor: default; pointer-events: none; }
-  .visit-col-chevron{ display: none; }
 }
 
 /* ================= Closing CTA ================= */
