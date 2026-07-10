@@ -1,4 +1,9 @@
 (function(){
+  /* refresh always starts at the top — with CSS smooth scrolling the
+     browser's scroll restoration animates down the page on reload,
+     which reads as the page scrolling by itself */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
   var nav = document.getElementById('site-nav');
   var toggle = document.getElementById('nav-toggle');
   if (toggle && nav) {
