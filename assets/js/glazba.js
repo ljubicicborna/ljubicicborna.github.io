@@ -130,13 +130,23 @@ var RASPORED = [
         var a = byId[r.izvodjac];
         var d = new Date(r.datum + 'T12:00:00');
         var isTonight = r.datum === todayStr;
+        var bg = a.foto
+          ? '<span class="home-gig-bg" aria-hidden="true" style="background-image: linear-gradient(180deg, rgba(23,17,13,0.45), rgba(23,17,13,0.72)), url(\'' + a.foto + '\')"></span>'
+          : '';
         return '' +
-          '<a class="home-gig' + (isTonight ? ' is-tonight' : '') + '" href="glazba.html">' +
+          '<a class="home-gig' + (isTonight ? ' is-tonight' : '') + '" href="glazba.html">' + bg +
             '<span class="home-gig-day">' + DANI[d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth()+1) + '.</span>' +
             '<span class="home-gig-name">' + a.ime + '</span>' +
             '<span class="home-gig-time">' + r.vrijeme + ' h' + (isTonight ? ' · večeras' : '') + '</span>' +
           '</a>';
       }).join('');
+
+      /* hover: otkrij fotku izvođača i zavibriraj cijelu stranicu;
+         čim miš ode, sve stane */
+      homeGigs.querySelectorAll('.home-gig').forEach(function(card){
+        card.addEventListener('mouseenter', function(){ document.body.classList.add('is-vibing'); });
+        card.addEventListener('mouseleave', function(){ document.body.classList.remove('is-vibing'); });
+      });
     }
   }
 
