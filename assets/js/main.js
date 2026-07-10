@@ -131,6 +131,13 @@
 
     renderStatus();
     setInterval(renderStatus, 60000);
+
+    /* ---- highlight today's row in the hours list ---- */
+    var todayNum = new Date().getDay();
+    document.querySelectorAll('.hours-list > div[data-days]').forEach(function(row){
+      var days = row.getAttribute('data-days').split(',').map(Number);
+      if (days.indexOf(todayNum) !== -1) row.classList.add('is-today');
+    });
   }
 
   document.querySelectorAll('.philosophy, .menu, .daytime, .atmosphere, .visit, .reserve').forEach(function(el){

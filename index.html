@@ -162,11 +162,11 @@
             <h3 class="visit-col-title">Radno vrijeme</h3>
           </div>
           <dl class="hours-list">
-            <div><dt>Pon</dt><dd>Zatvoreno</dd></div>
-            <div><dt>Uto – Sri</dt><dd>7 – 23 h</dd></div>
-            <div><dt>Čet – Pet</dt><dd>7 – 0 h</dd></div>
-            <div><dt>Subota</dt><dd>8 – 0 h</dd></div>
-            <div><dt>Nedjelja</dt><dd>8 – 23 h</dd></div>
+            <div data-days="1"><dt>Pon</dt><dd>Zatvoreno</dd></div>
+            <div data-days="2,3"><dt>Uto – Sri</dt><dd>7 – 23 h</dd></div>
+            <div data-days="4,5"><dt>Čet – Pet</dt><dd>7 – 0 h</dd></div>
+            <div data-days="6"><dt>Subota</dt><dd>8 – 0 h</dd></div>
+            <div data-days="0"><dt>Nedjelja</dt><dd>8 – 23 h</dd></div>
           </dl>
         </div>
         <div class="visit-col visit-col-find">
@@ -184,6 +184,7 @@
           </div>
           <a class="map-static" href="https://www.google.com/maps/search/?api=1&query=Hedonist+bar+Osijek+Vukovarska+cesta+31" target="_blank" rel="noopener" aria-label="Otvori lokaciju Hedonist bara na Google karti">
             <img src="assets/images/map-location.webp" alt="Karta s lokacijom Hedonist bara, Vukovarska cesta 31, Osijek" loading="lazy">
+            <span class="map-static-tag" aria-hidden="true">Osijek</span>
           </a>
         </div>
       </div>
@@ -215,9 +216,16 @@
       <a href="#cjenik">Cjenik</a>
       <a href="#atmosfera">Atmosfera</a>
       <a href="#lokacija">Radno vrijeme i lokacija</a>
-      <a href="https://www.instagram.com/hedonistbarosijek/" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://www.facebook.com/HedonistBarOsijek/" target="_blank" rel="noopener">Facebook</a>
     </nav>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/hedonistbarosijek/" target="_blank" rel="noopener" aria-label="Hedonist Bar na Instagramu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.6" cy="7.4" r="0.9" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="https://www.facebook.com/HedonistBarOsijek/" target="_blank" rel="noopener" aria-label="Hedonist Bar na Facebooku">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 21v-7h2.5l.5-3H14V9a1.5 1.5 0 0 1 1.5-1.5H17V4.8c-.5-.07-1.5-.15-2.6-.15C11.9 4.65 10 6.3 10 9.2V11H7.5v3H10v7"/></svg>
+      </a>
+    </div>
+    <p class="footer-copy">© 2026 Hedonist Bar · Osijek</p>
   </div>
 </footer>
 
