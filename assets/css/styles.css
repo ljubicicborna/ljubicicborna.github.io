@@ -132,7 +132,7 @@ a{ color: inherit; text-decoration: none; }
   box-shadow: 0 0 0 1px rgba(53,180,238,0.25), 0 0 22px -6px rgba(53,180,238,0.55);
   transform: translateY(-1px);
 }
-.btn-small{ padding: 0.6em 1.3em; font-size: 0.75rem; }
+.btn-small{ padding: 0.6em 1.3em; font-size: 0.75rem; min-height: 44px; }
 .btn-wide{ width: 100%; }
 
 /* ================= Nav ================= */
@@ -173,17 +173,20 @@ a{ color: inherit; text-decoration: none; }
 .nav-links a:hover::after{ right: 0; }
 
 .nav-toggle{
-  display: none; flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 0.4rem;
+  display: none; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  width: 44px; height: 44px;
+  background: none; border: none; cursor: pointer; padding: 0;
 }
 .nav-toggle span{ width: 22px; height: 1.5px; background: var(--cream); display: block; }
 .mobile-nav{
   display: none;
   flex-direction: column;
   padding: 0 1.75rem 1.5rem;
-  gap: 1rem;
 }
-.mobile-nav a{ font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.mobile-nav a{
+  font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em;
+  display: flex; align-items: center; min-height: 44px;
+}
 .mobile-nav .btn{ margin-top: 0.5rem; align-self: flex-start; }
 
 @media (max-width: 820px){
@@ -608,7 +611,7 @@ a{ color: inherit; text-decoration: none; }
 .footer-mark{ display: flex; align-items: center; gap: 0.55rem; font-family: var(--font-display); font-size: 1.05rem; }
 .footer-mark img{ border-radius: 4px; }
 .footer-links{ display: flex; gap: 1.5rem; flex-wrap: wrap; }
-.footer-links a{ font-size: 0.85rem; color: rgba(244,236,219,0.7); }
+.footer-links a{ font-size: 0.85rem; color: rgba(244,236,219,0.7); display: inline-flex; align-items: center; min-height: 44px; }
 .footer-links a:hover{ color: var(--azure); }
 
 /* ================= Price list page ================= */
@@ -644,6 +647,7 @@ a{ color: inherit; text-decoration: none; }
   flex: none; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
   padding: 0.55em 1.15em; border-radius: 999px; border: 1px solid rgba(201,160,99,0.28);
   color: rgba(244,236,219,0.75); white-space: nowrap;
+  display: inline-flex; align-items: center; min-height: 44px;
   transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 .price-nav-inner a:hover{ border-color: var(--gold); color: var(--cream); background: rgba(201,160,99,0.08); }

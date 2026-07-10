@@ -90,6 +90,21 @@
     var linkByHash = {};
     navLinks.forEach(function(a){ linkByHash[a.getAttribute('href')] = a; });
 
+    var navInner = document.querySelector('.price-nav-inner');
+
+    function scrollPillIntoView(link){
+      if (!navInner) return;
+      var linkLeft = link.offsetLeft;
+      var linkRight = linkLeft + link.offsetWidth;
+      var viewLeft = navInner.scrollLeft;
+      var viewRight = viewLeft + navInner.clientWidth;
+      if (linkLeft < viewLeft) {
+        navInner.scrollTo({ left: linkLeft - 16, behavior: 'smooth' });
+      } else if (linkRight > viewRight) {
+        navInner.scrollTo({ left: linkRight - navInner.clientWidth + 16, behavior: 'smooth' });
+      }
+    }
+
     var spy = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         var link = linkByHash['#' + entry.target.id];
@@ -97,6 +112,7 @@
         if (entry.isIntersecting) {
           navLinks.forEach(function(a){ a.classList.remove('is-active'); });
           link.classList.add('is-active');
+          scrollPillIntoView(link);
         }
       });
     }, { rootMargin: '-140px 0px -75% 0px', threshold: 0 });
