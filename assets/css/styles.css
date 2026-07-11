@@ -523,7 +523,6 @@ a{ color: inherit; text-decoration: none; }
 }
 .home-gigs-head{ margin-bottom: 1.4rem; }
 .home-gigs-head .eyebrow{ margin: 0; }
-.home-gigs-title{ margin: 0.3rem 0 0; font-size: clamp(1.3rem, 2.2vw, 1.7rem); }
 
 /* gig tiles i job tiles dijele isti red i istu visinu — .home-gigs-slot i
    .home-jobs-slot su "nevidljivi" (display:contents) omoti oko onoga što

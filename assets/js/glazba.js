@@ -66,25 +66,28 @@ var REZERVA = {
     var byId = {};
     IZVODJACI.forEach(function(a){ byId[a.id] = a; });
 
-    /* ---- tekući tjedan (pon–ned) iz tablice ---- */
+    /* ---- "ovaj tjedan" više nije fiksni pon–ned raspon — čim prođu svi
+       termini iz trenutnog bloka, odmah se prikazuje sljedeći nadolazeći
+       tjedan (7 dana od prve buduće svirke), bez čekanja na ponedjeljak ---- */
     var now = new Date();
     var todayStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-    var monday = new Date(now);
-    monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-    monday.setHours(0,0,0,0);
-    var sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    sunday.setHours(23,59,59,999);
 
-    var thisWeek = RASPORED.filter(function(r){
-      var d = new Date(r.datum + 'T12:00:00');
-      return d >= monday && d <= sunday && byId[r.izvodjac];
+    var upcomingAll = RASPORED.filter(function(r){
+      return byId[r.izvodjac] && r.datum >= todayStr;
     }).sort(function(a,b){ return a.datum === b.datum ? (a.vrijeme < b.vrijeme ? -1 : 1) : (a.datum < b.datum ? -1 : 1); });
+
+    var thisWeek = [];
+    if (upcomingAll.length) {
+      var windowEnd = new Date(upcomingAll[0].datum + 'T12:00:00');
+      windowEnd.setDate(windowEnd.getDate() + 6);
+      var windowEndStr = windowEnd.getFullYear() + '-' + String(windowEnd.getMonth()+1).padStart(2,'0') + '-' + String(windowEnd.getDate()).padStart(2,'0');
+      thisWeek = upcomingAll.filter(function(r){ return r.datum <= windowEndStr; });
+    }
 
     /* ---- kompaktna traka na početnoj ---- */
     if (homeGigs) {
       var section = document.getElementById('uzivo');
-      var upcoming = thisWeek.filter(function(r){ return r.datum >= todayStr; });
+      var upcoming = thisWeek;
       if (upcoming.length && section) {
         section.removeAttribute('hidden');
         homeGigs.innerHTML = upcoming.map(function(r){
