@@ -51,6 +51,37 @@
       var current = document.getElementById(location.hash.slice(1));
       if (current && current.tagName === 'DETAILS') current.open = true;
     }
+
+    /* ---- Menu structured data za tražilice (samo naslovi kategorija —
+       stavke se ne ponavljaju ovdje da JSON ne naraste na stotine redaka) ---- */
+    var oldLd = document.getElementById('ld-menu');
+    if (oldLd) oldLd.remove();
+    if (data.kategorije.length) {
+      var ld = {
+        '@context': 'https://schema.org',
+        '@type': 'Menu',
+        name: 'Cjenik — Hedonist Bar Osijek',
+        url: 'https://hedonist-bar.vercel.app/cjenik.html',
+        hasMenuSection: data.kategorije.map(function(c){
+          return {
+            '@type': 'MenuSection',
+            name: c.naziv,
+            hasMenuItem: c.grupe.reduce(function(items, g){
+              return items.concat(g.stavke.map(function(s){
+                var item = { '@type': 'MenuItem', name: s.naziv };
+                if (s.cijena) item.offers = { '@type': 'Offer', price: s.cijena.replace(',', '.'), priceCurrency: 'EUR' };
+                return item;
+              }));
+            }, [])
+          };
+        })
+      };
+      var ldScript = document.createElement('script');
+      ldScript.type = 'application/ld+json';
+      ldScript.id = 'ld-menu';
+      ldScript.textContent = JSON.stringify(ld);
+      document.head.appendChild(ldScript);
+    }
   }
 
   /* ---- interakcije nad trenutnim DOM-om (CMS ili statična rezerva) ---- */

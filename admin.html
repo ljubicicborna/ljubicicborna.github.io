@@ -93,8 +93,13 @@
 
     <!-- ZAPOŠLJAVANJE -->
     <div class="panel" id="panel-zaposlenje" hidden>
-      <p class="hint">Tekstovi stranice za zapošljavanje. Sam obrazac (polja i mail na koji stižu prijave) ostaje kakav jest.</p>
-      <div class="text-fields" data-texts="zaposlenje"></div>
+      <p class="hint">Oglasi se prikazuju u sekciji "Otvorene pozicije" na stranici. Isključi (kvačica "Aktivno") oglas kad se pozicija popuni, umjesto da ga brišeš — tako ga možeš vratiti kasnije.</p>
+      <div id="oglasi" class="oglasi-cards"></div>
+      <button id="add-oglas" class="btn-add" type="button">+ Dodaj oglas</button>
+      <section class="text-block">
+        <h2 class="block-title">Tekstovi stranice</h2>
+        <div class="text-fields" data-texts="zaposlenje"></div>
+      </section>
     </div>
 
   </main>

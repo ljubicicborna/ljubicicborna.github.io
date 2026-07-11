@@ -104,6 +104,43 @@ var REZERVA = {
       }
     }
 
+    /* ---- MusicEvent structured data za tražilice (samo na glazba.html) ---- */
+    if (gigList) {
+      var upcomingForLD = thisWeek.filter(function(r){ return r.datum >= todayStr && byId[r.izvodjac]; });
+      var oldLd = document.getElementById('ld-music-events');
+      if (oldLd) oldLd.remove();
+      if (upcomingForLD.length) {
+        var ld = upcomingForLD.map(function(r){
+          var a = byId[r.izvodjac];
+          return {
+            '@context': 'https://schema.org',
+            '@type': 'MusicEvent',
+            name: a.ime + ' — Hedonist Bar Osijek',
+            startDate: r.datum + 'T' + r.vrijeme,
+            eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+            eventStatus: 'https://schema.org/EventScheduled',
+            location: {
+              '@type': 'Place',
+              name: 'Hedonist Bar Osijek',
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'Vukovarska cesta 31',
+                addressLocality: 'Osijek',
+                postalCode: '31000',
+                addressCountry: 'HR'
+              }
+            },
+            performer: { '@type': 'PerformingGroup', name: a.ime }
+          };
+        });
+        var ldScript = document.createElement('script');
+        ldScript.type = 'application/ld+json';
+        ldScript.id = 'ld-music-events';
+        ldScript.textContent = JSON.stringify(ld.length === 1 ? ld[0] : ld);
+        document.head.appendChild(ldScript);
+      }
+    }
+
     /* ---- Ovaj tjedan ---- */
     if (gigList) {
       if (!thisWeek.length) {

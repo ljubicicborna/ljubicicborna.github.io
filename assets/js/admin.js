@@ -11,14 +11,15 @@
 (function(){
   var API = '/api/admin';
 
-  var state = { glazba: null, cjenik: null, tekstovi: null };
-  var dirty = { glazba: false, cjenik: false, tekstovi: false };
+  var state = { glazba: null, cjenik: null, tekstovi: null, oglasi: null };
+  var dirty = { glazba: false, cjenik: false, tekstovi: false, oglasi: false };
 
   var loginView = document.getElementById('login-view');
   var appView = document.getElementById('app-view');
   var gigsEl = document.getElementById('gigs');
   var artistsEl = document.getElementById('artists');
   var catsEl = document.getElementById('cjenik-cats');
+  var oglasiEl = document.getElementById('oglasi');
   var saveBtn = document.getElementById('save');
   var statusEl = document.getElementById('save-status');
 
@@ -62,7 +63,7 @@
     statusEl.className = 'save-status' + (cls ? ' ' + cls : '');
   }
 
-  function anyDirty(){ return dirty.glazba || dirty.cjenik || dirty.tekstovi; }
+  function anyDirty(){ return dirty.glazba || dirty.cjenik || dirty.tekstovi || dirty.oglasi; }
 
   function markDirty(vrsta){
     dirty[vrsta] = true;
@@ -275,6 +276,59 @@
     input.value = '';
   });
 
+  /* ================= ZAPOŠLJAVANJE: OGLASI ================= */
+  var VRSTE_OGLASA = ['Stalno', 'Studentski'];
+
+  function renderOglasi(){
+    oglasiEl.innerHTML = state.oglasi.pozicije.map(function(p, i){
+      var vrstaOpts = VRSTE_OGLASA.map(function(t){
+        return '<option' + (t === p.vrsta ? ' selected' : '') + '>' + t + '</option>';
+      }).join('');
+      return '<article class="oglas-card' + (p.aktivno ? '' : ' is-inactive') + '" data-i="' + i + '">' +
+        '<div class="field-grid">' +
+          '<div class="field field-wide"><label>Naslov</label><input data-f="naslov" value="' + esc(p.naslov) + '" placeholder="npr. Tražimo konobara/icu — studentski posao"></div>' +
+          '<div class="field"><label>Vrsta</label><select data-f="vrsta">' + vrstaOpts + '</select></div>' +
+          '<div class="field"><label>Satnica (€/h, nije obavezno)</label><input data-f="satnica" value="' + esc(p.satnica) + '" placeholder="7,50"></div>' +
+          '<div class="field field-wide"><label>Opis</label><textarea data-f="opis">' + esc(p.opis) + '</textarea></div>' +
+        '</div>' +
+        '<label class="oglas-active"><input type="checkbox" data-f="aktivno"' + (p.aktivno ? ' checked' : '') + '> Aktivno (prikazano na stranici)</label>' +
+        '<button type="button" class="artist-del" data-del-oglas="' + i + '">Obriši oglas</button>' +
+      '</article>';
+    }).join('') || '<p class="hint">Nema oglasa — dodaj prvi gumbom ispod.</p>';
+  }
+
+  oglasiEl.addEventListener('input', function(e){
+    var card = e.target.closest('.oglas-card');
+    var f = e.target.getAttribute && e.target.getAttribute('data-f');
+    if (!card || !f) return;
+    var p = state.oglasi.pozicije[Number(card.getAttribute('data-i'))];
+    p[f] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (f === 'aktivno') card.classList.toggle('is-inactive', !p.aktivno);
+    markDirty('oglasi');
+  });
+
+  oglasiEl.addEventListener('click', function(e){
+    var del = e.target.closest('[data-del-oglas]');
+    if (!del) return;
+    var i = Number(del.getAttribute('data-del-oglas'));
+    if (!confirm('Obrisati oglas "' + (state.oglasi.pozicije[i].naslov || 'bez naslova') + '"?')) return;
+    state.oglasi.pozicije.splice(i, 1);
+    markDirty('oglasi');
+    renderOglasi();
+  });
+
+  document.getElementById('add-oglas').addEventListener('click', function(){
+    state.oglasi.pozicije.push({ id: 'oglas-' + Date.now(), naslov: '', vrsta: 'Stalno', satnica: '', opis: '', datum: todayStr(), aktivno: true });
+    markDirty('oglasi');
+    renderOglasi();
+    var cards = oglasiEl.querySelectorAll('.oglas-card');
+    if (cards.length) {
+      cards[cards.length - 1].scrollIntoView({ block: 'center' });
+      var first = cards[cards.length - 1].querySelector('input[data-f="naslov"]');
+      if (first) first.focus();
+    }
+  });
+
   /* ================= CJENIK ================= */
   var IKONE = [
     ['', 'bez ikone'], ['coffee', 'kava'], ['juice', 'sok'], ['beer', 'pivo'],
@@ -423,6 +477,9 @@
     if (dirty.glazba && state.glazba.izvodjaci.some(function(a){ return !String(a.ime).trim(); })) {
       return 'Svaki izvođač mora imati ime.';
     }
+    if (dirty.oglasi && state.oglasi.pozicije.some(function(p){ return !String(p.naslov).trim(); })) {
+      return 'Svaki oglas mora imati naslov.';
+    }
     if (dirty.cjenik) {
       for (var i = 0; i < state.cjenik.kategorije.length; i++) {
         var c = state.cjenik.kategorije[i];
@@ -449,6 +506,7 @@
     if (dirty.glazba) queue.push('glazba');
     if (dirty.cjenik) queue.push('cjenik');
     if (dirty.tekstovi) queue.push('tekstovi');
+    if (dirty.oglasi) queue.push('oglasi');
     if (!queue.length) return;
 
     saveBtn.disabled = true;
@@ -493,7 +551,7 @@
 
   document.getElementById('logout').addEventListener('click', function(){
     if (anyDirty() && !confirm('Imaš nespremljene promjene — svejedno se odjaviti?')) return;
-    dirty = { glazba: false, cjenik: false, tekstovi: false };
+    dirty = { glazba: false, cjenik: false, tekstovi: false, oglasi: false };
     sessionStorage.removeItem('hedonistAdminKey');
     location.reload();
   });
@@ -504,19 +562,34 @@
       .catch(function(){ return fallback; });
   }
 
+  /* dok vlasnik ne otvori i ne spremi barem jednom, admin prikazuje ovaj
+     unaprijed upisan oglas — jedan klik na "Spremi promjene" ga stavi u CMS */
+  var SEED_OGLASI = { pozicije: [{
+    id: 'oglas-seed-student',
+    naslov: 'Tražimo konobara/icu — studentski posao',
+    vrsta: 'Studentski',
+    satnica: '7,50',
+    opis: 'Tražimo pouzdanu i nasmijanu osobu za rad na šanku i terasi, uglavnom navečer i vikendom. Prijašnje iskustvo je plus, ali nije nužno.',
+    datum: todayStr(),
+    aktivno: true
+  }] };
+
   function loadAndShow(){
     return Promise.all([
       getJSON('/api/glazba', { izvodjaci: [], raspored: [] }),
       getJSON('/api/cjenik', { kategorije: [] }),
-      getJSON('/api/tekstovi', {})
+      getJSON('/api/tekstovi', {}),
+      getJSON('/api/oglasi', SEED_OGLASI)
     ]).then(function(res){
       state.glazba = { izvodjaci: res[0].izvodjaci || [], raspored: res[0].raspored || [] };
       state.cjenik = { kategorije: res[1].kategorije || [] };
       state.tekstovi = res[2] && typeof res[2] === 'object' ? res[2] : {};
+      state.oglasi = { pozicije: (res[3] && res[3].pozicije) || [] };
       renderGigs();
       renderArtists();
       renderCjenik(-1);
       renderTexts();
+      renderOglasi();
       showPanel();
       loginView.hidden = true;
       appView.hidden = false;

@@ -10,7 +10,8 @@ import crypto from 'node:crypto';
 const PREFIXES = {
   glazba: 'cms/data/glazba-',
   cjenik: 'cms/data/cjenik-',
-  tekstovi: 'cms/data/tekstovi-'
+  tekstovi: 'cms/data/tekstovi-',
+  oglasi: 'cms/data/oglasi-'
 };
 const KEEP_VERSIONS = 5;
 const FOTO_PREFIX = 'cms/foto/';
@@ -90,6 +91,33 @@ function cleanTekstovi(data) {
   return out;
 }
 
+function validateOglasi(data) {
+  if (!data || !Array.isArray(data.pozicije)) return 'Oglasi nisu u očekivanom obliku.';
+  for (const p of data.pozicije) {
+    if (!p || typeof p.id !== 'string' || !p.id || typeof p.naslov !== 'string' || !p.naslov.trim()) {
+      return 'Svaki oglas mora imati id i naslov.';
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(p.datum || '')) return 'Oglas "' + p.naslov + '" ima neispravan datum.';
+  }
+  return null;
+}
+
+function cleanOglasi(data) {
+  return {
+    pozicije: data.pozicije.map(function (p) {
+      return {
+        id: String(p.id),
+        naslov: String(p.naslov).trim(),
+        vrsta: String(p.vrsta || '').trim(),
+        satnica: String(p.satnica || '').trim(),
+        opis: String(p.opis || '').trim(),
+        datum: p.datum,
+        aktivno: !!p.aktivno
+      };
+    })
+  };
+}
+
 function validateData(data) {
   if (!data || !Array.isArray(data.izvodjaci) || !Array.isArray(data.raspored)) {
     return 'Podaci nisu u očekivanom obliku.';
@@ -158,6 +186,10 @@ export default async function handler(req, res) {
         const err = validateCjenik(body.data);
         if (err) return res.status(400).json({ error: err });
         clean = cleanCjenik(body.data);
+      } else if (vrsta === 'oglasi') {
+        const err = validateOglasi(body.data);
+        if (err) return res.status(400).json({ error: err });
+        clean = cleanOglasi(body.data);
       } else {
         const err = validateTekstovi(body.data);
         if (err) return res.status(400).json({ error: err });
