@@ -323,12 +323,16 @@
      brojač postoji na stranici) — u HTML-u ostaje rezervni broj dok API
      ne odgovori, pa se brojač nikad ne "zaglavi" na 0 ---- */
   var menuCounter = document.querySelector('.menu-counter-num');
+  var cjenikLinkCount = document.querySelector('.cjenik-link-count');
   if (menuCounter) {
     fetch('/api/cjenik').then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(data){
       var total = (data.kategorije || []).reduce(function(sum, c){
         return sum + (c.grupe || []).reduce(function(s, g){ return s + (g.stavke ? g.stavke.length : 0); }, 0);
       }, 0);
-      if (total > 0) menuCounter.setAttribute('data-count-to', total);
+      if (total > 0) {
+        menuCounter.setAttribute('data-count-to', total);
+        if (cjenikLinkCount) cjenikLinkCount.textContent = 'Kave, kokteli, pivo, vino i žestica — preko ' + total + ' stavki';
+      }
     }).catch(function(){ /* ostaje rezervni broj iz HTML-a */ }).then(setupCounters);
   } else {
     setupCounters();

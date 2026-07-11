@@ -194,4 +194,30 @@ var REZERVA = {
       render(data && Array.isArray(data.izvodjaci) ? data : REZERVA);
     })
     .catch(function(){ render(REZERVA); });
+
+  /* ---- "Novosti" na početnoj: aktivni oglasi za posao (neovisno o svirkama) ---- */
+  var homeJobs = document.getElementById('home-jobs');
+  if (homeJobs) {
+    var esc = function(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+    fetch('/api/oglasi')
+      .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
+      .then(function(data){
+        var active = (data.pozicije || []).filter(function(p){ return p.aktivno; });
+        if (!active.length) return;
+        var section = document.getElementById('uzivo');
+        if (section) section.removeAttribute('hidden');
+        homeJobs.innerHTML = active.map(function(p){
+          return '' +
+            '<article class="job-ad-card">' +
+              '<div class="job-ad-head">' +
+                '<span class="job-ad-badge">' + esc(p.vrsta || 'Posao') + '</span>' +
+                (p.satnica ? '<span class="job-ad-wage">' + esc(p.satnica) + ' €/h</span>' : '') +
+              '</div>' +
+              '<h3 class="job-ad-title">' + esc(p.naslov) + '</h3>' +
+              '<a class="job-ad-cta" href="zaposlenje.html#job-form">Prijavi se <span aria-hidden="true">→</span></a>' +
+            '</article>';
+        }).join('');
+      })
+      .catch(function(){ /* nema oglasa, sekcija ostaje kakva jest */ });
+  }
 })();
