@@ -4,6 +4,90 @@
      which reads as the page scrolling by itself */
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
+  /* ---- kolačići: banner traži privolu prije nego se učita Google Analytics.
+     Vercel Analytics (script tag u <head>) je bez kolačića pa radi uvijek;
+     GA4 se učita tek nakon "Prihvaćam", i samo ako je GA_MEASUREMENT_ID
+     postavljen na Vercelu (vidi /api/ga.js) — dok nije, gumb i dalje radi,
+     samo se ništa ne učita. ---- */
+  (function cookies(){
+    var CONSENT_KEY = 'hedonistCookieConsent';
+
+    function loadGA(){
+      fetch('/api/ga').then(function(r){ return r.json(); }).then(function(d){
+        if (!d.id || document.getElementById('ga4-script')) return;
+        var s = document.createElement('script');
+        s.id = 'ga4-script';
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(d.id);
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ window.dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', d.id, { anonymize_ip: true });
+      }).catch(function(){ /* GA nije kritičan */ });
+    }
+
+    var banner = null;
+
+    function buildBanner(){
+      if (banner) return banner;
+      banner = document.createElement('div');
+      banner.className = 'cookie-banner';
+      banner.setAttribute('role', 'dialog');
+      banner.setAttribute('aria-label', 'Postavke kolačića');
+      banner.innerHTML =
+        '<div class="cookie-card">' +
+          '<span class="cookie-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="15" r="1" fill="currentColor" stroke="none"/></svg></span>' +
+          '<div class="cookie-body">' +
+            '<p class="cookie-title">Kolačići</p>' +
+            '<p class="cookie-text">Koristimo analitičke kolačiće da vidimo koje stranice ljudi posjećuju — ništa se ne dijeli s oglašivačima. Možeš prihvatiti ili nastaviti bez njih.</p>' +
+            '<div class="cookie-actions">' +
+              '<button type="button" class="btn btn-gold" data-cookie="accept">Prihvaćam</button>' +
+              '<button type="button" class="btn btn-outline" data-cookie="decline">Samo nužno</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(banner);
+      banner.addEventListener('click', function(e){
+        var btn = e.target.closest('[data-cookie]');
+        if (!btn) return;
+        var accepted = btn.getAttribute('data-cookie') === 'accept';
+        localStorage.setItem(CONSENT_KEY, accepted ? 'accepted' : 'declined');
+        hideBanner();
+        if (accepted) loadGA();
+      });
+      return banner;
+    }
+
+    function showBanner(){
+      var b = buildBanner();
+      requestAnimationFrame(function(){ b.classList.add('is-visible'); });
+    }
+    function hideBanner(){
+      if (!banner) return;
+      banner.classList.remove('is-visible');
+    }
+
+    var consent = localStorage.getItem(CONSENT_KEY);
+    if (consent === 'accepted') {
+      loadGA();
+    } else if (consent !== 'declined') {
+      showBanner();
+    }
+
+    /* diskretan link u podnožju za promjenu odluke */
+    var footerLinks = document.querySelector('.footer-links');
+    if (footerLinks) {
+      var link = document.createElement('button');
+      link.type = 'button';
+      link.className = 'cookie-settings-link';
+      link.textContent = 'Kolačići';
+      link.addEventListener('click', showBanner);
+      footerLinks.appendChild(link);
+    }
+  })();
+
   /* ---- tajni pristup CMS-u: drži (7s) logo gore lijevo na naslovnoj
      da otvoriš /admin.html — nema vidljivog gumba za uređivanje na sajtu ---- */
   var navMark = document.querySelector('.nav-mark');
@@ -181,90 +265,6 @@
       })
       .catch(function(){ /* rezerva: statični tekst */ });
   }
-
-  /* ---- kolačići: banner traži privolu prije nego se učita Google Analytics.
-     Vercel Analytics (script tag u <head>) je bez kolačića pa radi uvijek;
-     GA4 se učita tek nakon "Prihvaćam", i samo ako je GA_MEASUREMENT_ID
-     postavljen na Vercelu (vidi /api/ga.js) — dok nije, gumb i dalje radi,
-     samo se ništa ne učita. ---- */
-  (function cookies(){
-    var CONSENT_KEY = 'hedonistCookieConsent';
-
-    function loadGA(){
-      fetch('/api/ga').then(function(r){ return r.json(); }).then(function(d){
-        if (!d.id || document.getElementById('ga4-script')) return;
-        var s = document.createElement('script');
-        s.id = 'ga4-script';
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(d.id);
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ window.dataLayer.push(arguments); }
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', d.id, { anonymize_ip: true });
-      }).catch(function(){ /* GA nije kritičan */ });
-    }
-
-    var banner = null;
-
-    function buildBanner(){
-      if (banner) return banner;
-      banner = document.createElement('div');
-      banner.className = 'cookie-banner';
-      banner.setAttribute('role', 'dialog');
-      banner.setAttribute('aria-label', 'Postavke kolačića');
-      banner.innerHTML =
-        '<div class="cookie-card">' +
-          '<span class="cookie-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="15" r="1" fill="currentColor" stroke="none"/></svg></span>' +
-          '<div class="cookie-body">' +
-            '<p class="cookie-title">Kolačići</p>' +
-            '<p class="cookie-text">Koristimo analitičke kolačiće da vidimo koje stranice ljudi posjećuju — ništa se ne dijeli s oglašivačima. Možeš prihvatiti ili nastaviti bez njih.</p>' +
-            '<div class="cookie-actions">' +
-              '<button type="button" class="btn btn-gold" data-cookie="accept">Prihvaćam</button>' +
-              '<button type="button" class="btn btn-outline" data-cookie="decline">Samo nužno</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-      document.body.appendChild(banner);
-      banner.addEventListener('click', function(e){
-        var btn = e.target.closest('[data-cookie]');
-        if (!btn) return;
-        var accepted = btn.getAttribute('data-cookie') === 'accept';
-        localStorage.setItem(CONSENT_KEY, accepted ? 'accepted' : 'declined');
-        hideBanner();
-        if (accepted) loadGA();
-      });
-      return banner;
-    }
-
-    function showBanner(){
-      var b = buildBanner();
-      requestAnimationFrame(function(){ requestAnimationFrame(function(){ b.classList.add('is-visible'); }); });
-    }
-    function hideBanner(){
-      if (!banner) return;
-      banner.classList.remove('is-visible');
-    }
-
-    var consent = localStorage.getItem(CONSENT_KEY);
-    if (consent === 'accepted') {
-      loadGA();
-    } else if (consent !== 'declined') {
-      showBanner();
-    }
-
-    /* diskretan link u podnožju za promjenu odluke */
-    var footerLinks = document.querySelector('.footer-links');
-    if (footerLinks) {
-      var link = document.createElement('button');
-      link.type = 'button';
-      link.className = 'cookie-settings-link';
-      link.textContent = 'Kolačići';
-      link.addEventListener('click', showBanner);
-      footerLinks.appendChild(link);
-    }
-  })();
 
   /* ---- prijelaz među stranicama: zavjesa s monogramom prekrije ekran
      prije odlaska, a nova stranica se otvori već pokrivena pa se
