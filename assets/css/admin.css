@@ -1,0 +1,184 @@
+/* =====================================================================
+   ADMIN — uređivanje programa žive glazbe (/admin.html)
+   Samostalan stylesheet, dijeli paletu i fontove s glavnom stranicom.
+===================================================================== */
+:root{
+  --ink:      #17110d;
+  --panel:    #241a13;
+  --panel-2:  #2c2016;
+  --gold:     #c9a063;
+  --gold-soft:#e4c88f;
+  --cream:    #f4ecdb;
+  --font-display: 'Poppins', 'Segoe UI', sans-serif;
+  --font-ui: 'Jost', 'Segoe UI', sans-serif;
+  --edge: 1px solid rgba(201,160,99,0.22);
+  color-scheme: dark; /* tamni nativni date/time pickeri */
+}
+
+*{ box-sizing: border-box; }
+/* hidden atribut mora pobijediti i elemente s vlastitim display pravilom */
+[hidden]{ display: none !important; }
+html{ -webkit-text-size-adjust: 100%; }
+body{
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--cream);
+  background: radial-gradient(120% 90% at 50% 0%, #241a13, var(--ink) 60%);
+  min-height: 100vh;
+}
+h1,h2,h3{ font-family: var(--font-display); margin: 0; }
+button{ font: inherit; cursor: pointer; }
+input, select, textarea{
+  font: inherit;
+  color: var(--cream);
+  background: rgba(23,17,13,0.6);
+  border: 1px solid rgba(201,160,99,0.28);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus{
+  outline: 2px solid rgba(201,160,99,0.55);
+  outline-offset: 1px;
+}
+textarea{ resize: vertical; min-height: 84px; }
+
+.btn{
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; padding: 0.7rem 1.6rem;
+  font-family: var(--font-display); font-weight: 600; font-size: 0.95rem;
+  border: none; text-decoration: none;
+}
+.btn-gold{ background: linear-gradient(160deg, var(--gold-soft), var(--gold) 70%); color: #241a13; }
+.btn-gold:disabled{ opacity: 0.45; cursor: default; }
+
+/* ---- prijava ---- */
+.login{
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 2rem 1.5rem;
+}
+.login-logo{ width: 72px; height: auto; margin-bottom: 1.6rem; }
+.login h1{ font-size: 1.5rem; }
+.login-sub{ color: rgba(244,236,219,0.6); margin: 0.4rem 0 2rem; }
+.login form{ width: min(320px, 100%); display: grid; gap: 0.8rem; }
+.form-err{ color: #e08b8b; margin: 0.2rem 0 0; font-size: 0.92rem; }
+
+/* ---- gornja traka ---- */
+.topbar{
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-bottom: var(--edge);
+  background: rgba(23,17,13,0.75);
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: blur(8px);
+}
+.topbar img{ width: 34px; height: auto; }
+.topbar-title{ display: flex; flex-direction: column; line-height: 1.15; margin-right: auto; }
+.topbar-title strong{ font-family: var(--font-display); letter-spacing: 0.04em; }
+.topbar-title span{ font-size: 0.78rem; color: rgba(244,236,219,0.55); }
+.topbar-link{ color: var(--gold-soft); text-decoration: none; font-size: 0.9rem; }
+.topbar-out{
+  background: none; border: 1px solid rgba(201,160,99,0.35); color: rgba(244,236,219,0.75);
+  border-radius: 999px; padding: 0.35rem 0.9rem; font-size: 0.85rem;
+}
+
+/* ---- tabovi ---- */
+.tabs{
+  display: flex; gap: 0.5rem; padding: 1rem 1rem 0;
+  max-width: 860px; margin: 0 auto; width: 100%;
+}
+.tab{
+  flex: 1; background: rgba(36,26,19,0.7); color: rgba(244,236,219,0.7);
+  border: var(--edge); border-radius: 12px 12px 0 0; padding: 0.75rem;
+  font-family: var(--font-display); font-weight: 600; font-size: 0.95rem;
+}
+.tab.is-active{ background: var(--panel-2); color: var(--gold-soft); border-bottom-color: transparent; }
+
+.wrap{ max-width: 860px; margin: 0 auto; padding: 1.2rem 1rem 7rem; }
+.hint{ color: rgba(244,236,219,0.55); font-size: 0.92rem; margin: 0 0 1.2rem; }
+
+/* ---- raspored ---- */
+.gig-rows{ display: grid; gap: 0.6rem; }
+.gig-row{
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+  background: var(--panel); border: var(--edge); border-radius: 12px; padding: 0.7rem;
+}
+.gig-row select{ grid-column: 1 / -1; }
+.gig-row .row-x{ position: absolute; }
+.gig-row{ position: relative; padding-right: 2.6rem; }
+.row-x{
+  top: 50%; right: 0.55rem; transform: translateY(-50%);
+  width: 30px; height: 30px; border-radius: 50%;
+  background: none; border: 1px solid rgba(224,139,139,0.45); color: #e08b8b;
+  font-size: 1rem; line-height: 1;
+}
+.gig-row.is-past{ opacity: 0.5; }
+.gig-past-tag{
+  grid-column: 1 / -1; font-size: 0.78rem; color: rgba(244,236,219,0.5);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+@media (min-width: 640px){
+  .gig-row{ grid-template-columns: 170px 120px 1fr; align-items: center; }
+  .gig-row select{ grid-column: auto; }
+  .gig-past-tag{ grid-column: auto; position: absolute; top: -0.5em; left: 1rem; background: var(--ink); padding: 0 0.5em; }
+}
+
+.btn-add{
+  margin-top: 1rem; width: 100%;
+  background: none; border: 1px dashed rgba(201,160,99,0.5); color: var(--gold-soft);
+  border-radius: 12px; padding: 0.85rem; font-family: var(--font-display); font-weight: 600;
+}
+
+/* ---- izvođači ---- */
+.artist-cards{ display: grid; gap: 1rem; }
+.artist-card{
+  background: var(--panel); border: var(--edge); border-radius: 14px; padding: 1rem;
+  display: grid; gap: 0.6rem;
+}
+.artist-top{ display: flex; align-items: center; gap: 0.9rem; }
+.artist-foto{
+  width: 74px; height: 74px; border-radius: 50%; object-fit: cover; flex: none;
+  border: 2px solid rgba(201,160,99,0.5); background: var(--panel-2);
+}
+.artist-foto-ph{
+  width: 74px; height: 74px; border-radius: 50%; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, var(--gold-soft), var(--gold));
+  color: #241a13; font-family: var(--font-display); font-weight: 700; font-size: 1.4rem;
+  border: 2px solid rgba(201,160,99,0.5);
+}
+.foto-btns{ display: flex; flex-direction: column; gap: 0.4rem; }
+.btn-foto{
+  background: rgba(201,160,99,0.15); border: 1px solid rgba(201,160,99,0.4);
+  color: var(--gold-soft); border-radius: 999px; padding: 0.35rem 1rem; font-size: 0.85rem;
+}
+.btn-foto input{ display: none; }
+.foto-note{ font-size: 0.78rem; color: rgba(244,236,219,0.45); }
+.field{ display: grid; gap: 0.25rem; }
+.field label{ font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(244,236,219,0.55); }
+.field-grid{ display: grid; gap: 0.6rem; }
+@media (min-width: 640px){
+  .field-grid{ grid-template-columns: 1fr 1fr; }
+  .field-wide{ grid-column: 1 / -1; }
+}
+.artist-del{
+  justify-self: end;
+  background: none; border: none; color: #e08b8b; font-size: 0.88rem;
+  text-decoration: underline; padding: 0.2rem;
+}
+
+/* ---- traka za spremanje ---- */
+.savebar{
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: flex-end; gap: 1rem;
+  padding: 0.8rem 1rem calc(0.8rem + env(safe-area-inset-bottom));
+  background: rgba(23,17,13,0.92); border-top: var(--edge);
+  backdrop-filter: blur(8px);
+}
+.save-status{ font-size: 0.9rem; color: rgba(244,236,219,0.65); }
+.save-status.is-ok{ color: #9fd6a4; }
+.save-status.is-err{ color: #e08b8b; }
+.save-status.is-dirty{ color: var(--gold-soft); }

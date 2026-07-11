@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uređivanje programa — Hedonist Bar</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#17110d">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" href="/assets/images/monogram.png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/admin.css?v=2">
+</head>
+<body>
+
+<!-- ======================= PRIJAVA ======================= -->
+<div id="login-view" class="login" hidden>
+  <img class="login-logo" src="/assets/images/monogram.png" alt="Hedonist">
+  <h1>Uređivanje programa</h1>
+  <p class="login-sub">Živa glazba · raspored i izvođači</p>
+  <form id="login-form">
+    <input id="login-pass" type="password" autocomplete="current-password" placeholder="Lozinka" required>
+    <button type="submit" class="btn btn-gold">Prijava</button>
+    <p id="login-err" class="form-err" hidden>Pogrešna lozinka, pokušaj ponovno.</p>
+  </form>
+</div>
+
+<!-- ======================= CMS ======================= -->
+<div id="app-view" hidden>
+  <header class="topbar">
+    <img src="/assets/images/monogram.png" alt="" aria-hidden="true">
+    <div class="topbar-title">
+      <strong>Hedonist</strong>
+      <span>uređivanje programa</span>
+    </div>
+    <a class="topbar-link" href="/glazba.html" target="_blank" rel="noopener">Pogledaj stranicu ↗</a>
+    <button id="logout" class="topbar-out" type="button">Odjava</button>
+  </header>
+
+  <nav class="tabs" aria-label="Sekcije">
+    <button type="button" class="tab is-active" data-tab="raspored">Raspored svirki</button>
+    <button type="button" class="tab" data-tab="izvodjaci">Izvođači</button>
+  </nav>
+
+  <main class="wrap">
+    <section id="tab-raspored">
+      <p class="hint">Na stranici se sami prikažu samo termini koji padaju u tekući tjedan (pon–ned).
+      Buduće tjedne slobodno upiši unaprijed — pojavit će se kad im dođe vrijeme. Stare svirke možeš obrisati ili ostaviti kao arhivu.</p>
+      <div id="gigs" class="gig-rows"></div>
+      <button id="add-gig" class="btn-add" type="button">+ Dodaj svirku</button>
+    </section>
+
+    <section id="tab-izvodjaci" hidden>
+      <p class="hint">Ovi izvođači se prikazuju u popisu na stranici Živa glazba. Slika se sama smanji i izreže na kvadrat — samo odaberi fotografiju s mobitela ili računala.</p>
+      <div id="artists" class="artist-cards"></div>
+      <button id="add-artist" class="btn-add" type="button">+ Dodaj izvođača</button>
+    </section>
+  </main>
+
+  <div class="savebar">
+    <span id="save-status" class="save-status" role="status"></span>
+    <button id="save" class="btn btn-gold" type="button" disabled>Spremi promjene</button>
+  </div>
+</div>
+
+<script src="/assets/js/admin.js?v=2"></script>
+</body>
+</html>
