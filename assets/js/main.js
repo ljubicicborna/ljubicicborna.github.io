@@ -41,7 +41,7 @@
           '<span class="cookie-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="15" r="1" fill="currentColor" stroke="none"/></svg></span>' +
           '<div class="cookie-body">' +
             '<p class="cookie-title">Kolačići</p>' +
-            '<p class="cookie-text">Koristimo analitičke kolačiće da vidimo koje stranice ljudi posjećuju — ništa se ne dijeli s oglašivačima. Možeš prihvatiti ili nastaviti bez njih.</p>' +
+            '<p class="cookie-text">Koristimo analitičke kolačiće da vidimo koje stranice ljudi posjećuju — ništa se ne dijeli s oglašivačima. Možeš prihvatiti ili nastaviti bez njih. Detalji u <a href="privatnost.html" target="_blank" rel="noopener">politici privatnosti</a>.</p>' +
             '<div class="cookie-actions">' +
               '<button type="button" class="btn btn-gold" data-cookie="accept">Prihvaćam</button>' +
               '<button type="button" class="btn btn-outline" data-cookie="decline">Samo nužno</button>' +

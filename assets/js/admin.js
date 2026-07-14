@@ -32,8 +32,8 @@
       ['cjenik.uvod', 'Uvodni tekst na vrhu stranice', 'textarea']
     ],
     pocetna: [
-      ['pocetna.filozofija-citat', 'Citat (sekcija Filozofija)', 'input'],
-      ['pocetna.filozofija', 'Tekst — Filozofija', 'textarea'],
+      ['pocetna.filozofija-citat', 'Citat (sekcija Misija – vizija)', 'input'],
+      ['pocetna.filozofija', 'Tekst — Misija – vizija', 'textarea'],
       ['pocetna.cjenik-napomena', 'Tekst — Cjenik', 'textarea'],
       ['pocetna.podanu', 'Tekst — Po danu', 'textarea'],
       ['pocetna.atmosfera', 'Tekst — Atmosfera', 'textarea']
