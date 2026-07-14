@@ -41,7 +41,7 @@
             g.stavke.map(function(s){
               return '<div class="price-item"><div class="price-item-name"><strong>' + esc(s.naziv) + '</strong>' +
                 (s.opis ? '<em>' + esc(s.opis) + '</em>' : '') +
-                '</div><div class="price-item-price is-locked" data-price="' + esc(s.cijena) + '">Na lokaciji</div></div>';
+                '</div><div class="price-item-price is-locked" data-price="' + esc(s.cijena) + '">Vidljivo na našoj lokaciji</div></div>';
             }).join('') +
             '</div></div>';
         }).join('') +
