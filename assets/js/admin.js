@@ -1,22 +1,23 @@
 /* =====================================================================
    ADMIN — uređivanje sadržaja (/admin.html)
    Birač stranice gore odlučuje što se uređuje:
-   - Cjenik       → kategorije/grupe/stavke s cijenama (+ uvodni tekst)
-   - Početna      → glavni tekstovi
-   - Zapošljavanje→ tekstovi
-   Sve se čita s /api/cjenik, /api/tekstovi, /api/oglasi, a sprema preko
-   /api/admin (lozinka u headeru x-admin-key).
+   - Cjenik       → kategorije/grupe/stavke, katalog bez cijena (+ uvodni tekst)
+   - Početna      → glavni tekstovi + događaji (sekcija "Novosti")
+   - Zapošljavanje→ tekstovi + oglasi za posao
+   Sve se čita s /api/cjenik, /api/tekstovi, /api/oglasi, /api/dogadjaji,
+   a sprema preko /api/admin (lozinka u headeru x-admin-key).
 ===================================================================== */
 (function(){
   var API = '/api/admin';
 
-  var state = { cjenik: null, tekstovi: null, oglasi: null };
-  var dirty = { cjenik: false, tekstovi: false, oglasi: false };
+  var state = { cjenik: null, tekstovi: null, oglasi: null, dogadjaji: null };
+  var dirty = { cjenik: false, tekstovi: false, oglasi: false, dogadjaji: false };
 
   var loginView = document.getElementById('login-view');
   var appView = document.getElementById('app-view');
   var catsEl = document.getElementById('cjenik-cats');
   var oglasiEl = document.getElementById('oglasi');
+  var dogadjajiEl = document.getElementById('dogadjaji');
   var saveBtn = document.getElementById('save');
   var statusEl = document.getElementById('save-status');
 
@@ -57,7 +58,7 @@
     statusEl.className = 'save-status' + (cls ? ' ' + cls : '');
   }
 
-  function anyDirty(){ return dirty.cjenik || dirty.tekstovi || dirty.oglasi; }
+  function anyDirty(){ return dirty.cjenik || dirty.tekstovi || dirty.oglasi || dirty.dogadjaji; }
 
   function markDirty(vrsta){
     dirty[vrsta] = true;
@@ -159,6 +160,53 @@
     }
   });
 
+  /* ================= POČETNA: DOGAĐAJI (sekcija "Novosti") ================= */
+  function renderDogadjaji(){
+    dogadjajiEl.innerHTML = state.dogadjaji.dogadjaji.map(function(d, i){
+      return '<article class="oglas-card' + (d.aktivno ? '' : ' is-inactive') + '" data-i="' + i + '">' +
+        '<div class="field-grid">' +
+          '<div class="field"><label>Dan</label><input data-f="dan" value="' + esc(d.dan) + '" placeholder="npr. Petak"></div>' +
+          '<div class="field"><label>Naziv</label><input data-f="naziv" value="' + esc(d.naziv) + '" placeholder="npr. Music Night"></div>' +
+          '<div class="field field-wide"><label>Opis (podnaslov)</label><input data-f="opis" value="' + esc(d.opis) + '" placeholder="npr. Ex-Yu glazba cijelu večer"></div>' +
+        '</div>' +
+        '<label class="oglas-active"><input type="checkbox" data-f="aktivno"' + (d.aktivno ? ' checked' : '') + '> Aktivno (prikazano na početnoj)</label>' +
+        '<button type="button" class="artist-del" data-del-dogadjaj="' + i + '">Obriši događaj</button>' +
+      '</article>';
+    }).join('') || '<p class="hint">Nema događaja — dodaj prvi gumbom ispod.</p>';
+  }
+
+  dogadjajiEl.addEventListener('input', function(e){
+    var card = e.target.closest('.oglas-card');
+    var f = e.target.getAttribute && e.target.getAttribute('data-f');
+    if (!card || !f) return;
+    var d = state.dogadjaji.dogadjaji[Number(card.getAttribute('data-i'))];
+    d[f] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (f === 'aktivno') card.classList.toggle('is-inactive', !d.aktivno);
+    markDirty('dogadjaji');
+  });
+
+  dogadjajiEl.addEventListener('click', function(e){
+    var del = e.target.closest('[data-del-dogadjaj]');
+    if (!del) return;
+    var i = Number(del.getAttribute('data-del-dogadjaj'));
+    if (!confirm('Obrisati događaj "' + (state.dogadjaji.dogadjaji[i].naziv || 'bez naziva') + '"?')) return;
+    state.dogadjaji.dogadjaji.splice(i, 1);
+    markDirty('dogadjaji');
+    renderDogadjaji();
+  });
+
+  document.getElementById('add-dogadjaj').addEventListener('click', function(){
+    state.dogadjaji.dogadjaji.push({ id: 'dogadjaj-' + Date.now(), dan: '', naziv: '', opis: '', aktivno: true });
+    markDirty('dogadjaji');
+    renderDogadjaji();
+    var cards = dogadjajiEl.querySelectorAll('.oglas-card');
+    if (cards.length) {
+      cards[cards.length - 1].scrollIntoView({ block: 'center' });
+      var first = cards[cards.length - 1].querySelector('input[data-f="dan"]');
+      if (first) first.focus();
+    }
+  });
+
   /* ================= CJENIK ================= */
   var IKONE = [
     ['', 'bez ikone'], ['coffee', 'kava'], ['juice', 'sok'], ['beer', 'pivo'],
@@ -181,7 +229,6 @@
           return '<div class="itm" data-it="' + si + '">' +
             '<input data-if="naziv" value="' + esc(s.naziv) + '" placeholder="Naziv pića">' +
             '<input data-if="opis" value="' + esc(s.opis) + '" placeholder="Sastojci / napomena (nije obavezno)">' +
-            '<input data-if="cijena" class="cij" inputmode="decimal" value="' + esc(s.cijena) + '" placeholder="0,00">' +
             '<button type="button" class="row-x itm-del" aria-label="Obriši stavku">✕</button>' +
           '</div>';
         }).join('');
@@ -237,22 +284,6 @@
     markDirty('cjenik');
   });
 
-  /* "3" → "3,00", "3.5" → "3,50" kad korisnik izađe iz polja cijene */
-  catsEl.addEventListener('focusout', function(e){
-    var t = e.target;
-    if (!t.matches || !t.matches('input[data-if="cijena"]')) return;
-    var v = t.value.trim().replace(/€/g, '').replace(/\./g, ',');
-    if (/^\d{1,3}$/.test(v)) v += ',00';
-    var m = /^(\d{1,3}),(\d{1,2})$/.exec(v);
-    if (m) v = m[1] + ',' + (m[2].length === 1 ? m[2] + '0' : m[2]);
-    if (v !== t.value) {
-      t.value = v;
-      var ctx = cjenikCtx(t);
-      ctx.c.grupe[ctx.gi].stavke[ctx.si].cijena = v;
-      markDirty('cjenik');
-    }
-  });
-
   catsEl.addEventListener('click', function(e){
     var t = e.target;
     var openIndex = -1;
@@ -266,7 +297,7 @@
       renderCjenik(ctx.ci);
     } else if (t.closest('.itm-add')) {
       var ctx2 = cjenikCtx(t);
-      ctx2.c.grupe[ctx2.gi].stavke.push({ naziv: '', opis: '', cijena: '' });
+      ctx2.c.grupe[ctx2.gi].stavke.push({ naziv: '', opis: '' });
       markDirty('cjenik');
       renderCjenik(ctx2.ci);
       var grp = catsEl.querySelector('.cat[data-c="' + ctx2.ci + '"] .grp[data-g="' + ctx2.gi + '"]');
@@ -307,6 +338,9 @@
     if (dirty.oglasi && state.oglasi.pozicije.some(function(p){ return !String(p.naslov).trim(); })) {
       return 'Svaki oglas mora imati naslov.';
     }
+    if (dirty.dogadjaji && state.dogadjaji.dogadjaji.some(function(d){ return !String(d.naziv).trim(); })) {
+      return 'Svaki događaj mora imati naziv.';
+    }
     if (dirty.cjenik) {
       for (var i = 0; i < state.cjenik.kategorije.length; i++) {
         var c = state.cjenik.kategorije[i];
@@ -315,9 +349,6 @@
           for (var k = 0; k < c.grupe[j].stavke.length; k++) {
             var s = c.grupe[j].stavke[k];
             if (!String(s.naziv).trim()) return 'U kategoriji "' + c.naziv + '" postoji stavka bez naziva.';
-            if (!/^\d{1,3},\d{2}$/.test(s.cijena || '')) {
-              return 'Cijena za "' + s.naziv + '" mora biti u obliku 2,20.';
-            }
           }
         }
       }
@@ -333,6 +364,7 @@
     if (dirty.cjenik) queue.push('cjenik');
     if (dirty.tekstovi) queue.push('tekstovi');
     if (dirty.oglasi) queue.push('oglasi');
+    if (dirty.dogadjaji) queue.push('dogadjaji');
     if (!queue.length) return;
 
     saveBtn.disabled = true;
@@ -369,7 +401,7 @@
   /* ================= PRIJAVA, START ================= */
   document.getElementById('logout').addEventListener('click', function(){
     if (anyDirty() && !confirm('Imaš nespremljene promjene — svejedno se odjaviti?')) return;
-    dirty = { cjenik: false, tekstovi: false, oglasi: false };
+    dirty = { cjenik: false, tekstovi: false, oglasi: false, dogadjaji: false };
     sessionStorage.removeItem('hedonistAdminKey');
     location.reload();
   });
@@ -392,18 +424,28 @@
     aktivno: true
   }] };
 
+  /* dok vlasnik ne otvori i ne spremi barem jednom, admin prikazuje ove
+     unaprijed upisane događaje — jedan klik na "Spremi promjene" ih stavi u CMS */
+  var SEED_DOGADJAJI = { dogadjaji: [
+    { id: 'dogadjaj-seed-petak', dan: 'Petak', naziv: 'Music Night', opis: 'Ex-Yu glazba cijelu večer', aktivno: true },
+    { id: 'dogadjaj-seed-subota', dan: 'Subota', naziv: 'Party Night', opis: 'House zvuk do kasno u noć', aktivno: true }
+  ] };
+
   function loadAndShow(){
     return Promise.all([
       getJSON('/api/cjenik', { kategorije: [] }),
       getJSON('/api/tekstovi', {}),
-      getJSON('/api/oglasi', SEED_OGLASI)
+      getJSON('/api/oglasi', SEED_OGLASI),
+      getJSON('/api/dogadjaji', SEED_DOGADJAJI)
     ]).then(function(res){
       state.cjenik = { kategorije: res[0].kategorije || [] };
       state.tekstovi = res[1] && typeof res[1] === 'object' ? res[1] : {};
       state.oglasi = { pozicije: (res[2] && res[2].pozicije) || [] };
+      state.dogadjaji = { dogadjaji: (res[3] && res[3].dogadjaji) || [] };
       renderCjenik(-1);
       renderTexts();
       renderOglasi();
+      renderDogadjaji();
       showPanel();
       loginView.hidden = true;
       appView.hidden = false;

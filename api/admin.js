@@ -10,7 +10,8 @@ import crypto from 'node:crypto';
 const PREFIXES = {
   cjenik: 'cms/data/cjenik-',
   tekstovi: 'cms/data/tekstovi-',
-  oglasi: 'cms/data/oglasi-'
+  oglasi: 'cms/data/oglasi-',
+  dogadjaji: 'cms/data/dogadjaji-'
 };
 const KEEP_VERSIONS = 5;
 
@@ -142,6 +143,31 @@ function cleanOglasi(data) {
   };
 }
 
+function validateDogadjaji(data) {
+  if (!data || !Array.isArray(data.dogadjaji)) return 'Događaji nisu u očekivanom obliku.';
+  for (const d of data.dogadjaji) {
+    if (!d || typeof d.id !== 'string' || !d.id || typeof d.naziv !== 'string' || !d.naziv.trim()) {
+      return 'Svaki događaj mora imati id i naziv.';
+    }
+    if (!d.dan || typeof d.dan !== 'string' || !d.dan.trim()) return 'Događaj "' + d.naziv + '" nema dan.';
+  }
+  return null;
+}
+
+function cleanDogadjaji(data) {
+  return {
+    dogadjaji: data.dogadjaji.map(function (d) {
+      return {
+        id: String(d.id),
+        dan: String(d.dan || '').trim(),
+        naziv: String(d.naziv || '').trim(),
+        opis: String(d.opis || '').trim(),
+        aktivno: !!d.aktivno
+      };
+    })
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -180,6 +206,10 @@ export default async function handler(req, res) {
         const err = validateOglasi(body.data);
         if (err) return res.status(400).json({ error: err });
         clean = cleanOglasi(body.data);
+      } else if (vrsta === 'dogadjaji') {
+        const err = validateDogadjaji(body.data);
+        if (err) return res.status(400).json({ error: err });
+        clean = cleanDogadjaji(body.data);
       } else {
         const err = validateTekstovi(body.data);
         if (err) return res.status(400).json({ error: err });
