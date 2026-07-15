@@ -524,12 +524,11 @@ a{ color: inherit; text-decoration: none; }
 .home-gigs-head{ margin-bottom: 1.4rem; }
 .home-gigs-head .eyebrow{ margin: 0; }
 
-/* night tiles i job tiles dijele isti red i istu visinu — .home-jobs-slot je
-   "nevidljivi" (display:contents) omot oko onoga što novosti.js ubaci u
-   njega, tako da se oglasi crtaju neovisno bez da pišu preko night tiles */
+/* night tiles i job tiles dijele isti red i istu visinu — .home-gigs-slot i
+   .home-jobs-slot su "nevidljivi" (display:contents) omoti oko onoga što
+   novosti.js ubaci u njih, tako da svaka strana crta svoj dio neovisno */
 .home-novosti-row{ display: flex; gap: 1rem; flex-wrap: wrap; }
-.home-gigs-slot{ display: flex; gap: 1rem; flex-wrap: wrap; }
-.home-jobs-slot{ display: contents; }
+.home-gigs-slot, .home-jobs-slot{ display: contents; }
 
 .home-job{
   position: relative;
@@ -1151,24 +1150,6 @@ body.veil-out.veil-leave .page-veil img{
 .price-item-name{ flex: 1; }
 .price-item-name strong{ font-weight: 500; color: var(--cream); }
 .price-item-name em{ display: block; font-style: normal; font-size: 0.78rem; color: rgba(244,236,219,0.5); margin-top: 0.15rem; }
-.price-item-price{
-  font-family: var(--font-ui); font-weight: 600; color: var(--gold-soft);
-  white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums;
-}
-.price-item-price.is-locked{
-  color: rgba(244,236,219,0.38); font-weight: 500; font-size: 0.78rem;
-  white-space: normal; max-width: 9em; line-height: 1.3;
-}
-
-.price-lock{ background: var(--panel-2); border-bottom: 1px solid rgba(201,160,99,0.18); padding: 1rem 0; }
-.price-lock-inner{
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-  gap: 0.9rem 1.5rem; text-align: center;
-}
-.price-lock-text{ color: rgba(244,236,219,0.72); font-size: 0.92rem; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
-.price-lock-icon{ font-size: 1rem; }
-.price-lock.is-unlocked .price-lock-icon{ filter: grayscale(1) brightness(1.6); }
-.price-lock-btn-hidden{ display: none; }
 
 /* ================= Politika privatnosti ================= */
 .legal{ background: var(--panel); padding: 4rem 0 6rem; }
@@ -1198,7 +1179,6 @@ body.veil-out.veil-leave .page-veil img{
 .footer-legal a{ color: rgba(244,236,219,0.55); text-decoration: underline; }
 
 .price-item--signature::before{ background-color: var(--azure); }
-.price-item--signature .price-item-price{ color: var(--azure); }
 
 /* Click-to-expand detail: name + bigger glyph + composition, broken out. */
 .price-item-detail-wrap{ display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }

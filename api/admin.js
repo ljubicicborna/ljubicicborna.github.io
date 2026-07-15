@@ -68,9 +68,6 @@ function validateCjenik(data) {
       if (!g || typeof g.naziv !== 'string' || !Array.isArray(g.stavke)) return 'Grupa u "' + c.naziv + '" nije ispravna.';
       for (const s of g.stavke) {
         if (!s || typeof s.naziv !== 'string' || !s.naziv.trim()) return 'Stavka bez naziva u grupi "' + g.naziv + '".';
-        if (!/^\d{1,3},\d{2}$/.test(s.cijena || '')) {
-          return 'Cijena za "' + s.naziv + '" mora biti u obliku 2,20 — upisano je "' + (s.cijena || '') + '".';
-        }
       }
     }
   }
@@ -90,8 +87,7 @@ function cleanCjenik(data) {
             stavke: g.stavke.map(function (s) {
               return {
                 naziv: String(s.naziv).trim(),
-                opis: String(s.opis || '').trim(),
-                cijena: String(s.cijena).trim()
+                opis: String(s.opis || '').trim()
               };
             })
           };

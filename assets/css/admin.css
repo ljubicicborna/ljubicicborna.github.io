@@ -131,12 +131,11 @@ textarea{ resize: vertical; min-height: 84px; }
 .grp-head input{ flex: 1; min-width: 0; }
 .grp-head select{ width: auto; flex: none; }
 .itms{ display: grid; gap: 0.4rem; }
-.itm{ display: grid; grid-template-columns: 1fr 86px 34px; gap: 0.4rem; align-items: center; }
+.itm{ display: grid; grid-template-columns: 1fr 34px; gap: 0.4rem; align-items: center; }
 .itm input[data-if="opis"]{ grid-column: 1 / -1; font-size: 0.88rem; color: rgba(244,236,219,0.8); }
-.itm .cij{ text-align: right; }
 .itm .row-x, .grp-head .row-x{ position: static; transform: none; flex: none; }
 @media (min-width: 640px){
-  .itm{ grid-template-columns: minmax(140px, 1fr) minmax(160px, 1.2fr) 90px 34px; }
+  .itm{ grid-template-columns: minmax(140px, 1fr) minmax(160px, 1.2fr) 34px; }
   .itm input[data-if="opis"]{ grid-column: auto; }
 }
 .btn-mini{

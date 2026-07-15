@@ -1,7 +1,7 @@
 /* =====================================================================
-   CJENIK — prikaz i interakcije
+   CJENIK — katalog ponude (bez cijena), prikaz i interakcije
    ---------------------------------------------------------------------
-   Cijene se uređuju na admin stranici (/admin.html); ova skripta ih
+   Ponuda se uređuje na admin stranici (/admin.html); ova skripta je
    dohvaća s /api/cjenik i izgradi popis. Statični HTML u cjenik.html
    ostaje kao rezerva ako API ne radi.
 ===================================================================== */
@@ -41,7 +41,7 @@
             g.stavke.map(function(s){
               return '<div class="price-item"><div class="price-item-name"><strong>' + esc(s.naziv) + '</strong>' +
                 (s.opis ? '<em>' + esc(s.opis) + '</em>' : '') +
-                '</div><div class="price-item-price is-locked" data-price="' + esc(s.cijena) + '">Vidljivo na našoj lokaciji</div></div>';
+                '</div></div>';
             }).join('') +
             '</div></div>';
         }).join('') +
@@ -52,11 +52,7 @@
       if (current && current.tagName === 'DETAILS') current.open = true;
     }
 
-    /* ---- Menu structured data za tražilice (samo naslovi kategorija —
-       stavke se ne ponavljaju ovdje da JSON ne naraste na stotine redaka).
-       Cijene se namjerno ne stavljaju ovdje: vidljive su samo posjetiteljima
-       na lokaciji, pa bi ih tražilice inače indeksirale kao "cloaking"
-       (sadržaj koji bot vidi, a korisnik ne). ---- */
+    /* ---- Menu structured data za tražilice ---- */
     var oldLd = document.getElementById('ld-menu');
     if (oldLd) oldLd.remove();
     if (data.kategorije.length) {
@@ -95,14 +91,12 @@
     document.querySelectorAll('.price-item').forEach(function(item){
       var em = item.querySelector('.price-item-name em');
       var nameEl = item.querySelector('.price-item-name');
-      var priceEl = item.querySelector('.price-item-price');
-      if (!nameEl || !priceEl) return;
+      if (!nameEl) return;
 
       var row = document.createElement('div');
       row.className = 'price-item-row';
       item.appendChild(row);
       row.appendChild(nameEl);
-      row.appendChild(priceEl);
 
       if (!em) return;
 
@@ -208,80 +202,11 @@
     }
   }
 
-  /* ---- cijene vidljive samo na lokaciji ----
-     Popis pića i sastojaka ostaje vidljiv svima; sami brojevi cijena se
-     otključavaju tek kad geolokacija potvrdi da je posjetitelj unutar
-     ~200 m od Hedonista (Vukovarska cesta 31). Stanje se pamti samo za
-     trenutnu karticu preglednika (sessionStorage), ne trajno. ---- */
-  var BAR_LAT = 45.5552976;
-  var BAR_LON = 18.6948989;
-  var UNLOCK_RADIUS_M = 200;
-  var UNLOCK_KEY = 'hedonistPricesUnlocked';
-
-  function distanceMeters(lat1, lon1, lat2, lon2){
-    var R = 6371000;
-    var toRad = function(d){ return d * Math.PI / 180; };
-    var dLat = toRad(lat2 - lat1);
-    var dLon = toRad(lon2 - lon1);
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  function revealPrices(){
-    document.querySelectorAll('.price-item-price.is-locked').forEach(function(el){
-      el.textContent = el.getAttribute('data-price') + '€';
-      el.classList.remove('is-locked');
-    });
-    var lock = document.getElementById('price-lock');
-    var btn = document.getElementById('price-lock-btn');
-    var text = document.getElementById('price-lock-text');
-    if (lock) lock.classList.add('is-unlocked');
-    if (btn) btn.classList.add('price-lock-btn-hidden');
-    if (text) text.innerHTML = '<span class="price-lock-icon" aria-hidden="true">✓</span>Cijene su otključane — u Hedonistu ste.';
-  }
-
-  function applyLockState(){
-    if (sessionStorage.getItem(UNLOCK_KEY) === '1') revealPrices();
-  }
-
-  function wireLockButton(){
-    var btn = document.getElementById('price-lock-btn');
-    var text = document.getElementById('price-lock-text');
-    if (!btn) return;
-    btn.addEventListener('click', function(){
-      if (!('geolocation' in navigator)) {
-        if (text) text.textContent = 'Preglednik ne podržava provjeru lokacije.';
-        return;
-      }
-      btn.disabled = true;
-      btn.textContent = 'Provjeravam…';
-      navigator.geolocation.getCurrentPosition(function(pos){
-        var d = distanceMeters(pos.coords.latitude, pos.coords.longitude, BAR_LAT, BAR_LON);
-        if (d <= UNLOCK_RADIUS_M) {
-          sessionStorage.setItem(UNLOCK_KEY, '1');
-          revealPrices();
-        } else {
-          btn.disabled = false;
-          btn.textContent = 'Provjeri jesam li na lokaciji';
-          if (text) text.innerHTML = '<span class="price-lock-icon" aria-hidden="true">🔒</span>Cijene su vidljive samo u Hedonistu — nisi na lokaciji.';
-        }
-      }, function(){
-        btn.disabled = false;
-        btn.textContent = 'Provjeri jesam li na lokaciji';
-        if (text) text.innerHTML = '<span class="price-lock-icon" aria-hidden="true">🔒</span>Nismo uspjeli dohvatiti lokaciju — provjeri dopuštenje u pregledniku.';
-      }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
-    });
-  }
-
-  wireLockButton();
-
   fetch('/api/cjenik')
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
     .then(function(data){
       if (data && Array.isArray(data.kategorije) && data.kategorije.length) build(data);
       enhance();
-      applyLockState();
     })
-    .catch(function(){ enhance(); applyLockState(); });
+    .catch(function(){ enhance(); });
 })();
