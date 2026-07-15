@@ -11,7 +11,9 @@ const PREFIXES = {
   cjenik: 'cms/data/cjenik-',
   tekstovi: 'cms/data/tekstovi-',
   oglasi: 'cms/data/oglasi-',
-  dogadjaji: 'cms/data/dogadjaji-'
+  dogadjaji: 'cms/data/dogadjaji-',
+  slike: 'cms/data/slike-',
+  nazivi: 'cms/data/nazivi-'
 };
 const KEEP_VERSIONS = 5;
 
@@ -164,6 +166,45 @@ function cleanDogadjaji(data) {
   };
 }
 
+function validateSlike(data) {
+  if (!data || !Array.isArray(data.slike)) return 'Slike nisu u očekivanom obliku.';
+  for (const s of data.slike) {
+    if (!s || typeof s.id !== 'string' || !s.id) return 'Svaka slika mora imati id.';
+    if (!s.url || typeof s.url !== 'string' || !s.url.startsWith('https://')) {
+      return 'Slika "' + s.id + '" mora imati valjani URL.';
+    }
+  }
+  return null;
+}
+
+function cleanSlike(data) {
+  return {
+    slike: data.slike.map(function (s) {
+      return {
+        id: String(s.id),
+        url: String(s.url).trim(),
+        alt: String(s.alt || '').trim(),
+        stranica: String(s.stranica || '').trim()
+      };
+    })
+  };
+}
+
+function validateNazivi(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return 'Nazivi nisu u očekivanom obliku.';
+  for (const k of Object.keys(data)) {
+    if (typeof data[k] !== 'string') return 'Naziv "' + k + '" nije tekst.';
+    if (data[k].length > 500) return 'Naziv "' + k + '" je predug.';
+  }
+  return null;
+}
+
+function cleanNazivi(data) {
+  const out = {};
+  for (const k of Object.keys(data)) out[String(k).slice(0, 60)] = String(data[k]).trim();
+  return out;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -206,6 +247,14 @@ export default async function handler(req, res) {
         const err = validateDogadjaji(body.data);
         if (err) return res.status(400).json({ error: err });
         clean = cleanDogadjaji(body.data);
+      } else if (vrsta === 'slike') {
+        const err = validateSlike(body.data);
+        if (err) return res.status(400).json({ error: err });
+        clean = cleanSlike(body.data);
+      } else if (vrsta === 'nazivi') {
+        const err = validateNazivi(body.data);
+        if (err) return res.status(400).json({ error: err });
+        clean = cleanNazivi(body.data);
       } else {
         const err = validateTekstovi(body.data);
         if (err) return res.status(400).json({ error: err });

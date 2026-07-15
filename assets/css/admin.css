@@ -188,6 +188,15 @@ textarea{ resize: vertical; min-height: 84px; }
 .oglas-active{ display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: rgba(244,236,219,0.75); cursor: pointer; }
 .oglas-active input{ width: 18px; height: 18px; accent-color: var(--gold); }
 
+/* ---- slike ---- */
+.slike-cards{ display: grid; gap: 1rem; }
+.slika-card{
+  background: var(--panel); border: var(--edge); border-radius: 14px; padding: 1rem;
+  display: grid; gap: 0.7rem;
+}
+.slika-preview{ margin: 0.5rem 0; border-radius: 10px; overflow: hidden; }
+.slika-preview img{ display: block; max-width: 100%; height: auto; }
+
 /* ---- traka za spremanje ---- */
 .savebar{
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;

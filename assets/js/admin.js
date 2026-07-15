@@ -1,28 +1,43 @@
 /* =====================================================================
    ADMIN — uređivanje sadržaja (/admin.html)
    Birač stranice gore odlučuje što se uređuje:
+   - Slike        → all images (upload + metadata)
+   - Nazivi       → page titles, headings, nav text
    - Cjenik       → kategorije/grupe/stavke, katalog bez cijena (+ uvodni tekst)
    - Početna      → glavni tekstovi + događaji (sekcija "Novosti")
    - Zapošljavanje→ tekstovi + oglasi za posao
    Sve se čita s /api/cjenik, /api/tekstovi, /api/oglasi, /api/dogadjaji,
-   a sprema preko /api/admin (lozinka u headeru x-admin-key).
+   /api/slike, /api/nazivi, a sprema preko /api/admin (lozinka u headeru x-admin-key).
 ===================================================================== */
 (function(){
   var API = '/api/admin';
+  var IMAGE_UPLOAD_API = '/api/image-upload';
 
-  var state = { cjenik: null, tekstovi: null, oglasi: null, dogadjaji: null };
-  var dirty = { cjenik: false, tekstovi: false, oglasi: false, dogadjaji: false };
+  var state = { cjenik: null, tekstovi: null, oglasi: null, dogadjaji: null, slike: null, nazivi: null };
+  var dirty = { cjenik: false, tekstovi: false, oglasi: false, dogadjaji: false, slike: false, nazivi: false };
 
   var loginView = document.getElementById('login-view');
   var appView = document.getElementById('app-view');
   var catsEl = document.getElementById('cjenik-cats');
   var oglasiEl = document.getElementById('oglasi');
   var dogadjajiEl = document.getElementById('dogadjaji');
+  var slikeEl = document.getElementById('slike');
   var saveBtn = document.getElementById('save');
   var statusEl = document.getElementById('save-status');
 
   /* koje tekst-polje pripada kojoj stranici: [ključ, oznaka, vrsta polja] */
   var TEKST_POLJA = {
+    nazivi: [
+      ['index.title', 'Naslov početne stranice', 'input'],
+      ['index.meta-desc', 'Opis početne stranice (SEO)', 'textarea'],
+      ['cjenik.title', 'Naslov cjenik stranice', 'input'],
+      ['cjenik.meta-desc', 'Opis cjenik stranice (SEO)', 'textarea'],
+      ['zaposlenje.title', 'Naslov zapošljavanje stranice', 'input'],
+      ['zaposlenje.meta-desc', 'Opis zapošljavanje stranice (SEO)', 'textarea'],
+      ['lokacija.title', 'Naslov lokacija stranice', 'input'],
+      ['nav.zaposlenje', 'Tekst — Zapošljavanje (nav)', 'input'],
+      ['nav.lokacija', 'Tekst — Lokacija (nav)', 'input']
+    ],
     cjenik: [
       ['cjenik.uvod', 'Uvodni tekst na vrhu stranice', 'textarea']
     ],
@@ -58,7 +73,7 @@
     statusEl.className = 'save-status' + (cls ? ' ' + cls : '');
   }
 
-  function anyDirty(){ return dirty.cjenik || dirty.tekstovi || dirty.oglasi || dirty.dogadjaji; }
+  function anyDirty(){ return dirty.cjenik || dirty.tekstovi || dirty.oglasi || dirty.dogadjaji || dirty.slike || dirty.nazivi; }
 
   function markDirty(vrsta){
     dirty[vrsta] = true;
@@ -80,10 +95,10 @@
   var viewLink = document.getElementById('view-link');
   function showPanel(){
     var page = pagePick.value;
-    ['cjenik', 'pocetna', 'zaposlenje'].forEach(function(p){
+    ['slike', 'nazivi', 'cjenik', 'pocetna', 'zaposlenje'].forEach(function(p){
       document.getElementById('panel-' + p).hidden = p !== page;
     });
-    viewLink.href = PAGE_URLS[page];
+    viewLink.href = PAGE_URLS[page] || '/';
   }
   pagePick.addEventListener('change', showPanel);
 
@@ -103,9 +118,88 @@
   document.addEventListener('input', function(e){
     var k = e.target.getAttribute && e.target.getAttribute('data-tkey');
     if (!k) return;
-    state.tekstovi[k] = e.target.value;
-    markDirty('tekstovi');
+    var target = e.target.closest('[data-texts]');
+    var section = target ? target.getAttribute('data-texts') : 'tekstovi';
+    state[section][k] = e.target.value;
+    markDirty(section);
   });
+
+  /* ================= SLIKE ================= */
+  function renderSlike(){
+    slikeEl.innerHTML = state.slike.slike.map(function(s, i){
+      return '<article class="slika-card" data-i="' + i + '">' +
+        '<div class="field-grid">' +
+          '<div class="field field-wide"><label>ID slike</label><input data-f="id" value="' + esc(s.id) + '" placeholder="npr. hero-index"></div>' +
+          '<div class="field field-wide"><label>URL (spremi sliku gore, ili zalijepi Blob URL)</label><input data-f="url" value="' + esc(s.url) + '" placeholder="https://..."></div>' +
+          '<div class="field field-wide"><label>Alt tekst</label><input data-f="alt" value="' + esc(s.alt) + '" placeholder="Opis slike"></div>' +
+          '<div class="field field-wide"><label>Stranica</label><input data-f="stranica" value="' + esc(s.stranica) + '" placeholder="npr. index, cjenik"></div>' +
+        '</div>' +
+        (s.url ? '<div class="slika-preview"><img src="' + esc(s.url) + '?w=200" alt="' + esc(s.alt) + '" style="max-width:100%;height:auto;"></div>' : '') +
+        '<button type="button" class="artist-del" data-del-slika="' + i + '">Obriši sliku</button>' +
+      '</article>';
+    }).join('') || '<p class="hint">Nema slika — dodaj prvu gumbom ispod.</p>';
+  }
+
+  var fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+
+  document.getElementById('add-slika').addEventListener('click', function(){
+    fileInput.value = '';
+    fileInput.onchange = function(){
+      if (!fileInput.files[0]) return;
+      var file = fileInput.files[0];
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var formData = new FormData();
+        formData.append('file', file);
+        fetch(IMAGE_UPLOAD_API, {
+          method: 'POST',
+          headers: { 'x-admin-key': key(), 'x-filename': 'img-' + Date.now() + '-' + file.name },
+          body: e.target.result
+        }).then(function(r){ if (!r.ok) throw new Error('upload'); return r.json(); })
+          .then(function(res){
+            state.slike.slike.push({ id: 'img-' + Date.now(), url: res.url, alt: '', stranica: '' });
+            markDirty('slike');
+            renderSlike();
+            var cards = slikeEl.querySelectorAll('.slika-card');
+            if (cards.length) {
+              cards[cards.length - 1].scrollIntoView({ block: 'center' });
+              var first = cards[cards.length - 1].querySelector('input[data-f="id"]');
+              if (first) first.focus();
+            }
+          })
+          .catch(function(){ alert('Upload neuspješan'); });
+      };
+      reader.readAsArrayBuffer(file);
+    };
+    fileInput.click();
+  });
+
+  slikeEl.addEventListener('input', function(e){
+    var card = e.target.closest('.slika-card');
+    var f = e.target.getAttribute && e.target.getAttribute('data-f');
+    if (!card || !f) return;
+    var s = state.slike.slike[Number(card.getAttribute('data-i'))];
+    s[f] = e.target.value;
+    markDirty('slike');
+    if (f === 'url') renderSlike();
+  });
+
+  slikeEl.addEventListener('click', function(e){
+    var del = e.target.closest('[data-del-slika]');
+    if (!del) return;
+    var i = Number(del.getAttribute('data-del-slika'));
+    if (!confirm('Obrisati sliku "' + (state.slike.slike[i].id || 'bez ID-a') + '"?')) return;
+    state.slike.slike.splice(i, 1);
+    markDirty('slike');
+    renderSlike();
+  });
+
+  /* ================= NAZIVI STRANICA ================= */
+  /* renderTexts() already handles nazivi via data-texts="nazivi" */
 
   /* ================= ZAPOŠLJAVANJE: OGLASI ================= */
   var VRSTE_OGLASA = ['Stalno', 'Studentski'];
@@ -335,6 +429,9 @@
 
   /* ================= SPREMANJE ================= */
   function validateBeforeSave(){
+    if (dirty.slike && state.slike.slike.some(function(s){ return !String(s.id).trim() || !String(s.url).trim(); })) {
+      return 'Svaka slika mora imati ID i URL.';
+    }
     if (dirty.oglasi && state.oglasi.pozicije.some(function(p){ return !String(p.naslov).trim(); })) {
       return 'Svaki oglas mora imati naslov.';
     }
@@ -361,6 +458,8 @@
     if (err) { alert(err); return; }
 
     var queue = [];
+    if (dirty.slike) queue.push('slike');
+    if (dirty.nazivi) queue.push('nazivi');
     if (dirty.cjenik) queue.push('cjenik');
     if (dirty.tekstovi) queue.push('tekstovi');
     if (dirty.oglasi) queue.push('oglasi');
@@ -401,7 +500,7 @@
   /* ================= PRIJAVA, START ================= */
   document.getElementById('logout').addEventListener('click', function(){
     if (anyDirty() && !confirm('Imaš nespremljene promjene — svejedno se odjaviti?')) return;
-    dirty = { cjenik: false, tekstovi: false, oglasi: false, dogadjaji: false };
+    dirty = { cjenik: false, tekstovi: false, oglasi: false, dogadjaji: false, slike: false, nazivi: false };
     sessionStorage.removeItem('hedonistAdminKey');
     location.reload();
   });
@@ -431,19 +530,27 @@
     { id: 'dogadjaj-seed-subota', dan: 'Subota', naziv: 'Party Night', opis: 'House zvuk do kasno u noć', aktivno: true }
   ] };
 
+  var SEED_SLIKE = { slike: [] };
+  var SEED_NAZIVI = {};
+
   function loadAndShow(){
     return Promise.all([
+      getJSON('/api/slike', SEED_SLIKE),
+      getJSON('/api/nazivi', SEED_NAZIVI),
       getJSON('/api/cjenik', { kategorije: [] }),
       getJSON('/api/tekstovi', {}),
       getJSON('/api/oglasi', SEED_OGLASI),
       getJSON('/api/dogadjaji', SEED_DOGADJAJI)
     ]).then(function(res){
-      state.cjenik = { kategorije: res[0].kategorije || [] };
-      state.tekstovi = res[1] && typeof res[1] === 'object' ? res[1] : {};
-      state.oglasi = { pozicije: (res[2] && res[2].pozicije) || [] };
-      state.dogadjaji = { dogadjaji: (res[3] && res[3].dogadjaji) || [] };
-      renderCjenik(-1);
+      state.slike = res[0] && res[0].slike ? res[0] : SEED_SLIKE;
+      state.nazivi = res[1] && typeof res[1] === 'object' ? res[1] : SEED_NAZIVI;
+      state.cjenik = { kategorije: res[2].kategorije || [] };
+      state.tekstovi = res[3] && typeof res[3] === 'object' ? res[3] : {};
+      state.oglasi = { pozicije: (res[4] && res[4].pozicije) || [] };
+      state.dogadjaji = { dogadjaji: (res[5] && res[5].dogadjaji) || [] };
+      renderSlike();
       renderTexts();
+      renderCjenik(-1);
       renderOglasi();
       renderDogadjaji();
       showPanel();

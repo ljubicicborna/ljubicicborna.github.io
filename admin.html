@@ -40,9 +40,11 @@
     <button id="logout" class="topbar-out" type="button">Odjava</button>
   </header>
 
-  <nav class="pagebar" aria-label="Odabir stranice">
-    <label for="page-pick">Uređuješ stranicu</label>
+  <nav class="pagebar" aria-label="Odabir sadržaja">
+    <label for="page-pick">Uređuješ</label>
     <select id="page-pick">
+      <option value="slike">Slike</option>
+      <option value="nazivi">Nazive stranica</option>
       <option value="cjenik">Cjenik</option>
       <option value="pocetna">Početna</option>
       <option value="zaposlenje">Zapošljavanje</option>
@@ -50,6 +52,19 @@
   </nav>
 
   <main class="wrap">
+
+    <!-- SLIKE -->
+    <div class="panel" id="panel-slike" hidden>
+      <p class="hint">Učitaj sve slike koje se koriste na stranicama. Svaka slika se sprema u Blob i koristi se svugdje gdje je navedena.</p>
+      <div id="slike" class="slike-cards"></div>
+      <button id="add-slika" class="btn-add" type="button">+ Dodaj novu sliku</button>
+    </div>
+
+    <!-- NAZIVI STRANICA -->
+    <div class="panel" id="panel-nazivi" hidden>
+      <p class="hint">Svi nazivi, naslovi i tekstovi navigacije koji se vide na stranicama — uredi ih ovdje.</p>
+      <div class="text-fields" data-texts="nazivi"></div>
+    </div>
 
     <!-- CJENIK -->
     <div class="panel" id="panel-cjenik" hidden>
