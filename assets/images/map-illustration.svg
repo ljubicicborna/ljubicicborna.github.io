@@ -1,86 +1,97 @@
-<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#241a13"/>
-      <stop offset="1" stop-color="#170f0a"/>
+      <stop offset="1" stop-color="#2f2317"/>
     </linearGradient>
-    <linearGradient id="river" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2c2015"/>
-      <stop offset="1" stop-color="#120c08"/>
-    </linearGradient>
-    <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#e4c88f" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#e4c88f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow3" cx="50%" cy="50%" r="50%">
       <stop offset="0" stop-color="#e4c88f" stop-opacity="0.4"/>
       <stop offset="1" stop-color="#e4c88f" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <rect width="400" height="240" fill="url(#sky)"/>
+  <!-- wide, high-altitude view: open Slavonian plain around the city,
+       not a tight street-level crop -->
+  <rect width="480" height="260" fill="url(#sky)"/>
+  <circle cx="240" cy="88" r="130" fill="url(#sun)"/>
 
-  <!-- distant, fainter skyline for depth -->
-  <g fill="#3a2a1c" opacity="0.55">
-    <rect x="-10" y="120" width="30" height="70"/>
-    <rect x="24" y="105" width="26" height="85"/>
-    <rect x="330" y="110" width="34" height="80"/>
-    <rect x="368" y="130" width="30" height="60"/>
+  <!-- ground plane -->
+  <rect x="0" y="86" width="480" height="174" fill="#382a1c"/>
+
+  <!-- patchwork fields, aerial-view mosaic -->
+  <g stroke="#241a11" stroke-width="1" stroke-opacity="0.5">
+    <polygon points="0,86 90,86 60,140 0,150" fill="#42311f"/>
+    <polygon points="90,86 175,86 150,135 60,140" fill="#4a3924"/>
+    <polygon points="175,86 260,86 250,130 150,135" fill="#3c2c1c"/>
+    <polygon points="330,86 480,86 480,150 300,140" fill="#453422"/>
+    <polygon points="0,150 60,140 70,205 0,220" fill="#3a2b1b"/>
+    <polygon points="60,140 150,135 160,200 70,205" fill="#4f3c26"/>
+    <polygon points="300,140 480,150 480,215 310,205" fill="#3d2d1d"/>
+    <polygon points="0,220 70,205 85,260 0,260" fill="#493823"/>
+    <polygon points="70,205 160,200 175,260 85,260" fill="#3a2b1b"/>
+    <polygon points="310,205 480,215 480,260 330,260" fill="#453422"/>
+    <polygon points="330,260 480,260 480,215 310,205 320,235" fill="#3d2d1d" opacity="0"/>
+  </g>
+  <g stroke="#5c4830" stroke-opacity="0.35" stroke-width="1" fill="none">
+    <path d="M10 110 L50 105 M100 115 L140 110 M20 165 L55 170 M340 110 L400 105 M360 170 L420 175"/>
   </g>
 
-  <!-- main skyline silhouette -->
-  <g fill="#4a3627">
-    <rect x="0" y="140" width="34" height="50"/>
-    <rect x="34" y="118" width="26" height="72"/>
-    <rect x="63" y="150" width="22" height="40"/>
-
-    <!-- cathedral: base + twin spires -->
-    <rect x="96" y="128" width="46" height="62"/>
-    <path d="M104 128 L110 60 L116 128 Z"/>
-    <path d="M122 128 L129 52 L136 128 Z"/>
-
-    <rect x="145" y="145" width="28" height="45"/>
-    <rect x="176" y="108" width="38" height="82"/>
-
-    <!-- water tower: shaft + observation-deck cap -->
-    <rect x="238" y="78" width="12" height="112"/>
-    <ellipse cx="244" cy="78" rx="17" ry="10"/>
-    <rect x="231" y="70" width="26" height="7" rx="2"/>
-
-    <rect x="262" y="132" width="30" height="58"/>
-    <rect x="296" y="100" width="40" height="90"/>
-    <rect x="340" y="135" width="32" height="55"/>
-    <rect x="374" y="150" width="26" height="40"/>
+  <!-- Drava, winding across the whole plain -->
+  <path d="M0 168 C 90 158, 150 190, 230 178 S 360 150, 480 168 L480 200 C 380 182, 320 208, 235 200 S 90 188, 0 198 Z"
+        fill="#241a11" opacity="0.75"/>
+  <g stroke="#c9a063" stroke-opacity="0.4" stroke-width="1.5" fill="none">
+    <path d="M0 178 C 90 168, 150 198, 230 187 S 360 160, 480 178"/>
   </g>
 
-  <!-- window lights -->
-  <g fill="#e4c88f" opacity="0.75">
-    <rect x="10" y="155" width="3" height="4"/>
-    <rect x="20" y="165" width="3" height="4"/>
-    <rect x="42" y="135" width="3" height="4"/>
-    <rect x="42" y="150" width="3" height="4"/>
-    <rect x="184" y="128" width="3" height="4"/>
-    <rect x="198" y="140" width="3" height="4"/>
-    <rect x="184" y="155" width="3" height="4"/>
-    <rect x="305" y="120" width="3" height="4"/>
-    <rect x="318" y="135" width="3" height="4"/>
-    <rect x="305" y="150" width="3" height="4"/>
-    <rect x="350" y="150" width="3" height="4"/>
+  <!-- small village clusters out on the plain -->
+  <g fill="#2c2013">
+    <g transform="translate(52,178)">
+      <rect x="-6" y="0" width="11" height="9"/><path d="M-7 0 L-0.5 -7 L6 0 Z"/>
+      <rect x="8" y="3" width="9" height="7"/><path d="M7 3 L12.5 -3 L18 3 Z"/>
+      <rect x="-18" y="4" width="8" height="6"/><path d="M-19 4 L-14 -1 L-9 4 Z"/>
+    </g>
+    <g transform="translate(410,188)">
+      <rect x="-6" y="0" width="10" height="8"/><path d="M-7 0 L-1 -6 L5 0 Z"/>
+      <rect x="7" y="4" width="9" height="7"/><path d="M6 4 L11.5 -2 L17 4 Z"/>
+    </g>
+    <g transform="translate(130,222)">
+      <rect x="-6" y="0" width="10" height="8"/><path d="M-7 0 L-1 -6 L5 0 Z"/>
+      <rect x="8" y="3" width="8" height="7"/><path d="M7 3 L12 -2 L17 3 Z"/>
+    </g>
   </g>
 
-  <!-- Drava river with a low bridge -->
-  <rect x="0" y="190" width="400" height="50" fill="url(#river)"/>
-  <g stroke="#8a6644" stroke-opacity="0.4" stroke-width="1.5" fill="none">
-    <path d="M0 202 Q100 208 200 202 T400 202"/>
-    <path d="M0 216 Q100 222 200 216 T400 216"/>
-    <path d="M0 230 Q100 234 200 230 T400 230"/>
+  <!-- Osijek, seen from a distance in the middle of the plain -->
+  <g fill="#4a3627" transform="translate(197,58) scale(0.62)">
+    <rect x="0" y="72" width="30" height="46"/>
+    <rect x="30" y="60" width="22" height="58"/>
+    <rect x="96" y="66" width="40" height="52"/>
+    <rect x="150" y="86" width="24" height="32"/>
+    <rect x="176" y="52" width="34" height="66"/>
+
+    <rect x="60" y="46" width="40" height="72"/>
+    <path d="M67 46 L73 -14 L79 46 Z"/>
+    <path d="M84 46 L91 -22 L98 46 Z"/>
+
+    <rect x="212" y="24" width="10" height="94"/>
+    <ellipse cx="217" cy="24" rx="15" ry="9"/>
   </g>
-  <g stroke="#c9a063" stroke-opacity="0.55" stroke-width="2" fill="none">
-    <path d="M150 190 L150 197 M180 187 L180 197 M220 187 L220 197 M250 190 L250 197"/>
-    <path d="M150 193 L250 193"/>
+  <g fill="#e4c88f" opacity="0.7">
+    <rect x="205" y="98" width="2.4" height="3.2"/>
+    <rect x="214" y="106" width="2.4" height="3.2"/>
+    <rect x="255" y="94" width="2.4" height="3.2"/>
+    <rect x="290" y="100" width="2.4" height="3.2"/>
+    <rect x="238" y="108" width="2.4" height="3.2"/>
   </g>
 
-  <!-- our spot -->
-  <circle cx="203" cy="118" r="46" fill="url(#glow2)"/>
-  <g transform="translate(203,108)">
+  <!-- our spot, marked on the wider landscape -->
+  <circle cx="245" cy="96" r="40" fill="url(#glow3)"/>
+  <g transform="translate(245,88) scale(0.85)">
     <path d="M0 -34 C17 -34 30 -21 30 -5 C30 15 8 40 0 50 C-8 40 -30 15 -30 -5 C-30 -21 -17 -34 0 -34 Z"
-          fill="#c9a063" stroke="#17110d" stroke-width="2"/>
+          fill="#c9a063" stroke="#17110d" stroke-width="2.4"/>
     <circle cx="0" cy="-5" r="10" fill="#17110d"/>
   </g>
 </svg>
