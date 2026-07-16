@@ -1,71 +1,104 @@
 <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#241a13"/>
-      <stop offset="1" stop-color="#2f2317"/>
+      <stop offset="0" stop-color="#1c130c"/>
+      <stop offset="0.55" stop-color="#4a3220"/>
+      <stop offset="1" stop-color="#a97c46"/>
     </linearGradient>
-    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#e4c88f" stop-opacity="0.35"/>
+    <radialGradient id="sun" cx="50%" cy="100%" r="75%">
+      <stop offset="0" stop-color="#f4d9a3" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#e4c88f" stop-opacity="0.35"/>
       <stop offset="1" stop-color="#e4c88f" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a5a34"/>
+      <stop offset="1" stop-color="#2c2013"/>
+    </linearGradient>
+    <linearGradient id="fieldA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a67c3f"/>
+      <stop offset="1" stop-color="#6e4f28"/>
+    </linearGradient>
+    <linearGradient id="fieldB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a6a38"/>
+      <stop offset="1" stop-color="#553d20"/>
+    </linearGradient>
+    <linearGradient id="fieldC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5f7a3f"/>
+      <stop offset="1" stop-color="#3a4a26"/>
+    </linearGradient>
+    <linearGradient id="riverGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c9a063"/>
+      <stop offset="0.5" stop-color="#f4d9a3"/>
+      <stop offset="1" stop-color="#c9a063"/>
+    </linearGradient>
     <radialGradient id="glow3" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#e4c88f" stop-opacity="0.4"/>
-      <stop offset="1" stop-color="#e4c88f" stop-opacity="0"/>
+      <stop offset="0" stop-color="#f4ecdb" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#f4ecdb" stop-opacity="0"/>
     </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.045 0"/>
+    </filter>
   </defs>
 
-  <!-- wide, high-altitude view: open Slavonian plain around the city,
-       not a tight street-level crop -->
+  <!-- wide, high-altitude view over the Slavonian plain, city in the
+       middle distance, not a tight street-level crop -->
   <rect width="480" height="260" fill="url(#sky)"/>
-  <circle cx="240" cy="88" r="130" fill="url(#sun)"/>
+  <ellipse cx="245" cy="118" rx="230" ry="90" fill="url(#sun)"/>
 
-  <!-- ground plane -->
-  <rect x="0" y="86" width="480" height="174" fill="#382a1c"/>
+  <rect x="0" y="96" width="480" height="164" fill="url(#ground)"/>
 
-  <!-- patchwork fields, aerial-view mosaic -->
-  <g stroke="#241a11" stroke-width="1" stroke-opacity="0.5">
-    <polygon points="0,86 90,86 60,140 0,150" fill="#42311f"/>
-    <polygon points="90,86 175,86 150,135 60,140" fill="#4a3924"/>
-    <polygon points="175,86 260,86 250,130 150,135" fill="#3c2c1c"/>
-    <polygon points="330,86 480,86 480,150 300,140" fill="#453422"/>
-    <polygon points="0,150 60,140 70,205 0,220" fill="#3a2b1b"/>
-    <polygon points="60,140 150,135 160,200 70,205" fill="#4f3c26"/>
-    <polygon points="300,140 480,150 480,215 310,205" fill="#3d2d1d"/>
-    <polygon points="0,220 70,205 85,260 0,260" fill="#493823"/>
-    <polygon points="70,205 160,200 175,260 85,260" fill="#3a2b1b"/>
-    <polygon points="310,205 480,215 480,260 330,260" fill="#453422"/>
-    <polygon points="330,260 480,260 480,215 310,205 320,235" fill="#3d2d1d" opacity="0"/>
-  </g>
-  <g stroke="#5c4830" stroke-opacity="0.35" stroke-width="1" fill="none">
-    <path d="M10 110 L50 105 M100 115 L140 110 M20 165 L55 170 M340 110 L400 105 M360 170 L420 175"/>
+  <!-- patchwork fields, organic aerial-view mosaic -->
+  <g stroke="#1c130c" stroke-width="1" stroke-opacity="0.45">
+    <path d="M0 96 Q55 90 92 108 Q60 128 30 132 Q0 130 0 118 Z" fill="url(#fieldA)"/>
+    <path d="M92 108 Q140 92 182 104 Q168 128 138 136 Q100 132 60 128 Z" fill="url(#fieldC)"/>
+    <path d="M182 104 Q225 94 262 100 Q252 126 214 134 Q168 128 168 128 Z" fill="url(#fieldB)"/>
+    <path d="M330 96 Q400 88 480 100 L480 148 Q420 132 300 138 Q305 112 330 96 Z" fill="url(#fieldA)"/>
+
+    <path d="M0 118 Q30 132 60 136 Q66 178 20 196 Q0 190 0 160 Z" fill="url(#fieldB)"/>
+    <path d="M60 136 Q100 132 138 140 Q150 176 96 198 Q66 178 60 136 Z" fill="url(#fieldC)"/>
+    <path d="M300 138 Q380 132 480 150 L480 208 Q400 190 305 198 Q292 166 300 138 Z" fill="url(#fieldA)"/>
+
+    <path d="M0 160 Q20 196 60 206 Q76 236 20 258 L0 258 Z" fill="url(#fieldC)"/>
+    <path d="M20 196 Q66 178 96 198 Q112 232 66 244 Q40 224 20 196 Z" fill="url(#fieldB)"/>
+    <path d="M96 198 Q150 176 175 210 Q160 244 108 250 Q100 224 96 198 Z" fill="url(#fieldA)"/>
+    <path d="M305 198 Q360 188 420 206 Q430 236 360 250 Q320 228 305 198 Z" fill="url(#fieldC)"/>
+    <path d="M420 206 Q460 198 480 208 L480 260 L400 260 Q400 232 420 206 Z" fill="url(#fieldB)"/>
   </g>
 
   <!-- Drava, winding across the whole plain -->
-  <path d="M0 168 C 90 158, 150 190, 230 178 S 360 150, 480 168 L480 200 C 380 182, 320 208, 235 200 S 90 188, 0 198 Z"
-        fill="#241a11" opacity="0.75"/>
-  <g stroke="#c9a063" stroke-opacity="0.4" stroke-width="1.5" fill="none">
-    <path d="M0 178 C 90 168, 150 198, 230 187 S 360 160, 480 178"/>
-  </g>
+  <path d="M0 172 C 90 160, 150 196, 230 182 S 360 152, 480 174 L480 196 C 380 176, 320 204, 235 194 S 90 182, 0 192 Z"
+        fill="#1c130c" opacity="0.55"/>
+  <path d="M0 182 C 90 170, 150 202, 230 189 S 360 158, 480 184" stroke="url(#riverGrad)" stroke-opacity="0.85" stroke-width="2.2" fill="none"/>
 
   <!-- small village clusters out on the plain -->
-  <g fill="#2c2013">
+  <g>
     <g transform="translate(52,178)">
-      <rect x="-6" y="0" width="11" height="9"/><path d="M-7 0 L-0.5 -7 L6 0 Z"/>
-      <rect x="8" y="3" width="9" height="7"/><path d="M7 3 L12.5 -3 L18 3 Z"/>
-      <rect x="-18" y="4" width="8" height="6"/><path d="M-19 4 L-14 -1 L-9 4 Z"/>
+      <circle r="16" fill="#f4d9a3" opacity="0.12"/>
+      <g fill="#efe0bd">
+        <rect x="-6" y="0" width="11" height="9"/><path d="M-7 0 L-0.5 -7 L6 0 Z"/>
+        <rect x="8" y="3" width="9" height="7"/><path d="M7 3 L12.5 -3 L18 3 Z"/>
+        <rect x="-18" y="4" width="8" height="6"/><path d="M-19 4 L-14 -1 L-9 4 Z"/>
+      </g>
     </g>
-    <g transform="translate(410,188)">
-      <rect x="-6" y="0" width="10" height="8"/><path d="M-7 0 L-1 -6 L5 0 Z"/>
-      <rect x="7" y="4" width="9" height="7"/><path d="M6 4 L11.5 -2 L17 4 Z"/>
+    <g transform="translate(412,190)">
+      <circle r="14" fill="#f4d9a3" opacity="0.12"/>
+      <g fill="#efe0bd">
+        <rect x="-6" y="0" width="10" height="8"/><path d="M-7 0 L-1 -6 L5 0 Z"/>
+        <rect x="7" y="4" width="9" height="7"/><path d="M6 4 L11.5 -2 L17 4 Z"/>
+      </g>
     </g>
-    <g transform="translate(130,222)">
-      <rect x="-6" y="0" width="10" height="8"/><path d="M-7 0 L-1 -6 L5 0 Z"/>
-      <rect x="8" y="3" width="8" height="7"/><path d="M7 3 L12 -2 L17 3 Z"/>
+    <g transform="translate(128,224)">
+      <circle r="14" fill="#f4d9a3" opacity="0.12"/>
+      <g fill="#efe0bd">
+        <rect x="-6" y="0" width="10" height="8"/><path d="M-7 0 L-1 -6 L5 0 Z"/>
+        <rect x="8" y="3" width="8" height="7"/><path d="M7 3 L12 -2 L17 3 Z"/>
+      </g>
     </g>
   </g>
 
   <!-- Osijek, seen from a distance in the middle of the plain -->
-  <g fill="#4a3627" transform="translate(197,58) scale(0.62)">
+  <g fill="#2c2013" transform="translate(197,52) scale(0.62)">
     <rect x="0" y="72" width="30" height="46"/>
     <rect x="30" y="60" width="22" height="58"/>
     <rect x="96" y="66" width="40" height="52"/>
@@ -79,19 +112,21 @@
     <rect x="212" y="24" width="10" height="94"/>
     <ellipse cx="217" cy="24" rx="15" ry="9"/>
   </g>
-  <g fill="#e4c88f" opacity="0.7">
-    <rect x="205" y="98" width="2.4" height="3.2"/>
-    <rect x="214" y="106" width="2.4" height="3.2"/>
-    <rect x="255" y="94" width="2.4" height="3.2"/>
-    <rect x="290" y="100" width="2.4" height="3.2"/>
-    <rect x="238" y="108" width="2.4" height="3.2"/>
+  <g fill="#f4d9a3" opacity="0.85">
+    <rect x="205" y="92" width="2.6" height="3.4"/>
+    <rect x="214" y="100" width="2.6" height="3.4"/>
+    <rect x="255" y="88" width="2.6" height="3.4"/>
+    <rect x="290" y="94" width="2.6" height="3.4"/>
+    <rect x="238" y="102" width="2.6" height="3.4"/>
   </g>
 
   <!-- our spot, marked on the wider landscape -->
-  <circle cx="245" cy="96" r="40" fill="url(#glow3)"/>
-  <g transform="translate(245,88) scale(0.85)">
+  <circle cx="245" cy="90" r="42" fill="url(#glow3)"/>
+  <g transform="translate(245,82) scale(0.88)">
     <path d="M0 -34 C17 -34 30 -21 30 -5 C30 15 8 40 0 50 C-8 40 -30 15 -30 -5 C-30 -21 -17 -34 0 -34 Z"
           fill="#c9a063" stroke="#17110d" stroke-width="2.4"/>
     <circle cx="0" cy="-5" r="10" fill="#17110d"/>
   </g>
+
+  <rect width="480" height="260" filter="url(#grain)"/>
 </svg>
