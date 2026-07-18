@@ -2,28 +2,27 @@
    Koristi /api/nazivi CMS, fallback na hardkodirane vrijednosti ako API ne radi */
 
 (function(){
-  var FALLBACK_NAZIVI = {};
-  var nazivi = null;
-
   function pick(field){
     if (window.HedonistI18n) return window.HedonistI18n.pick(field);
     return typeof field === 'string' ? field : '';
   }
 
-  fetch('/api/nazivi')
+  /* nazivi-promise (ne varijabla koju jedan poziv slučajno postavi) — ako
+     korisnik promijeni jezik prije nego stigne odgovor, taj klik ipak čeka
+     na podatke i ispravno ih primijeni čim stignu. */
+  var naziviPromise = fetch('/api/nazivi')
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
-    .then(function(data){
-      if (!data || typeof data !== 'object') return;
-      nazivi = data;
-      applyNazivi(nazivi);
-    })
+    .then(function(data){ return (data && typeof data === 'object') ? data : null; })
     .catch(function(){
       /* ako API zataji, koristi fallback — obavezno je hardkodirati u <head> kao prije */
+      return null;
     });
 
-  document.addEventListener('hedonist:langchange', function(){
-    if (nazivi) applyNazivi(nazivi);
-  });
+  function tryApply(){
+    naziviPromise.then(function(data){ if (data) applyNazivi(data); });
+  }
+  tryApply();
+  document.addEventListener('hedonist:langchange', tryApply);
 
   function applyNazivi(nazivi){
     /* <title> tag — index.title, cjenik.title, itd. — polja su {hr,en,de}

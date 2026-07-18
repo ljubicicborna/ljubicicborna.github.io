@@ -322,22 +322,28 @@
   /* ---- CMS tekstovi: elementi s data-cms="ključ" dobiju sadržaj
      uređen na /admin.html; polja su {hr,en,de} (ili plain string za staru
      rezervu), pa se biraju po trenutnom jeziku i ponovno iscrtaju kad se
-     jezik promijeni. Ako API ne radi, ostaje tekst iz HTML-a. ---- */
+     jezik promijeni. Ako API ne radi, ostaje tekst iz HTML-a.
+     renderCms se uvijek vješa na ISTI fetch-promise (ne na varijablu koju
+     jedan poziv slučajno postavi) — ako korisnik promijeni jezik prije nego
+     što je prvi fetch stigao, taj klik ipak čeka na podatke i ispravno ih
+     iscrta čim stignu, umjesto da ostane "zaglavljen" na hrvatskom dok se
+     ne dogodi neki idući, nepovezan render. ---- */
   var cmsEls = document.querySelectorAll('[data-cms]');
   if (cmsEls.length) {
-    var cmsTekstovi = null;
+    var tekstoviPromise = fetch('/api/tekstovi')
+      .then(function(r){ if (!r.ok) throw 0; return r.json(); })
+      .catch(function(){ return null; /* rezerva: statični tekst */ });
     var renderCms = function(){
-      if (!cmsTekstovi) return;
-      var pick = window.HedonistI18n ? window.HedonistI18n.pick : function(f){ return typeof f === 'string' ? f : ''; };
-      cmsEls.forEach(function(el){
-        var v = pick(cmsTekstovi[el.getAttribute('data-cms')]);
-        if (v) el.textContent = v;
+      tekstoviPromise.then(function(t){
+        if (!t) return;
+        var pick = window.HedonistI18n ? window.HedonistI18n.pick : function(f){ return typeof f === 'string' ? f : ''; };
+        cmsEls.forEach(function(el){
+          var v = pick(t[el.getAttribute('data-cms')]);
+          if (v) el.textContent = v;
+        });
       });
     };
-    fetch('/api/tekstovi')
-      .then(function(r){ if (!r.ok) throw 0; return r.json(); })
-      .then(function(t){ cmsTekstovi = t; renderCms(); })
-      .catch(function(){ /* rezerva: statični tekst */ });
+    renderCms();
     document.addEventListener('hedonist:langchange', renderCms);
   }
 

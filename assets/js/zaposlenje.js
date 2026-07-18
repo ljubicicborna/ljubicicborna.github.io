@@ -26,10 +26,7 @@
     return (VRSTA_LABELS[lang] && VRSTA_LABELS[lang][v]) || v;
   }
 
-  var lastData = null;
-
   function render(data){
-    lastData = data;
     var active = (data.pozicije || []).filter(function(p){ return p.aktivno; });
     if (!active.length) return;
     active.sort(function(a, b){ return (a.datum || '') < (b.datum || '') ? 1 : -1; });
@@ -97,14 +94,18 @@
     document.head.appendChild(script);
   }
 
-  fetch('/api/oglasi')
+  /* oglasiPromise (ne varijabla koju jedan poziv slučajno postavi) — ako
+     korisnik promijeni jezik prije nego stigne odgovor, taj klik ipak čeka
+     na podatke i ispravno ih iscrta čim stignu. */
+  var oglasiPromise = fetch('/api/oglasi')
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
-    .then(render)
-    .catch(function(){ /* sekcija ostaje sakrivena */ });
+    .catch(function(){ return null; /* sekcija ostaje sakrivena */ });
 
-  document.addEventListener('hedonist:langchange', function(){
-    if (lastData) render(lastData);
-  });
+  function tryRender(){
+    oglasiPromise.then(function(data){ if (data) render(data); });
+  }
+  tryRender();
+  document.addEventListener('hedonist:langchange', tryRender);
 
   if (new URLSearchParams(location.search).has('poslano')) {
     var success = document.getElementById('job-success');

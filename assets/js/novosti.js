@@ -55,13 +55,18 @@
     { dan: 'Subota', naziv: 'Party Night', opis: { hr: 'House zvuk do kasno u noć', en: 'House sound till late', de: 'House-Sound bis spät in die Nacht' }, aktivno: true }
   ] };
 
-  var gigsData = null;
+  /* fetch-promisi (ne varijable koje jedan poziv slučajno postavi) — ako
+     korisnik promijeni jezik prije nego stigne odgovor, taj klik ipak čeka
+     na podatke i ispravno ih iscrta čim stignu. */
   var homeGigs = document.getElementById('home-gigs');
   if (homeGigs) {
-    fetch('/api/dogadjaji')
+    var gigsPromise = fetch('/api/dogadjaji')
       .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
-      .then(function(data){ gigsData = (data && Array.isArray(data.dogadjaji)) ? data : REZERVA_DOGADJAJI; render(gigsData); })
-      .catch(function(){ gigsData = REZERVA_DOGADJAJI; render(gigsData); });
+      .then(function(data){ return (data && Array.isArray(data.dogadjaji)) ? data : REZERVA_DOGADJAJI; })
+      .catch(function(){ return REZERVA_DOGADJAJI; });
+    var renderGigs = function(){ gigsPromise.then(render); };
+    renderGigs();
+    document.addEventListener('hedonist:langchange', renderGigs);
   }
 
   function render(data){
@@ -80,13 +85,14 @@
     }).join('');
   }
 
-  var jobsData = null;
   var homeJobs = document.getElementById('home-jobs');
   if (homeJobs) {
-    fetch('/api/oglasi')
+    var jobsPromise = fetch('/api/oglasi')
       .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
-      .then(function(data){ jobsData = data; renderJobs(data); })
-      .catch(function(){ /* nema oglasa, sekcija ostaje kakva jest */ });
+      .catch(function(){ return null; /* nema oglasa, sekcija ostaje kakva jest */ });
+    var renderJobsFromPromise = function(){ jobsPromise.then(function(data){ if (data) renderJobs(data); }); };
+    renderJobsFromPromise();
+    document.addEventListener('hedonist:langchange', renderJobsFromPromise);
   }
 
   function renderJobs(data){
@@ -104,9 +110,4 @@
         '</a>';
     }).join('');
   }
-
-  document.addEventListener('hedonist:langchange', function(){
-    if (gigsData) render(gigsData);
-    if (jobsData) renderJobs(jobsData);
-  });
 })();

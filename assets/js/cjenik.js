@@ -270,21 +270,31 @@
     else { input.value = ''; run(); }
   }
 
-  var cjenikData = null;
-  fetch('/api/cjenik')
+  /* cjenikPromise (ne obična varijabla) — ako korisnik promijeni jezik
+     prije nego stigne prvi odgovor s /api/cjenik, taj klik i dalje čeka
+     na podatke i ispravno gradi katalog čim stignu, umjesto da ostane
+     zaglavljen na hrvatskom dok se ne dogodi neki idući render. */
+  var cjenikPromise = fetch('/api/cjenik')
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
     .then(function(data){
-      if (data && Array.isArray(data.kategorije) && data.kategorije.length) cjenikData = data;
-      if (cjenikData) build(cjenikData);
-      enhance();
-      setupSearch();
+      return (data && Array.isArray(data.kategorije) && data.kategorije.length) ? data : null;
     })
-    .catch(function(){ enhance(); setupSearch(); });
+    .catch(function(){ return null; });
 
-  document.addEventListener('hedonist:langchange', function(){
-    if (!cjenikData) return;
-    build(cjenikData);
-    enhance();
-    setupSearch();
-  });
+  var staticFallbackDone = false;
+  function renderCjenik(){
+    cjenikPromise.then(function(data){
+      if (data) {
+        build(data);
+        enhance();
+        setupSearch();
+      } else if (!staticFallbackDone) {
+        enhance();
+        setupSearch();
+      }
+      staticFallbackDone = true;
+    });
+  }
+  renderCjenik();
+  document.addEventListener('hedonist:langchange', renderCjenik);
 })();
