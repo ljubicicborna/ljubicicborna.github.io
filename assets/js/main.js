@@ -124,42 +124,59 @@
     }
   })();
 
-  /* ---- marquee traka (naslovnica): pozicija je čista funkcija proteklog
-     vremena (ts % PERIOD_MS), ne akumulirano stanje -- svaki poziv
-     setPosition() sam po sebi računa TOČNU ispravnu poziciju iz
-     performance.now(), bez obzira je li prošli poziv uopće bio pozvan.
-     To znači da je moguće imati DVA neovisna mehanizma koja je zovu:
-     requestAnimationFrame za glatki 60fps pomak, PLUS jedan setInterval
-     "watchdog" svaku sekundu kao rezerva. Ako rAF petlja iz bilo kojeg
-     razloga prestane raditi (poznati mobilni-preglednik bugovi gdje se
-     animacija trajno "zamrzne" nakon pozadine kartice; ili nešto što
-     nismo uspjeli reproducirati u testiranju), watchdog je posve
-     neovisan i svejedno će je svake sekunde vratiti na ispravnu poziciju
-     -- traka stoga NIKAD ne može ostati vidljivo zaustavljena dulje od
-     otprilike sekunde, bez obzira na uzrok. Širina grupe se čita iznova
-     pri svakom pozivu (ne kešira), da ne ovisi o web-font swapu ili bilo
-     kojoj drugoj promjeni rasporeda koja ne okine "resize".
+  /* ---- marquee traka (naslovnica) ----
+     STVARNI uzrok "trake koja se vrti ali stane pisati" / "krene
+     dolaziti prazno": HTML nosi TOČNO dvije kopije sadržaja (~920px
+     svaka), što je dovoljno za uski mobilni zaslon, ali na širokom
+     desktop prozoru (npr. 1920px) dvije grupe zajedno (~1840px) NE
+     pokrivaju cijelu vidljivu širinu -- traka klizne kroz kraj stvarnog
+     sadržaja i otkrije prazninu prije nego se ciklus vrati na početak.
+     Matematički zagarantirano na svakom dovoljno širokom prozoru, bez
+     obzira na preglednik -- zato ga headless testiranje na uskim
+     viewportima nikad nije uhvatilo.
 
-     translateX (2D), NE translate3d/will-change: 3D transform stalno
-     ažuriran iz JS-a (umjesto CSS-ovog animation enginea) forsira GPU
-     compositing sloj i na nekim Windows/Chromium instalacijama pogodi
-     pravi bug u pregledniku -- sloj se i dalje glatko pomiče, ali tekst
-     na njemu prestane biti iscrtan (prijavljeno: "traka se vrti, ali
-     stane pisati"). Obična translateX izbjegava taj 3D-layer put. ---- */
+     Rješenje: klonira prvu grupu koliko god puta treba da UKUPNA širina
+     trake uvijek bude barem širina kontejnera + jedna širina grupe, na
+     bilo kojoj širini prozora -- provjerava se i pri promjeni veličine
+     prozora i svake sekunde (watchdog), pa čak ni naknadno maksimiziran
+     ili prebačen na širi monitor prozor ne probije pokrivenost.
+
+     Pozicija je čista funkcija proteklog vremena (ts % PERIOD_MS), ne
+     akumulirano stanje -- requestAnimationFrame vozi glatki 60fps pomak,
+     a neovisan setInterval "watchdog" svaku sekundu nezavisno provjeri i
+     ispravi i pokrivenost i poziciju, kao rezerva ako rAF ikad prestane
+     raditi. translateX (2D, ne translate3d) i bez will-change: transform
+     -- izbjegava se forsiranje GPU compositing sloja koji je na nekim
+     Windows/Chromium instalacijama gubio iscrtavanje teksta. ---- */
   (function marquee(){
+    var container = document.querySelector('.marquee');
     var track = document.querySelector('.marquee-track');
-    var group = track && track.querySelector('.marquee-group');
-    if (!track || !group) return;
+    var firstGroup = track && track.querySelector('.marquee-group');
+    if (!container || !track || !firstGroup) return;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var PERIOD_MS = 32000; /* jedan puni ciklus širine jedne grupe, kao stari CSS 32s */
 
+    function ensureCoverage(){
+      var groupWidth = firstGroup.getBoundingClientRect().width;
+      if (!groupWidth) return;
+      var needed = container.getBoundingClientRect().width + groupWidth;
+      var guard = 0;
+      while (track.children.length * groupWidth < needed && guard < 30) {
+        track.appendChild(firstGroup.cloneNode(true));
+        guard++;
+      }
+    }
+
     function setPosition(ts){
-      var groupWidth = group.getBoundingClientRect().width;
+      var groupWidth = firstGroup.getBoundingClientRect().width;
       if (!groupWidth) return;
       var fraction = (ts % PERIOD_MS) / PERIOD_MS;
       track.style.transform = 'translateX(-' + (fraction * groupWidth) + 'px)';
     }
+
+    ensureCoverage();
+    window.addEventListener('resize', ensureCoverage);
 
     function frame(ts){
       setPosition(ts);
@@ -167,7 +184,7 @@
     }
     requestAnimationFrame(frame);
 
-    setInterval(function(){ setPosition(performance.now()); }, 1000);
+    setInterval(function(){ ensureCoverage(); setPosition(performance.now()); }, 1000);
   })();
 
   /* ---- tajni pristup CMS-u: drži (7s) logo gore lijevo na naslovnoj
