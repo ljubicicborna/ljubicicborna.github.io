@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=20">
+<link rel="stylesheet" href="assets/css/styles.css?v=24">
 <script src="assets/js/cms-nazivi.js?v=1"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script type="application/ld+json">
@@ -43,6 +43,11 @@
     "addressLocality": "Osijek",
     "postalCode": "31000",
     "addressCountry": "HR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 45.5552976,
+    "longitude": 18.6948989
   },
   "openingHoursSpecification": [
     { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday"], "opens": "07:00", "closes": "23:00" },
@@ -69,6 +74,7 @@
     <nav class="nav-links" aria-label="Primarna navigacija">
       <a href="galerija.html">Galerija</a>
       <a href="lokacija.html">Lokacija</a>
+      <a href="zaposlenje.html">Zapošljavanje</a>
     </nav>
     <a href="cjenik.html" class="btn btn-gold btn-small">Otvori katalog</a>
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Otvori izbornik">
@@ -78,6 +84,7 @@
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primarna navigacija (mobilna)">
     <a href="galerija.html">Galerija</a>
     <a href="lokacija.html">Lokacija</a>
+    <a href="zaposlenje.html">Zapošljavanje</a>
     <a href="cjenik.html" class="btn btn-gold">Otvori katalog</a>
   </nav>
 </header>
@@ -85,7 +92,7 @@
 <main id="main">
 
   <section class="hero" id="top">
-    <h1 class="visually-hidden">Hedonist Bar Osijek — kava, kokteli i živa glazba na Vukovarskoj cesti</h1>
+    <h1 class="visually-hidden">Hedonist Bar Osijek — kava, kokteli i DJ vikendom na Vukovarskoj cesti</h1>
     <img class="hero-photo" id="hero-photo" src="assets/images/gallery/bar-interior-glow.jpg" alt="" aria-hidden="true" fetchpriority="high">
     <div class="hero-inner">
       <img class="hero-logo reveal-1" src="assets/images/logo.svg" alt="Hedonist Bar" width="1198" height="250">
@@ -103,43 +110,7 @@
         <span>DJ petkom i subotom</span><span class="marquee-dot">·</span>
         <span>Bez rezervacije</span><span class="marquee-dot">·</span>
       </div>
-      <div class="marquee-group">
-        <span>Kava</span><span class="marquee-dot">·</span>
-        <span>Kokteli</span><span class="marquee-dot">·</span>
-        <span>Pivo</span><span class="marquee-dot">·</span>
-        <span>Vino</span><span class="marquee-dot">·</span>
-        <span>Žestica</span><span class="marquee-dot">·</span>
-        <span>DJ petkom i subotom</span><span class="marquee-dot">·</span>
-        <span>Bez rezervacije</span><span class="marquee-dot">·</span>
-      </div>
-      <div class="marquee-group">
-        <span>Kava</span><span class="marquee-dot">·</span>
-        <span>Kokteli</span><span class="marquee-dot">·</span>
-        <span>Pivo</span><span class="marquee-dot">·</span>
-        <span>Vino</span><span class="marquee-dot">·</span>
-        <span>Žestica</span><span class="marquee-dot">·</span>
-        <span>DJ petkom i subotom</span><span class="marquee-dot">·</span>
-        <span>Bez rezervacije</span><span class="marquee-dot">·</span>
-      </div>
-      <div class="marquee-group">
-        <span>Kava</span><span class="marquee-dot">·</span>
-        <span>Kokteli</span><span class="marquee-dot">·</span>
-        <span>Pivo</span><span class="marquee-dot">·</span>
-        <span>Vino</span><span class="marquee-dot">·</span>
-        <span>Žestica</span><span class="marquee-dot">·</span>
-        <span>DJ petkom i subotom</span><span class="marquee-dot">·</span>
-        <span>Bez rezervacije</span><span class="marquee-dot">·</span>
-      </div>
-      <div class="marquee-group">
-        <span>Kava</span><span class="marquee-dot">·</span>
-        <span>Kokteli</span><span class="marquee-dot">·</span>
-        <span>Pivo</span><span class="marquee-dot">·</span>
-        <span>Vino</span><span class="marquee-dot">·</span>
-        <span>Žestica</span><span class="marquee-dot">·</span>
-        <span>DJ petkom i subotom</span><span class="marquee-dot">·</span>
-        <span>Bez rezervacije</span><span class="marquee-dot">·</span>
-      </div>
-      <div class="marquee-group">
+      <div class="marquee-group" aria-hidden="true">
         <span>Kava</span><span class="marquee-dot">·</span>
         <span>Kokteli</span><span class="marquee-dot">·</span>
         <span>Pivo</span><span class="marquee-dot">·</span>
@@ -154,7 +125,6 @@
   <section class="philosophy" id="filozofija">
     <div class="section-inner philosophy-grid">
       <div>
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Misija – vizija:</p>
         <blockquote class="pull-quote" data-cms="pocetna.filozofija-citat">
           „Hedonistička oaza u srcu grada.“
         </blockquote>
@@ -174,8 +144,8 @@
       <div class="menu-text">
         <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Katalog ponude</p>
         <h2 class="section-title">Cijeli katalog ponude na jednom mjestu</h2>
-        <p class="menu-note" data-cms="pocetna.cjenik-napomena">Kave, bezalkoholna pića, pivo, vino, žestica i autorski kokteli — usput, i najveći izbor točenih piva u Osijeku. Kliknite sastojke svakog pića prije nego dođete.</p>
-        <p class="menu-counter"><span class="menu-counter-num" data-count-to="150">0</span><span class="menu-counter-plus">+</span><span class="menu-counter-label">stavki u katalogu</span></p>
+        <p class="menu-note" data-cms="pocetna.cjenik-napomena">Kave, bezalkoholna pića, pivo, vino, žestica i autorski kokteli — usput, i najveći izbor točenih piva u Osijeku. Pogledajte sastojke svakog pića prije dolaska.</p>
+        <p class="menu-counter"><span class="menu-counter-num" data-count-to="150">150</span><span class="menu-counter-plus">+</span><span class="menu-counter-label">stavki u katalogu</span></p>
         <a href="cjenik.html" class="cjenik-link">
           <svg class="cjenik-link-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 8h28l-12 16v16h-4V24L10 8Z"/><path d="M17 40h14"/></svg>
           <span class="cjenik-link-text">
@@ -190,43 +160,48 @@
   </section>
 
   <section class="daytime" id="dan" data-mode="day">
-    <img class="daytime-photo daytime-photo-day" src="assets/images/gallery/terrace-facade.jpg" alt="" aria-hidden="true" loading="lazy">
-    <img class="daytime-photo daytime-photo-night" src="assets/images/gallery/bar-interior-glow.jpg" alt="" aria-hidden="true" loading="lazy">
-    <div class="daytime-overlay" aria-hidden="true"></div>
-    <div class="section-inner daytime-inner">
+    <div class="section-inner daynight-inner">
 
-      <div class="daynight-switch" role="group" aria-label="Prikaz: po danu ili po noći">
-        <button type="button" class="daynight-btn" data-mode="day" aria-pressed="true">
-          <svg class="daynight-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg>
-          <span>Danju</span>
-        </button>
-        <span class="daynight-track" tabindex="0" role="switch" aria-checked="false" aria-label="Prikaz po noći">
-          <span class="daynight-thumb" aria-hidden="true"></span>
-        </span>
-        <button type="button" class="daynight-btn" data-mode="night" aria-pressed="false">
-          <svg class="daynight-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 14.7A8.1 8.1 0 1 1 9.3 3.8a6.6 6.6 0 0 0 10.9 10.9Z"/></svg>
-          <span>Noću</span>
-        </button>
+      <div class="daynight-head">
+        <div>
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Dan i noć</p>
+          <h2 class="section-title">Ista adresa, druga priča</h2>
+        </div>
+        <div class="daynight-switch" role="group" aria-label="Prikaz: po danu ili po noći">
+          <button type="button" class="daynight-btn" data-mode="day" aria-pressed="true">
+            <svg class="daynight-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg>
+            <span>Po danu</span>
+          </button>
+          <span class="daynight-track" tabindex="0" role="switch" aria-checked="false" aria-label="Prikaz po noći">
+            <span class="daynight-thumb" aria-hidden="true"></span>
+          </span>
+          <button type="button" class="daynight-btn" data-mode="night" aria-pressed="false">
+            <svg class="daynight-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 14.7A8.1 8.1 0 1 1 9.3 3.8a6.6 6.6 0 0 0 10.9 10.9Z"/></svg>
+            <span>Po noći</span>
+          </button>
+        </div>
       </div>
 
-      <div class="daytime-panel" data-panel="day">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Po danu</p>
-        <h2 class="section-title">Ista adresa, druga priča ujutro</h2>
-        <p class="daytime-copy" data-cms="pocetna.podanu">
-          Od 7 ujutro Hedonist je kavana s terasom — pravimo izvrsnu kavu, uz sok od naranče i mirno jutro.
-        </p>
-        <video class="daytime-inset" autoplay muted playsinline preload="metadata" poster="assets/images/gallery/kava-priprema-poster.jpg" aria-label="Barista pravi latte art, ulijevajući mlijeko u kavu.">
-          <source src="assets/videos/kava-priprema.mp4" type="video/mp4">
-        </video>
-      </div>
+      <div class="daynight-split">
+        <button type="button" class="daynight-pane" data-pane="day" aria-pressed="true" aria-label="Naglasi prikaz po danu">
+          <video class="daynight-pane-media" autoplay muted playsinline preload="metadata" poster="assets/images/gallery/kava-priprema-poster.jpg" aria-label="Barista pravi latte art, ulijevajući mlijeko u kavu.">
+            <source src="assets/videos/kava-priprema.mp4" type="video/mp4">
+          </video>
+          <span class="daynight-pane-overlay" aria-hidden="true"></span>
+          <span class="daynight-pane-body">
+            <span class="daynight-pane-label">Po danu, od 7h</span>
+            <span class="daynight-pane-copy" data-cms="pocetna.podanu">Kavana s terasom — izvrsna kava i miran početak dana, bez žurbe.</span>
+          </span>
+        </button>
 
-      <div class="daytime-panel" data-panel="night">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Po noći</p>
-        <h2 class="section-title">Kad padne mrak, priča se mijenja</h2>
-        <p class="daytime-copy">
-          Navečer Hedonist postaje bar s karakterom — autorski kokteli, hladno pivo i, petkom i subotom, DJ koji drži atmosferu do kasno u noć.
-        </p>
-        <img class="daytime-inset daytime-inset-photo" src="assets/images/gallery/dj-set-motion.jpg" alt="DJ mikser s vučenim svjetlosnim tragovima u Hedonistu navečer." loading="lazy">
+        <button type="button" class="daynight-pane" data-pane="night" aria-pressed="false" aria-label="Naglasi prikaz po noći">
+          <img class="daynight-pane-media" src="assets/images/gallery/dj-set-motion.jpg" alt="DJ mikser s vučenim svjetlosnim tragovima u Hedonistu navečer." loading="lazy">
+          <span class="daynight-pane-overlay" aria-hidden="true"></span>
+          <span class="daynight-pane-body">
+            <span class="daynight-pane-label">Po noći</span>
+            <span class="daynight-pane-copy">Bar s karakterom — autorski kokteli, hladno pivo, DJ petkom i subotom.</span>
+          </span>
+        </button>
       </div>
 
     </div>
@@ -254,15 +229,14 @@
         opuštenu atmosferu i urbanu estetiku. Bilo da svratite na jutarnju kavu s nogu,
         poslijepodnevni sastanak ili večernje piće s društvom, prostor pruža izvrsnu podlogu za
         svaku priliku. Gostima je na raspolaganju bogat izbor kava, osvježavajućih pića i
-        koktela, a ljubazno osoblje i ugodna terasa čine ga omiljenim mjestom za predah nedaleko
-        od samog centra grada.
+        koktela, a ljubazno osoblje i ugodna terasa čine ga omiljenim mjestom za predah.
       </p>
       <div class="atmosphere-gallery" role="region" aria-label="Galerija atmosfere, horizontalno pomicanje" tabindex="0">
         <img src="assets/images/gallery/latte-art-cup.jpg" alt="Ruke drže šalicu kave s latte-art uzorkom." loading="lazy" width="1638" height="2048">
-        <img src="assets/images/gallery/terrace-people.jpg" alt="Gosti za stolovima na terasi Hedonista, ispred zgrade na Vukovarskoj." loading="lazy" width="1941" height="1295">
+        <img src="assets/images/gallery/terrace-day.webp" alt="Stolovi i stolice na terasi Hedonista po danu." loading="lazy" width="1200" height="675">
         <img src="assets/images/gallery/pouring-shot-bar.jpg" alt="Barmen toči piće u čašice, u pozadini šareno svjetlo bara." loading="lazy" width="1167" height="1750">
         <img src="assets/images/gallery/cocktail-row.jpg" alt="Niz raznobojnih koktela poredanih na šanku." loading="lazy" width="1600" height="1067">
-        <img src="assets/images/gallery/bartender-crafting.jpg" alt="Barmen priprema koktel na šanku, gosti u pozadini." loading="lazy" width="1750" height="1167">
+        <img src="assets/images/gallery/dj-set-motion.jpg" alt="DJ mikser s vučenim svjetlosnim tragovima u Hedonistu navečer." loading="lazy" width="1750" height="1167">
         <img src="assets/images/gallery/whiskey-cigar-smoke.jpg" alt="Čaša viskija i cigara s dimom, u toplom svjetlu bara." loading="lazy" width="1941" height="1295">
       </div>
       <div class="atmosphere-dots" aria-hidden="true">
@@ -277,7 +251,7 @@
   </section>
 
   <section class="visit" id="lokacija">
-    <img class="visit-photo" src="assets/images/gallery/bar-interior-glow.jpg" alt="" aria-hidden="true">
+    <img class="visit-photo" src="assets/images/gallery/interior-wide-empty.webp" alt="" aria-hidden="true">
     <img class="visit-mark" src="assets/images/monogram.png" alt="" aria-hidden="true">
     <div class="section-inner">
       <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Radno vrijeme i lokacija</p>
@@ -343,6 +317,7 @@
       <a href="galerija.html">Galerija</a>
       <a href="lokacija.html">Lokacija</a>
       <a href="zaposlenje.html">Zapošljavanje</a>
+      <a href="privatnost.html#impressum">Impressum</a>
     </nav>
     <div class="footer-social">
       <a href="https://www.instagram.com/hedonistbarosijek/" target="_blank" rel="noopener" aria-label="Hedonist Bar na Instagramu">
@@ -357,8 +332,8 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=11"></script>
-<script src="assets/js/novosti.js?v=3"></script>
-<script src="assets/js/daynight.js?v=4"></script>
+<script src="assets/js/main.js?v=12"></script>
+<script src="assets/js/novosti.js?v=4"></script>
+<script src="assets/js/daynight.js?v=5"></script>
 </body>
 </html>

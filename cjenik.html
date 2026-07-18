@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=20">
+<link rel="stylesheet" href="assets/css/styles.css?v=24">
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -79,6 +79,17 @@
   <section class="price-categories">
     <div class="section-inner">
 
+      <div class="price-search" role="search">
+        <svg class="price-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" id="price-search-input" placeholder="Pretraži katalog… npr. gin, bez kofeina, viski" aria-label="Pretraži katalog">
+        <span class="price-search-count" id="price-search-count" aria-live="polite"></span>
+      </div>
+
+      <div class="price-notice">
+        <p><strong>18+</strong> — alkoholna pića i cigarete/cigare ne prodajemo ni točimo osobama mlađim od 18 godina.</p>
+        <p>Neka pića i namirnice mogu sadržavati alergene (gluten, mlijeko, jaja, orašaste plodove i dr.) — pitajte osoblje za detalje o alergenima prije naručivanja.</p>
+      </div>
+
       <details class="price-category" id="kave" open>
         <summary><span class="price-category-title">Kave i topli napici</span><svg class="price-category-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary>
         <div class="price-category-body">
@@ -94,7 +105,7 @@
               <div class="price-item"><div class="price-item-name"><strong>Melange</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cappuccino veliki</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Bijela kava</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Late macchiato</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Latte macchiato</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Ledena kava</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Baileys coffee</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kava s biljnim mlijekom velika</strong></div></div>
@@ -103,11 +114,11 @@
               <div class="price-item"><div class="price-item-name"><strong>Cappuccino s biljnim mlijekom</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Dupli espresso</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Ledeni cappuccino</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Pumpkin Spiced Latte</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Pumpkin Spiced Latte</strong><em>biljno mlijeko</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Gingerbread Latte</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Gingerbread Latte</strong><em>biljno mlijeko</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Ledena kava sa biljnim mlijekom</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Pumpkin Spice Latte</strong><span class="price-item-tag">sezonski</span></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Pumpkin Spice Latte</strong><span class="price-item-tag">sezonski</span><em>biljno mlijeko</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Gingerbread Latte</strong><span class="price-item-tag">sezonski</span></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Gingerbread Latte</strong><span class="price-item-tag">sezonski</span><em>biljno mlijeko</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Ledena kava s biljnim mlijekom</strong></div></div>
             </div>
           </div>
 
@@ -116,11 +127,11 @@
             <div class="price-items" data-icon="coffee">
               <div class="price-item"><div class="price-item-name"><strong>Kava bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kava s mlijekom bez kofeina</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Kava s šlagom bez kofeina</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Kava sa šlagom bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cappuccino bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Bijela kava bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kava bez kofeina s biljnim mlijekom</strong><em>zobeno, bademovo ili sojino mlijeko</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Late macchiato bez kofeina</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Latte macchiato bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Baileys coffee bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kava bez kofeina s mlijekom mala</strong></div></div>
             </div>
@@ -132,12 +143,12 @@
               <div class="price-item"><div class="price-item-name"><strong>Čaj s limunom i medom</strong><em>kamilica, menta, šipak, zeleni, višnja, divlja jagoda, voćni mix, jabuka-limun, ginger-limun, crni čaj, zeleni jasmin, zeleni limun-menta, bijeli, vanilija-karamel</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Topla čokolada</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kakao</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Nescafe classic</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Nescafe frappe</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Cappuccino vrećica</strong><em>vanilija, čokolada, irish, clasic, lješnjak, kokos, bajadera, pistacio</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Kuhano vino crno</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Kuhano vino bijelo</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Kuhani Gin</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Nescafé classic</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Nescafé frappe</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Cappuccino vrećica</strong><em>vanilija, čokolada, irish, classic, lješnjak, kokos, bajadera, pistacio</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Kuhano vino crno</strong><span class="price-item-tag">sezonski</span></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Kuhano vino bijelo</strong><span class="price-item-tag">sezonski</span></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Kuhani Gin</strong><span class="price-item-tag">sezonski</span></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Topla čokolada Bijela</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Topla čokolada Raffaelo</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Topla čokolada Lješnjak</strong></div></div>
@@ -158,18 +169,18 @@
               <div class="price-item"><div class="price-item-name"><strong>Ledeni cappuccino</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cappuccino veliki</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Bijela kava</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Late macchiato</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Latte macchiato</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kava bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kava s mlijekom bez kofeina</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Kava s šlagom bez kofeina</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Kava sa šlagom bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cappuccino bez kofeina</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Bijela kava bez kofeina</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Čaj s limunom i medom</strong><em>kamilica, menta, šipak, zeleni, višnja, divlja jagoda, voćni mix, jabuka-borovnica, ginger-limun, crni čaj, zeleni jasmin, zeleni limun-menta, bijeli, vanilija-karamel</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Čaj s limunom i medom</strong><em>kamilica, menta, šipak, zeleni, višnja, divlja jagoda, voćni mix, jabuka-limun, ginger-limun, crni čaj, zeleni jasmin, zeleni limun-menta, bijeli, vanilija-karamel</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Topla čokolada</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Kakao</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Nescafe classic</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Nescafe frappe</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Cappuccino vrećica</strong><em>vanilija, čokolada, irish, clasic, lješnjak</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Nescafé classic</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Nescafé frappe</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Cappuccino vrećica</strong><em>vanilija, čokolada, irish, classic, lješnjak, kokos, bajadera, pistacio</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Latte macchiato bez kofeina</strong></div></div>
             </div>
           </div>
@@ -185,12 +196,12 @@
             <h3 class="price-group-title">Gazirana pića</h3>
             <div class="price-items" data-icon="juice">
               <div class="price-item"><div class="price-item-name"><strong>Jamnica 0,33l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Jamnica sensation 0,25l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Hidra iso citrus 0,5l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Hidra iso orange 0,5l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Romerquelle limunska trava 0,33l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Coca cola 0,25l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Coca cola zero 0,25l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Jamnica Sensation 0,25l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Hidra Iso citrus 0,5l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Hidra Iso orange 0,5l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Römerquelle limunska trava 0,33l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Coca-Cola 0,25l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Coca-Cola zero 0,25l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cockta 0,25l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cockta free 0,25l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Fanta 0,25l</strong></div></div>
@@ -200,8 +211,7 @@
               <div class="price-item"><div class="price-item-name"><strong>Schweppes tangerine 0,25l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Schweppes tonic water 0,25l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Schweppes Pink Grapefruit 0,25l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Red bull 0,25l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Somersby 0,33l</strong><em>jagoda-limeta</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Red Bull 0,25l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Thomas Henry Botanical tonic 0,2l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Thomas Henry Ultimate grapefruit tonic 0,2l</strong></div></div>
             </div>
@@ -214,11 +224,7 @@
               <div class="price-item"><div class="price-item-name"><strong>Jana ledeni čaj 0,33l</strong><em>šumsko voće</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Jana ledeni čaj 0,33l</strong><em>breskva</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Jana vitamin 0,33l</strong><em>limun</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Prirodni sok Pago 0,2l</strong><em>marelica</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Prirodni sok Pago 0,2l</strong><em>jabuka 100%</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Prirodni sok Pago 0,2l</strong><em>jagoda</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Prirodni sok Pago 0,2l</strong><em>crni ribiz</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Prirodni sok Pago 0,2l</strong><em>naranča 100%</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Prirodni sok Pago 0,2l</strong><em>marelica, jabuka 100%, jagoda, crni ribiz, naranča 100%</em></div></div>
             </div>
           </div>
 
@@ -329,9 +335,7 @@
           <div class="price-group">
             <h3 class="price-group-title">Cider</h3>
             <div class="price-items" data-icon="cider">
-              <div class="price-item"><div class="price-item-name"><strong>Somersby 0,33l</strong><em>jabuka</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Somersby 0,33l</strong><em>borovnica</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Somersby 0,33l</strong><em>kruška</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Somersby 0,33l</strong><em>jabuka, borovnica, kruška, jagoda-limeta</em></div></div>
             </div>
           </div>
 
@@ -379,10 +383,10 @@
               <div class="price-item"><div class="price-item-name"><strong>Korlat syrah 0,75l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Korlat merlot 0,10l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Korlat merlot 0,75l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Korlat cuvée „supreme" 0,10l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Korlat cuvée „supreme" 0,75l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Korlat merlot „boutique" 0,10l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Korlat merlot „boutique" 0,75l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Korlat cuvée „supreme“ 0,10l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Korlat cuvée „supreme“ 0,75l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Korlat merlot „boutique“ 0,10l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Korlat merlot „boutique“ 0,75l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Korlat cabernet sauvignon 0,10l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Korlat cabernet sauvignon 0,75l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Dingač vino Matuško 0,10l</strong></div></div>
@@ -392,7 +396,7 @@
               <div class="price-item"><div class="price-item-name"><strong>Cuvée Miraz 0,10l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cuvée Miraz 0,75l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Grand Cuvée Josić 0,10l</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Grand Cuvée Josić 0,70l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Grand Cuvée Josić 0,75l</strong></div></div>
             </div>
           </div>
 
@@ -411,6 +415,7 @@
             <div class="price-items" data-icon="wine">
               <div class="price-item"><div class="price-item-name"><strong>Nice To See You 0,10l</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Nice To See You 0,75l</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Freixenet Carta Nevada 0,75l</strong></div></div>
             </div>
           </div>
 
@@ -445,11 +450,13 @@
               <div class="price-item"><div class="price-item-name"><strong>Lady's Choice Shimmer</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Gin The Artisan</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Old Pilot's Gin</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Finsbury London Dry Gin</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Finsbury Strawberry Gin</strong></div></div>
             </div>
           </div>
 
           <div class="price-group">
-            <h3 class="price-group-title">Scotch whiskey — single malt, Highland <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
+            <h3 class="price-group-title">Scotch whisky — single malt <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
             <div class="price-items" data-icon="spirit">
               <div class="price-item"><div class="price-item-name"><strong>Glenfiddich 12yo</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Glenfiddich 15yo solera</strong></div></div>
@@ -458,27 +465,27 @@
               <div class="price-item"><div class="price-item-name"><strong>Oban 14yo</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Aberlour 12yo</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Lagavulin</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Singleton</strong></div></div>
             </div>
           </div>
 
           <div class="price-group">
-            <h3 class="price-group-title">Scotch whiskey — blended malt <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
+            <h3 class="price-group-title">Scotch whisky — blended malt <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
             <div class="price-items" data-icon="spirit">
-              <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Red</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Blonde</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Monkey Shoulder</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Green</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Blue</strong></div></div>
             </div>
           </div>
 
           <div class="price-group">
-            <h3 class="price-group-title">Scotch whiskey — blended <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
+            <h3 class="price-group-title">Scotch whisky — blended <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
             <div class="price-items" data-icon="spirit">
               <div class="price-item"><div class="price-item-name"><strong>Chivas Regal</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Drambuie</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Red</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Blonde</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Black</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Gold</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Johnnie Walker Blue</strong></div></div>
             </div>
           </div>
 
@@ -489,15 +496,14 @@
               <div class="price-item"><div class="price-item-name"><strong>Tullamore Dew XO Rum Cask</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Jameson</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Jameson 18y</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Singleton</strong><em>single malt</em></div></div>
             </div>
           </div>
 
           <div class="price-group">
             <h3 class="price-group-title">American whiskey <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
             <div class="price-items" data-icon="spirit">
-              <div class="price-item"><div class="price-item-name"><strong>Woodford Reserve</strong><em>burbon</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Four Roses</strong><em>burbon</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Woodford Reserve</strong><em>bourbon</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Four Roses</strong><em>bourbon</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Bulleit Rye</strong><em>rye</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Jack Daniel's</strong><em>tennessee</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Jack Daniel's Honey</strong><em>tennessee</em></div></div>
@@ -507,9 +513,9 @@
           </div>
 
           <div class="price-group">
-            <h3 class="price-group-title">Japanese whiskey <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
+            <h3 class="price-group-title">Japanese whisky <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
             <div class="price-items" data-icon="spirit">
-              <div class="price-item"><div class="price-item-name"><strong>Nikka Lux Whiskey</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Nikka Lux Whisky</strong></div></div>
             </div>
           </div>
 
@@ -539,6 +545,7 @@
             <h3 class="price-group-title">Rum <span style="opacity:.6;font-weight:400;">· 0,03l</span></h3>
             <div class="price-items" data-icon="spirit">
               <div class="price-item"><div class="price-item-name"><strong>Badel domaći rum</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Old Pascas Dark Rum</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Captain Morgan Spiced Gold</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Captain Morgan Dark Rum</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Bacardi 8</strong></div></div>
@@ -593,8 +600,9 @@
               <div class="price-item"><div class="price-item-name"><strong>Jägermeister scharf</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Baileys</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Tia Maria</strong></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Coffee Cream Liquer</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Coffee Cream Liker</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Bajadera Cream Liker</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Drambuie</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Grand Marnier</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Malibu</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Limoncello Palini</strong></div></div>
@@ -609,25 +617,25 @@
         <div class="price-category-body">
           <div class="price-group">
             <div class="price-items" data-icon="cocktail">
-              <div class="price-item price-item--signature"><div class="price-item-name"><strong>Hedonist</strong><em>Botanist gin, Giffard green apple, lemon juice, Fee Brothers cherry bitter, TH botanical</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Monkey Old Fashioned</strong><em>Monkey Shoulder whiskey, old fashion bitter</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Long Island Iced Tea</strong><em>white rum, Smirnoff vodka, Finsbury gin, tequila gold reposado, triple sec liker, Coca Cola</em></div></div>
+              <div class="price-item price-item--signature"><div class="price-item-name"><strong>Hedonist</strong><em>Botanist gin, Giffard green apple, sok od limuna, Fee Brothers cherry bitter, TH botanical</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Monkey Old Fashioned</strong><em>Monkey Shoulder whisky, Old Fashioned bitter</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Long Island Iced Tea</strong><em>bijeli rum, Smirnoff vodka, Finsbury gin, tequila gold reposado, triple sec liker, Coca-Cola</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Lavender Gin Fizz</strong><em>Iguana gin, sirup lavanda, limun</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Moscow Mule</strong><em>Smirnoff vodka, Thomas Henry ginger beer, limeta</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Cuba Libre</strong><em>Old Pascas, Coca Cola, liker limeta</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Shiney Girl</strong><em>Lady</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Zombie</strong><em>rum, cherry liker, grenadina, sok od naranče</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Cuba Libre</strong><em>Old Pascas, Coca-Cola, liker limeta</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Shiny Girl</strong></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Zombie</strong><em>rum, liker od višnje, grenadina, sok od naranče</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>White Russian</strong><em>vodka, Kahlua, vrhnje</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Mai Tai</strong><em>white rum, dark rum, triple sec liker, sok od naranče</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Mai Tai</strong><em>bijeli rum, tamni rum, triple sec liker, sok od naranče</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Tropical GT</strong><em>Finsbury gin, TH pink grapefruit, Giffard mango</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Forbidden Love</strong><em>Finsbury gin, Giffard rose, Schweppes berry</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Strawberry Fields</strong><em>Finsbury strawberry, Giffard elderflower, fresh lemon juice, Schweppes berry</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Aperol Spritz</strong><em>Aperol, mineralna soda, Freixenet Carta Nevada</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Mojito</strong><em>white rum, menta, mineralna voda, smeđi šećer</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Mojito</strong><em>bijeli rum, menta, mineralna voda, smeđi šećer</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Sex on the Beach</strong><em>Smirnoff vodka, liker breskva, sirup grenadina, sok od naranče</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Tequila Sunrise</strong><em>tequila silver, grenadina, sok od naranče</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Cabana</strong><em>Jack Daniel's, triple sec, strawberry pire, limeta</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Whiskey Sour</strong><em>Tullamore Dew, egg white sirup, limun</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Cabana</strong><em>Jack Daniel's, triple sec, pire od jagode, limeta</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Whiskey Sour</strong><em>Tullamore Dew, bjelanjak, limun</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Negroni</strong><em>gin, Campari, Martini Rosso</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Blue Hawaiian</strong><em>Malibu, sok od ananasa, blue curaçao, limunov sok</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Tropical Dream</strong><em>Malibu, sirup od kokosa, sok od ananasa, sirup od banane</em></div></div>
@@ -635,9 +643,9 @@
               <div class="price-item"><div class="price-item-name"><strong>Comfortable Pirate</strong><em>vodka, rum, blue curaçao, sok od ananasa</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Dark Storm</strong><em>Old Pascas dark rum, limun, cimet, TH ginger beer</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cosmopolitan</strong><em>vodka, triple sec, sok od brusnice, limeta</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Amaretto Sour</strong><em>Amaretto, egg white sirup, limun</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Pina Colada</strong><em>rum, coconut sirup, coconut pire, sok od ananasa</em></div></div>
-              <div class="price-item"><div class="price-item-name"><strong>Blue Lagoon</strong><em>Sprite, vodka, limun, blue sirup</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Amaretto Sour</strong><em>Amaretto, bjelanjak, limun</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Pina Colada</strong><em>rum, sirup od kokosa, pire od kokosa, sok od ananasa</em></div></div>
+              <div class="price-item"><div class="price-item-name"><strong>Blue Lagoon</strong><em>Sprite, vodka, limun, plavi sirup</em></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Limoncello Spritz</strong></div></div>
               <div class="price-item"><div class="price-item-name"><strong>Cranberry Spritz</strong><em>bezalkoholni koktel — Sprite, brusnica, pire od jagode</em></div></div>
             </div>
@@ -701,6 +709,7 @@
       <a href="galerija.html">Galerija</a>
       <a href="lokacija.html">Lokacija</a>
       <a href="zaposlenje.html">Zapošljavanje</a>
+      <a href="privatnost.html#impressum">Impressum</a>
     </nav>
     <div class="footer-social">
       <a href="https://www.instagram.com/hedonistbarosijek/" target="_blank" rel="noopener" aria-label="Hedonist Bar na Instagramu">
@@ -715,7 +724,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=11"></script>
-<script src="assets/js/cjenik.js?v=6"></script>
+<script src="assets/js/main.js?v=12"></script>
+<script src="assets/js/cjenik.js?v=7"></script>
 </body>
 </html>

@@ -17,13 +17,14 @@
   if (!section || !section.classList.contains('daytime')) return;
 
   var buttons = section.querySelectorAll('.daynight-btn');
+  var panes = section.querySelectorAll('.daynight-pane');
   var track = section.querySelector('.daynight-track');
   var STORAGE_KEY = 'hedonistDayNight';
 
   /* video s kavom se ne vrti u krug: krene 8 s prije kraja, odsvira do
      zadnjeg kadra (gotov latte art) i tu ostane kao fotografija —
      loop atributa u HTML-u više nema, pa "ended" jednostavno stane */
-  var video = section.querySelector('video.daytime-inset');
+  var video = section.querySelector('video.daynight-pane-media');
   if (video) {
     var TAIL_SECONDS = 8;
     var seekToTail = function(){
@@ -38,6 +39,12 @@
   function applyAria(mode){
     buttons.forEach(function(b){
       b.setAttribute('aria-pressed', b.getAttribute('data-mode') === mode ? 'true' : 'false');
+    });
+    /* panes reuse aria-pressed too, but to mean "this is the dominant
+       (wide/bright) one" -- the CSS keys its dim/desaturate rule off the
+       same attribute so JS only has to set it once here */
+    panes.forEach(function(p){
+      p.setAttribute('aria-pressed', p.getAttribute('data-pane') === mode ? 'true' : 'false');
     });
     if (track) track.setAttribute('aria-checked', mode === 'night' ? 'true' : 'false');
   }
@@ -58,6 +65,9 @@
 
   buttons.forEach(function(b){
     b.addEventListener('click', function(){ setMode(b.getAttribute('data-mode')); });
+  });
+  panes.forEach(function(p){
+    p.addEventListener('click', function(){ setMode(p.getAttribute('data-pane')); });
   });
 
   if (!track) return;

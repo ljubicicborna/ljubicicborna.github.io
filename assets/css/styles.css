@@ -334,9 +334,10 @@ a{ color: inherit; text-decoration: none; }
   animation: marquee 32s linear infinite;
   will-change: transform;
 }
-/* six identical groups, each carrying its own trailing gap, so a shift
-   of exactly one group width (-16.667%) loops without a seam and the
-   band stays full even on very wide screens */
+/* two identical groups, each carrying its own trailing gap -- a shift of
+   exactly one group width (-50%) loops without a seam. two is the
+   minimum this technique needs (more copies were pure DOM bloat, no
+   visual difference) */
 .marquee-group{
   display: flex;
   align-items: center;
@@ -355,7 +356,7 @@ a{ color: inherit; text-decoration: none; }
 .marquee-dot{ color: var(--gold); }
 @keyframes marquee{
   from{ transform: translateX(0); }
-  to{ transform: translateX(-16.6667%); }
+  to{ transform: translateX(-50%); }
 }
 @media (prefers-reduced-motion: reduce){
   .marquee-track{ animation: none; }
@@ -441,7 +442,7 @@ a{ color: inherit; text-decoration: none; }
 }
 
 .menu-counter{
-  display: flex; align-items: baseline; gap: 0.5rem;
+  display: flex; align-items: baseline;
   margin: 0 0 2rem;
 }
 .menu-counter-num, .menu-counter-plus{
@@ -452,6 +453,7 @@ a{ color: inherit; text-decoration: none; }
 .menu-counter-label{
   font-size: 0.85rem; color: rgba(244,236,219,0.55);
   letter-spacing: 0.04em; align-self: center;
+  margin-left: 0.5rem;
 }
 
 .cjenik-link{
@@ -483,53 +485,85 @@ a{ color: inherit; text-decoration: none; }
 }
 
 /* ================= Daytime band =================
-   one section, two states: day and night photos are stacked and
-   crossfade on top of each other, the copy panel underneath swaps with
-   them, all driven by a single [data-mode] attribute on the section so
-   the CSS never has to be told twice. assets/js/daynight.js only ever
-   touches that one attribute (plus the aria bookkeeping); an inline
-   bootstrap script (in the HTML, right inside the section) sets it
-   before first paint from local time / a saved preference so there's
-   no flash of the wrong side on load. */
+   a diptych, not a slideshow: day and night are both always on screen,
+   full-width, side by side (stacked on mobile) — the toggle only shifts
+   which one is dominant (wider/bright) vs. receding (narrower/dim),
+   via flex-grow driven by a single [data-mode] attribute on the section.
+   Earlier this was one full-bleed photo + a narrow floating text/video
+   card, which left both edges of the section reading as dead space on
+   anything narrower than a wide desktop and crammed every element into
+   one tall centre column. Two real, always-visible panes use the full
+   width at every size and split the content across them instead.
+   assets/js/daynight.js only ever touches that one [data-mode] attribute
+   (plus aria bookkeeping); an inline bootstrap script (in the HTML,
+   right inside the section) sets it before first paint from local time
+   or a saved preference so there's no flash of the wrong side on load. */
 .daytime{
-  position: relative;
   padding: 6.5rem 0;
-  overflow: hidden;
 }
-.daytime-photo{
+.daynight-head{
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 1.25rem 2rem;
+  margin-bottom: 2rem;
+}
+.daynight-head .eyebrow{ margin-bottom: 0.6rem; }
+.daynight-head .section-title{ margin: 0; }
+
+.daynight-split{ display: flex; align-items: stretch; gap: 1rem; }
+.daynight-pane{
+  position: relative;
+  flex: 1 1 0;
+  min-height: 400px;
+  display: block;
+  padding: 0; margin: 0;
+  background: var(--panel-2);
+  border: var(--edge);
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  text-align: left;
+  transition: flex-grow 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.daynight-pane-media{
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
-  z-index: -2;
-  opacity: 0;
-  transition: opacity 0.9s ease;
+  filter: saturate(1.05) contrast(1.02);
+  transition: filter 0.7s ease, transform 7s ease;
 }
-/* na uskim ekranima cover-crop reže širinu kadra: bez ovoga terasa i
-   ulaz (desna trećina dnevne fotke) ostanu izvan kadra */
-.daytime-photo-day{ object-position: 72% 50%; }
-.daytime[data-mode="day"] .daytime-photo-day{ opacity: 1; }
-.daytime[data-mode="night"] .daytime-photo-night{ opacity: 1; }
-.daytime-overlay{
+.daynight-pane:hover .daynight-pane-media{ transform: scale(1.045); }
+.daynight-pane-overlay{
   position: absolute; inset: 0;
-  background: linear-gradient(100deg, rgba(23,17,13,0.94) 0%, rgba(23,17,13,0.8) 42%, rgba(23,17,13,0.35) 100%);
-  z-index: -1;
+  background: linear-gradient(0deg, rgba(23,17,13,0.95) 0%, rgba(23,17,13,0.42) 48%, rgba(23,17,13,0.06) 75%);
 }
-.daytime-inner{ max-width: 46ch; }
-.daytime-copy{ color: rgba(244,236,219,0.78); margin: 0 0 2rem; }
-.daytime-inset{
-  width: 248px; height: 310px; object-fit: cover;
-  border-radius: 10px; border: var(--edge);
-  filter: saturate(1.08) contrast(1.04);
-  box-shadow: 0 24px 48px -20px rgba(0,0,0,0.8), 0 6px 16px -6px rgba(0,0,0,0.55);
-  transition: transform 0.4s ease;
+.daynight-pane-body{
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 1.5rem 1.6rem;
+  display: flex; flex-direction: column; gap: 0.4rem;
 }
-.daytime-inset:hover{ transform: scale(1.03); }
+.daynight-pane-label{
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-soft);
+}
+.daynight-pane-copy{
+  display: block; max-width: 32ch;
+  font-size: 0.92rem; line-height: 1.45; color: rgba(244,236,219,0.85);
+  transition: opacity 0.7s ease;
+}
+
+.daytime[data-mode="day"] .daynight-pane[data-pane="day"]{ flex-grow: 1.7; }
+.daytime[data-mode="day"] .daynight-pane[data-pane="night"]{ flex-grow: 1; }
+.daytime[data-mode="night"] .daynight-pane[data-pane="night"]{ flex-grow: 1.7; }
+.daytime[data-mode="night"] .daynight-pane[data-pane="day"]{ flex-grow: 1; }
+.daynight-pane[aria-pressed="false"] .daynight-pane-media{ filter: saturate(0.3) brightness(0.55); }
+.daynight-pane[aria-pressed="false"] .daynight-pane-label,
+.daynight-pane[aria-pressed="false"] .daynight-pane-copy{ opacity: 0.6; }
 
 /* the switch: two labels flanking a pill track, a round thumb that
    slides between them. click either label, click/drag the track, or
    focus + arrow keys — all three land on the same setMode() call. */
 .daynight-switch{
   display: inline-flex; align-items: center; gap: 0.65rem;
-  margin-bottom: 1.85rem;
   font-family: var(--font-ui); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em;
 }
 .daynight-btn{
@@ -564,26 +598,18 @@ a{ color: inherit; text-decoration: none; }
   background: linear-gradient(155deg, #bfe8fb, var(--azure));
 }
 
-/* panels: only one exists in the layout at a time (the hidden one is
-   display:none, not just invisible) so the section never reserves
-   space for both a video and a photo card at once. */
-.daytime-panel{ display: none; }
-.daytime[data-mode="day"] .daytime-panel[data-panel="day"],
-.daytime[data-mode="night"] .daytime-panel[data-panel="night"]{
-  display: block;
-  animation: daytimeFadeIn 0.5s ease;
-}
-@keyframes daytimeFadeIn{
-  from{ opacity: 0; transform: translateY(8px); }
-  to{ opacity: 1; transform: translateY(0); }
-}
-
 @media (max-width: 640px){
-  .daytime-overlay{ background: linear-gradient(180deg, rgba(23,17,13,0.55) 0%, rgba(23,17,13,0.92) 60%, var(--ink) 100%); }
-  .daytime-inset{ width: 188px; height: 235px; }
+  .daynight-head{ flex-direction: column; align-items: flex-start; gap: 1.1rem; }
+  /* same flex-grow ratios as desktop, just redirected onto height instead
+     of width -- flexbox does that for free once the axis flips, the
+     split just needs a bounded height for flex-grow to divide up */
+  .daynight-split{ flex-direction: column; height: 62vh; min-height: 460px; max-height: 620px; gap: 0.85rem; }
+  .daynight-pane{ min-height: 0; }
+  .daynight-pane-copy{ max-width: 42ch; }
 }
 @media (prefers-reduced-motion: reduce){
-  .daytime-panel{ animation: none !important; }
+  .daynight-pane{ transition: none; }
+  .daynight-pane-media{ transition: none; }
 }
 
 /* ================= Uživo ovaj tjedan (početna) ================= */
@@ -699,10 +725,19 @@ a{ color: inherit; text-decoration: none; }
     -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
   .atmosphere-gallery::-webkit-scrollbar{ display: none; }
+  /* most source photos here are landscape (~3:2) -- a portrait-tall card
+     forces object-fit:cover to zoom in hard to fill the height, which
+     eats far more of the width than the photos have slack for and makes
+     already-tight headroom (glass rims, straw tips) read as cropped.
+     4:3 keeps the crop close to each photo's native proportions. */
   .atmosphere-gallery img{
-    flex: 0 0 78%; width: 78%; height: 340px;
+    flex: 0 0 78%; width: 78%; aspect-ratio: 4 / 3; height: auto;
     scroll-snap-align: center;
   }
+  /* portrait source at 4:3 crops ~20% off top and bottom by default --
+     fine at the top (that's blurred background), but centred crop would
+     clip the fingers holding the cup at the bottom, so bias the window up */
+  .atmosphere-gallery img[src*="latte-art-cup"]{ object-position: 50% 25%; }
 
   .atmosphere-dots{
     display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.25rem;
@@ -715,7 +750,7 @@ a{ color: inherit; text-decoration: none; }
   .atmosphere-dot.is-active{ background: var(--gold); transform: scale(1.35); }
 }
 @media (max-width: 480px){
-  .atmosphere-gallery img{ flex-basis: 86%; width: 86%; height: 300px; }
+  .atmosphere-gallery img{ flex-basis: 86%; width: 86%; }
 }
 
 /* ================= Visit ================= */
@@ -1196,6 +1231,33 @@ body.veil-out.veil-leave .page-veil img{
 
 .price-categories{ background: var(--panel); padding: 3.5rem 0 6rem; }
 
+.price-search{
+  position: relative; display: flex; align-items: center; gap: 0.7rem;
+  margin: 0 0 1.5rem;
+  padding: 0.85em 1.1em;
+  background: rgba(23,17,13,0.4); border: var(--edge); border-radius: 999px;
+}
+.price-search-icon{ flex: none; width: 18px; height: 18px; fill: none; stroke: rgba(244,236,219,0.5); stroke-width: 1.8; stroke-linecap: round; }
+.price-search input{
+  flex: 1; min-width: 0;
+  background: none; border: none; outline: none;
+  font-family: var(--font-ui); font-size: 0.95rem; color: var(--cream);
+}
+.price-search input::placeholder{ color: rgba(244,236,219,0.4); }
+.price-search input::-webkit-search-cancel-button{ cursor: pointer; }
+.price-search-count{
+  flex: none; font-size: 0.78rem; color: rgba(244,236,219,0.5); white-space: nowrap;
+}
+
+.price-notice{
+  display: flex; flex-direction: column; gap: 0.5rem;
+  margin: 0 0 2.5rem; padding: 1rem 1.25rem;
+  border: 1px solid rgba(201,160,99,0.25); border-radius: 10px;
+  background: rgba(201,160,99,0.05);
+}
+.price-notice p{ margin: 0; font-size: 0.82rem; line-height: 1.5; color: rgba(244,236,219,0.65); }
+.price-notice strong{ color: var(--gold-soft); }
+
 .price-category{ border-bottom: 1px solid rgba(201,160,99,0.15); scroll-margin-top: 128px; }
 .price-category:first-of-type{ border-top: 1px solid rgba(201,160,99,0.15); }
 .price-category summary{
@@ -1267,6 +1329,12 @@ body.veil-out.veil-leave .page-veil img{
 .price-item-name{ flex: 1; }
 .price-item-name strong{ font-weight: 500; color: var(--cream); }
 .price-item-name em{ display: block; font-style: normal; font-size: 0.78rem; color: rgba(244,236,219,0.5); margin-top: 0.15rem; }
+.price-item-tag{
+  display: inline-block; margin-left: 0.6em;
+  font-family: var(--font-ui); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--gold-soft); background: rgba(201,160,99,0.1); border: 1px solid rgba(201,160,99,0.3);
+  border-radius: 999px; padding: 0.2em 0.7em; vertical-align: middle;
+}
 
 /* ================= Politika privatnosti ================= */
 .legal{ background: var(--panel); padding: 4rem 0 6rem; }
@@ -1324,45 +1392,28 @@ body.veil-out.veil-leave .page-veil img{
 }
 
 /* ================= Galerija (dedicated page) =================
-   a true 3x3 grid: three rows of three square tiles. each tile is a
-   sealed "window" cycling through 3 photos every 3.5s -- row 1 and 3
-   glide upward, row 2 glides downward, so the whole grid reads as a
-   living mosaic rather than nine tiles doing the same thing at once. */
-/* the whole page IS the grid — no title, no copy, nav up top and the
-   mosaic fills the rest of the viewport (and gracefully scrolls instead
-   of clipping on short screens; a 3x3 grid of real photos can't be
-   forced into every viewport height without cropping tiles). */
+   twelve square tiles in one CSS grid, no row wrappers -- column count
+   (and so row count) just changes by breakpoint: 4 cols/3 rows wide,
+   3 cols/4 rows tablet, 2 cols/6 rows phone, all clean divisions of 12
+   so nothing needs hiding at any width. each tile is a sealed "window"
+   cycling between 2 photos every ~5s; assets/js/gallery.js picks which
+   tile moves and which direction independently and at random per tile,
+   so the grid reads as a living mosaic rather than uniform rows. */
 .gallery-page{
   background: var(--ink);
-  /* .site-nav is position:fixed, so it's out of normal flow and doesn't
-     push this section down on its own -- the old min-height here (just
-     100svh minus the nav height, no offset) left the grid's top edge
-     rendering right underneath the translucent fixed bar, so the top
-     row read as cropped/covered. padding-top now does the actual
-     clearing; min-height + the padding subtracted from gallery-grid's
-     width below is what keeps the square grid still fitting on screen
-     without a scroll. */
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-  padding: calc(var(--nav-h, 72px) + 1rem) 0 1.5rem;
+  /* .site-nav is position:fixed and out of normal flow, so it doesn't
+     push this section down on its own -- padding-top clears it. this
+     page scrolls now (12 tiles is taller than one screen on most
+     devices), which is fine: it's a proper gallery page, not a single-
+     glance mosaic anymore. */
+  padding: calc(var(--nav-h, 72px) + 2rem) 0 4rem;
 }
 .gallery-grid{
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  /* a 3x3 grid of equal-gap square tiles is always exactly as tall as it
-     is wide, so capping width by the shorter of "available width" and
-     "available height below the nav" keeps all 9 tiles on screen on
-     both wide-short (laptop) and narrow-tall (phone) viewports without
-     ever needing to scroll to see the whole mosaic. */
-  width: min(920px, 92vw, calc(100svh - var(--nav-h, 72px) - 2.5rem));
-  margin: 0 auto;
-}
-.gallery-row{
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
+  width: min(1400px, 94vw);
+  margin: 0 auto;
 }
 .gallery-tile{
   aspect-ratio: 1 / 1;
@@ -1382,26 +1433,21 @@ body.veil-out.veil-leave .page-veil img{
   filter: saturate(1.05) contrast(1.03);
 }
 /* direction and timing are owned by assets/js/gallery.js, not CSS: each
-   tile holds a photo ~2.9s then glides 0.6s to a *randomly* chosen one of
-   the other two (so which tile moves, and whether it glides up or down,
-   differs every time) -- a fixed CSS @keyframes loop can't do that, only
-   ever the one direction it was authored with. JS checks prefers-reduced-
-   motion itself and simply never starts the cycle when it's set; this
-   rule is just a safety net against a stray inline transform. */
+   tile holds a photo, then glides to the *other* one of its pair at a
+   randomised moment (so which tile moves next differs every time) -- a
+   fixed CSS @keyframes loop can't do that, only ever the one direction
+   it was authored with. JS checks prefers-reduced-motion itself and
+   simply never starts the cycle when it's set; this rule is just a
+   safety net against a stray inline transform. */
 @media (prefers-reduced-motion: reduce){
   .gallery-tile-strip{ transition: none; }
 }
+@media (max-width: 1024px){
+  .gallery-grid{ grid-template-columns: repeat(3, 1fr); }
+}
 @media (max-width: 640px){
-  /* 2x3 instead of 3x3 -- three columns of photos reads as cramped on a
-     phone, so each row drops its third tile rather than shrinking all
-     three (the flip direction per row is unaffected). */
-  .gallery-page{ padding: 1.2rem 0; }
-  /* 2 columns x 3 rows is taller than wide (~1.5x) rather than square,
-     so the height-based cap has to divide by that ratio instead of
-     reusing the square-grid math from the desktop 3x3 layout above. */
-  .gallery-grid{ gap: 0.7rem; width: min(94vw, calc((100svh - var(--nav-h, 64px) - 2.5rem) / 1.5)); }
-  .gallery-row{ grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
-  .gallery-tile:nth-child(3){ display: none; }
+  .gallery-page{ padding: calc(var(--nav-h, 64px) + 1.2rem) 0 3rem; }
+  .gallery-grid{ grid-template-columns: repeat(2, 1fr); gap: 0.7rem; width: min(94vw, 480px); }
 }
 
 /* ================= Mobile: less scrolling, same content =================

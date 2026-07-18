@@ -353,13 +353,16 @@
   var counters = document.querySelectorAll('[data-count-to]');
   if (counters.length) {
     if (prefersReduced || !('IntersectionObserver' in window)) {
-      counters.forEach(function(el){ el.textContent = el.getAttribute('data-count-to'); });
+      /* no JS-driven animation in this branch anyway -- HTML already
+         shows the real (reserve or fetched) number at rest, so there's
+         nothing to do here now */
     } else {
       var countObserver = new IntersectionObserver(function(entries){
         entries.forEach(function(entry){
           if (!entry.isIntersecting) return;
           var el = entry.target;
           var target = parseInt(el.getAttribute('data-count-to'), 10);
+          el.textContent = '0';
           var start = performance.now();
           var duration = 1400;
           function tick(now){

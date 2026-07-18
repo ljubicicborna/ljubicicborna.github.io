@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=20">
+<link rel="stylesheet" href="assets/css/styles.css?v=24">
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -38,6 +38,7 @@
     </a>
     <nav class="nav-links" aria-label="Primarna navigacija">
       <a href="lokacija.html">Lokacija</a>
+      <a href="zaposlenje.html">Zapošljavanje</a>
     </nav>
     <a href="cjenik.html" class="btn btn-gold btn-small">Otvori katalog</a>
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Otvori izbornik">
@@ -46,6 +47,7 @@
   </div>
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primarna navigacija (mobilna)">
     <a href="lokacija.html">Lokacija</a>
+    <a href="zaposlenje.html">Zapošljavanje</a>
     <a href="cjenik.html" class="btn btn-gold">Otvori katalog</a>
   </nav>
 </header>
@@ -55,77 +57,78 @@
   <h1 class="visually-hidden">Galerija — Hedonist Bar Osijek</h1>
 
   <section class="gallery-page">
-    <div class="gallery-grid" role="region" aria-label="Galerija fotografija u mreži, slike se izmjenjuju svake 3.5 sekunde">
+    <div class="gallery-grid" role="region" aria-label="Galerija fotografija u mreži, slike se izmjenjuju otprilike svakih 5 sekundi">
 
-      <div class="gallery-row">
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/monogram-bottles-disco.jpg" alt="Hedonist znak, boce i disco rasvjeta u pozadini." loading="lazy">
-            <img src="assets/images/gallery/novosti-purple-glasses.jpg" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/whiskey-cigar.webp" alt="" aria-hidden="true" loading="lazy">
-          </div>
-        </div>
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/terrace-facade.jpg" alt="Terasa Hedonista danju, ispred zgrade na Vukovarskoj." loading="lazy">
-            <img src="assets/images/gallery/mason-jars-sun.webp" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/terrace-day.webp" alt="" aria-hidden="true" loading="lazy">
-          </div>
-        </div>
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/bartender-crafting.jpg" alt="Barmen priprema koktel na šanku, gosti u pozadini." loading="lazy">
-            <img src="assets/images/gallery/cocktail-row.jpg" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/cocktail-flight.webp" alt="" aria-hidden="true" loading="lazy">
-          </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/monogram-bottles-disco.jpg" alt="Hedonist znak, boce i disco rasvjeta u pozadini." loading="lazy">
+          <img src="assets/images/gallery/mason-jars-sun.webp" alt="" aria-hidden="true" loading="lazy">
         </div>
       </div>
-
-      <div class="gallery-row">
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/novosti-pouring-shots.jpg" alt="Barmen toči piće u čašice pod šarenim svjetlima bara." loading="lazy">
-            <img src="assets/images/gallery/pouring-shot-bar.jpg" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/pouring-shot.webp" alt="" aria-hidden="true" loading="lazy">
-          </div>
-        </div>
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/martini-lineup.jpg" alt="Martini čaše na šanku pod plavim svjetlom." loading="lazy">
-            <img src="assets/images/gallery/whiskey-lineup.webp" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/beer-lineup.jpg" alt="" aria-hidden="true" loading="lazy">
-          </div>
-        </div>
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/dj-set-motion.jpg" alt="DJ mikser s vučenim svjetlosnim tragovima u Hedonistu navečer." loading="lazy">
-            <img src="assets/images/gallery/disco-ball-bar.jpg" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/live-music-bw.webp" alt="" aria-hidden="true" loading="lazy">
-          </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/terrace-facade.jpg" alt="Terasa Hedonista danju, ispred zgrade na Vukovarskoj." loading="lazy">
+          <img src="assets/images/gallery/terrace-day.webp" alt="" aria-hidden="true" loading="lazy">
         </div>
       </div>
-
-      <div class="gallery-row">
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/whiskey-cigar-smoke.jpg" alt="Čaša viskija i cigara s dimom, u toplom svjetlu bara." loading="lazy">
-            <img src="assets/images/gallery/beer-tap-badges.jpg" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/kava-priprema-poster.jpg" alt="" aria-hidden="true" loading="lazy">
-          </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/whiskey-lineup.webp" alt="Niz Johnnie Walker viski boca poredanih na stolu." loading="lazy">
+          <img src="assets/images/gallery/mason-jars-sun.webp" alt="" aria-hidden="true" loading="lazy">
         </div>
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/latte-art-cup.jpg" alt="Ruke drže šalicu kave s latte-art uzorkom." loading="lazy">
-            <img src="assets/images/gallery/latte-art.webp" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/hero-bar.webp" alt="" aria-hidden="true" loading="lazy">
-          </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/novosti-pouring-shots.jpg" alt="Barmen toči piće u čašice pod šarenim svjetlima bara." loading="lazy">
+          <img src="assets/images/gallery/pouring-shot-bar.jpg" alt="" aria-hidden="true" loading="lazy">
         </div>
-        <div class="gallery-tile">
-          <div class="gallery-tile-strip">
-            <img src="assets/images/gallery/terrace-people.jpg" alt="Gosti za stolovima na terasi Hedonista, ispred zgrade na Vukovarskoj." loading="lazy">
-            <img src="assets/images/gallery/bar-interior-glow.jpg" alt="" aria-hidden="true" loading="lazy">
-            <img src="assets/images/gallery/interior-wide-empty.webp" alt="" aria-hidden="true" loading="lazy">
-          </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/martini-lineup.jpg" alt="Martini čaše na šanku pod plavim svjetlom." loading="lazy">
+          <img src="assets/images/gallery/cocktail-flight.webp" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/dj-set-motion.jpg" alt="DJ mikser s vučenim svjetlosnim tragovima u Hedonistu navečer." loading="lazy">
+          <img src="assets/images/gallery/live-music-bw.webp" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/whiskey-cigar-smoke.jpg" alt="Čaša viskija i cigara s dimom, u toplom svjetlu bara." loading="lazy">
+          <img src="assets/images/gallery/interior-wide-empty.webp" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/latte-art-cup.jpg" alt="Ruke drže šalicu kave s latte-art uzorkom." loading="lazy">
+          <img src="assets/images/gallery/kava-priprema-poster.jpg" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/hero-bar.webp" alt="Šank s reljefnom metalnom oplatom i osvijetljenim Hedonist znakom." loading="lazy">
+          <img src="assets/images/gallery/terrace-day.webp" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/cocktail-row.jpg" alt="Niz raznobojnih koktela na šanku, sa slamkama i limunom." loading="lazy">
+          <img src="assets/images/gallery/beer-tap-badges.jpg" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/beer-lineup.jpg" alt="Niz čaša piva različitih vrsta poredanih na šanku." loading="lazy">
+          <img src="assets/images/gallery/bar-interior-glow.jpg" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+      <div class="gallery-tile">
+        <div class="gallery-tile-strip">
+          <img src="assets/images/gallery/disco-ball-bar.jpg" alt="Disco kugla iznad šanka, noćna atmosfera Hedonista." loading="lazy">
+          <img src="assets/images/gallery/novosti-purple-glasses.jpg" alt="" aria-hidden="true" loading="lazy">
         </div>
       </div>
 
@@ -157,6 +160,7 @@
       <a href="cjenik.html">Katalog</a>
       <a href="lokacija.html">Lokacija</a>
       <a href="zaposlenje.html">Zapošljavanje</a>
+      <a href="privatnost.html#impressum">Impressum</a>
     </nav>
     <div class="footer-social">
       <a href="https://www.instagram.com/hedonistbarosijek/" target="_blank" rel="noopener" aria-label="Hedonist Bar na Instagramu">
@@ -171,7 +175,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=11"></script>
-<script src="assets/js/gallery.js?v=1"></script>
+<script src="assets/js/main.js?v=12"></script>
+<script src="assets/js/gallery.js?v=2"></script>
 </body>
 </html>

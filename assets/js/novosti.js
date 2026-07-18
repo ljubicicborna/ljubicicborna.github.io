@@ -24,8 +24,8 @@
   /* "vrsta" je tip zaposlenja (Stalno/Studentski), ne uloga -- slika se
      zato bira po naslovu oglasa (npr. "Tražimo barmena/icu") */
   var JOB_IMAGES = [
-    { test: /barmen|šank/i, src: 'bartender-crafting.jpg' },
-    { test: /konobar/i, src: 'terrace-people.jpg' },
+    { test: /barmen|šank/i, src: 'pouring-shot-bar.jpg' },
+    { test: /konobar/i, src: 'terrace-day.webp' },
     { test: /kuhar|kuhinj/i, src: 'novosti-pouring-shots.jpg' }
   ];
   var JOB_FALLBACK = 'pouring-shot-bar.jpg';

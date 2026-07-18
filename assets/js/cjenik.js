@@ -202,11 +202,63 @@
     }
   }
 
+  /* ---- pretraga: 300+ stavki iza samih sidra na desktopu je podnošljivo,
+     na mobitelu je scroll-kroz-sve mučenje -- filtrira po nazivu i
+     sastojcima, otvara sve kategorije dok se traži i vraća ih na
+     "samo prva otvorena" kad se pretraga isprazni ---- */
+  function setupSearch(){
+    var input = document.getElementById('price-search-input');
+    var countEl = document.getElementById('price-search-count');
+    if (!input) return;
+
+    var categories = document.querySelectorAll('.price-category');
+    var wasOpen = null;
+
+    function norm(s){
+      return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    }
+
+    function run(){
+      var q = norm(input.value.trim());
+      var items = document.querySelectorAll('.price-item');
+
+      if (!q) {
+        items.forEach(function(item){ item.hidden = false; });
+        document.querySelectorAll('.price-group, .price-category').forEach(function(el){ el.hidden = false; });
+        if (wasOpen) { categories.forEach(function(d){ d.open = false; }); wasOpen.open = true; wasOpen = null; }
+        if (countEl) countEl.textContent = '';
+        return;
+      }
+
+      if (wasOpen === null) {
+        wasOpen = Array.prototype.find.call(categories, function(d){ return d.open; }) || null;
+        categories.forEach(function(d){ d.open = true; });
+      }
+
+      var matches = 0;
+      items.forEach(function(item){
+        var hit = norm(item.textContent).indexOf(q) !== -1;
+        item.hidden = !hit;
+        if (hit) matches++;
+      });
+      document.querySelectorAll('.price-group').forEach(function(g){
+        g.hidden = !g.querySelector('.price-item:not([hidden])');
+      });
+      categories.forEach(function(c){
+        c.hidden = !c.querySelector('.price-item:not([hidden])');
+      });
+      if (countEl) countEl.textContent = matches === 0 ? 'Nema rezultata' : (matches + (matches === 1 ? ' rezultat' : ' rezultata'));
+    }
+
+    input.addEventListener('input', run);
+  }
+
   fetch('/api/cjenik')
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
     .then(function(data){
       if (data && Array.isArray(data.kategorije) && data.kategorije.length) build(data);
       enhance();
+      setupSearch();
     })
-    .catch(function(){ enhance(); });
+    .catch(function(){ enhance(); setupSearch(); });
 })();
