@@ -479,6 +479,51 @@
     galleryImages.forEach(function(img){ dotObserver.observe(img); });
   }
 
+  /* ---- atmosphere galerija: klik na fotku otvara je uvećano (ne
+     preko cijelog zaslona, samo znatno veće) -- isti vizualni stil kao
+     lightbox na /galerija.html (.gallery-lightbox u styles.css). ---- */
+  (function atmosphereLightbox(){
+    var overlay = document.getElementById('atmosphere-lightbox');
+    if (!overlay || !gallery) return;
+    var lbImg = overlay.querySelector('.gallery-lightbox-img');
+    var lbClose = overlay.querySelector('.gallery-lightbox-close');
+    var lastFocused = null;
+
+    function open(img){
+      lbImg.src = img.currentSrc || img.src;
+      lbImg.alt = img.alt || '';
+      lastFocused = document.activeElement;
+      overlay.hidden = false;
+      document.body.classList.add('gallery-lightbox-open');
+      lbClose.focus();
+    }
+
+    function close(){
+      if (overlay.hidden) return;
+      overlay.hidden = true;
+      document.body.classList.remove('gallery-lightbox-open');
+      lbImg.src = '';
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+    }
+
+    gallery.querySelectorAll('img').forEach(function(img){
+      img.style.cursor = 'pointer';
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.setAttribute('aria-label', 'Otvori fotografiju uvećano');
+      img.addEventListener('click', function(){ open(img); });
+      img.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(img); }
+      });
+    });
+
+    lbClose.addEventListener('click', close);
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && !overlay.hidden) close();
+    });
+  })();
+
   if (prefersReduced || !('IntersectionObserver' in window)) {
     document.querySelectorAll('.will-reveal').forEach(function(el){ el.classList.add('is-visible'); });
     return;

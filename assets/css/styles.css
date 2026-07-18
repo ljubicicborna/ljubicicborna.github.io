@@ -1458,14 +1458,16 @@ body.veil-out.veil-leave .page-veil img{
 .gallery-tile{ cursor: pointer; }
 .gallery-tile:focus-visible{ outline: 2px solid var(--azure); outline-offset: 2px; }
 
-/* ================= Galerija: uvećana fotografija (lightbox) =================
-   klik na pločicu zaustavlja izmjenu fotki u svim pločicama (assets/js/gallery.js
-   pauzira cikluse) i prikazuje trenutno vidljivu fotku preko cijelog zaslona;
-   zatvaranjem (X, klik izvan fotke ili Esc) izmjena se nastavlja. */
+/* ================= Uvećana fotografija (lightbox) =================
+   dijeli ga /galerija.html (klik na pločicu zaustavlja izmjenu fotki,
+   assets/js/gallery.js) i naslovnica (klik na fotku u sekciji Atmosfera,
+   assets/js/main.js) -- namjerno NIJE preko cijelog zaslona, nego samo
+   znatno uvećano s vidljivim tamnim rubom oko fotke; zatvaranjem (X,
+   klik izvan fotke ili Esc) se vraća na prethodno stanje. */
 .gallery-lightbox{
   position: fixed; inset: 0; z-index: 400;
   display: flex; align-items: center; justify-content: center;
-  padding: 2rem;
+  padding: 4vh 5vw;
   background: rgba(23,17,13,0.92);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -1473,7 +1475,7 @@ body.veil-out.veil-leave .page-veil img{
 }
 .gallery-lightbox[hidden]{ display: none; }
 .gallery-lightbox-img{
-  max-width: min(1100px, 100%); max-height: 100%;
+  max-width: 100%; max-height: 100%;
   width: auto; height: auto;
   border-radius: 14px;
   box-shadow: 0 30px 70px -25px rgba(0,0,0,0.75);
