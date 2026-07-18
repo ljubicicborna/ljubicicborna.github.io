@@ -1,5 +1,5 @@
 /* =====================================================================
-   I18N — jezični prekidač (HR zadano, EN/DE dostupni preko klika/+)
+   I18N — jezični prekidač (HR zadano; klik na zastavicu kruži HR→EN→DE→HR)
    ---------------------------------------------------------------------
    - Hrvatski tekst ostaje izravno u HTML-u (zadano stanje, bez mreže).
    - EN/DE dolaze iz assets/i18n/en.json i assets/i18n/de.json, primijenjeno
@@ -68,13 +68,19 @@
     });
   }
 
+  var ARIA_LABELS = {
+    hr: 'Trenutni jezik: hrvatski. Klikni za engleski.',
+    en: 'Current language: English. Click for German.',
+    de: 'Aktuelle Sprache: Deutsch. Klicken für Kroatisch.'
+  };
+
   function updateSwitcherUI(lang){
     document.querySelectorAll('.lang-switch').forEach(function(box){
-      var currentFlag = box.querySelector('.lang-switch-btn .lang-flag');
-      if (currentFlag) currentFlag.setAttribute('data-flag', lang);
-      box.querySelectorAll('[data-lang]').forEach(function(opt){
-        opt.setAttribute('aria-current', opt.getAttribute('data-lang') === lang ? 'true' : 'false');
-      });
+      var btn = box.querySelector('.lang-switch-btn');
+      if (!btn) return;
+      var flag = btn.querySelector('.lang-flag');
+      if (flag) flag.setAttribute('data-flag', lang);
+      btn.setAttribute('aria-label', ARIA_LABELS[lang] || ARIA_LABELS[DEFAULT_LANG]);
     });
   }
 
@@ -88,38 +94,21 @@
     });
   }
 
-  function closeAllMenus(except){
-    document.querySelectorAll('.lang-switch-menu').forEach(function(menu){
-      if (menu !== except) {
-        menu.hidden = true;
-        var btn = menu.previousElementSibling;
-        if (btn) btn.setAttribute('aria-expanded', 'false');
-      }
-    });
+  /* jedan klik na zastavicu odmah prebacuje na sljedeći jezik u krugu —
+     nema padajućeg izbornika, nema drugog klika koji nešto "ne napravi" */
+  function nextLang(current){
+    var i = SUPPORTED.indexOf(current);
+    return SUPPORTED[(i + 1) % SUPPORTED.length];
   }
 
   function initSwitcher(){
     document.querySelectorAll('.lang-switch').forEach(function(box){
       var btn = box.querySelector('.lang-switch-btn');
-      var menu = box.querySelector('.lang-switch-menu');
-      if (!btn || !menu) return;
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
-        var willOpen = menu.hidden;
-        closeAllMenus(willOpen ? menu : null);
-        menu.hidden = !willOpen;
-        btn.setAttribute('aria-expanded', String(willOpen));
-      });
-      menu.querySelectorAll('[data-lang]').forEach(function(opt){
-        opt.addEventListener('click', function(){
-          setLang(opt.getAttribute('data-lang'));
-          menu.hidden = true;
-          btn.setAttribute('aria-expanded', 'false');
-        });
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        setLang(nextLang(getLang()));
       });
     });
-    document.addEventListener('click', function(){ closeAllMenus(null); });
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeAllMenus(null); });
   }
 
   /* t(key, fallback) — dohvati statični prijevod izravno iz učitanog
