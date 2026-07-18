@@ -15,32 +15,51 @@
     return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  function pick(field){ return window.HedonistI18n ? window.HedonistI18n.pick(field) : (typeof field === 'string' ? field : ''); }
+
+  var VRSTA_LABELS = {
+    en: { 'Stalno': 'Full-time', 'Studentski': 'Student job' },
+    de: { 'Stalno': 'Festanstellung', 'Studentski': 'Studentenjob' }
+  };
+  function translateVrsta(v){
+    var lang = window.HedonistI18n ? window.HedonistI18n.lang() : 'hr';
+    return (VRSTA_LABELS[lang] && VRSTA_LABELS[lang][v]) || v;
+  }
+
+  var lastData = null;
+
   function render(data){
+    lastData = data;
     var active = (data.pozicije || []).filter(function(p){ return p.aktivno; });
     if (!active.length) return;
     active.sort(function(a, b){ return (a.datum || '') < (b.datum || '') ? 1 : -1; });
 
     section.removeAttribute('hidden');
+    var ctaLabel = window.HedonistI18n ? window.HedonistI18n.t('zaposlenje.form.submit_short', 'Prijavi se') : 'Prijavi se';
     list.innerHTML = active.map(function(p){
+      var naslov = pick(p.naslov);
+      var opis = pick(p.opis);
       return '' +
         '<article class="job-ad-card">' +
           '<div class="job-ad-head">' +
-            '<span class="job-ad-badge">' + esc(p.vrsta || 'Posao') + '</span>' +
+            '<span class="job-ad-badge">' + esc(translateVrsta(p.vrsta) || 'Posao') + '</span>' +
             (p.satnica ? '<span class="job-ad-wage">' + esc(p.satnica) + ' €/h</span>' : '') +
           '</div>' +
-          '<h3 class="job-ad-title">' + esc(p.naslov) + '</h3>' +
-          (p.opis ? '<p class="job-ad-desc">' + esc(p.opis) + '</p>' : '') +
-          '<a class="job-ad-cta" href="#job-form">Prijavi se <span aria-hidden="true">→</span></a>' +
+          '<h3 class="job-ad-title">' + esc(naslov) + '</h3>' +
+          (opis ? '<p class="job-ad-desc">' + esc(opis) + '</p>' : '') +
+          '<a class="job-ad-cta" href="#job-form">' + esc(ctaLabel) + ' <span aria-hidden="true">→</span></a>' +
         '</article>';
     }).join('');
 
     var ld = active.map(function(p){
       var wage = parseFloat(String(p.satnica || '').replace(',', '.'));
+      var naslov = pick(p.naslov);
+      var opis = pick(p.opis);
       var out = {
         '@context': 'https://schema.org',
         '@type': 'JobPosting',
-        title: p.naslov,
-        description: p.opis || p.naslov,
+        title: naslov,
+        description: opis || naslov,
         datePosted: p.datum,
         employmentType: p.vrsta === 'Studentski' ? 'PART_TIME' : 'FULL_TIME',
         hiringOrganization: {
@@ -69,8 +88,11 @@
       return out;
     });
 
+    var oldLd = document.getElementById('ld-jobposting');
+    if (oldLd) oldLd.remove();
     var script = document.createElement('script');
     script.type = 'application/ld+json';
+    script.id = 'ld-jobposting';
     script.textContent = JSON.stringify(ld.length === 1 ? ld[0] : ld);
     document.head.appendChild(script);
   }
@@ -79,6 +101,10 @@
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
     .then(render)
     .catch(function(){ /* sekcija ostaje sakrivena */ });
+
+  document.addEventListener('hedonist:langchange', function(){
+    if (lastData) render(lastData);
+  });
 
   if (new URLSearchParams(location.search).has('poslano')) {
     var success = document.getElementById('job-success');

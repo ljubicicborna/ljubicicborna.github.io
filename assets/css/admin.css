@@ -167,6 +167,17 @@ textarea{ resize: vertical; min-height: 84px; }
 .field{ display: grid; gap: 0.25rem; }
 .field label{ font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(244,236,219,0.55); }
 .field-grid{ display: grid; gap: 0.6rem; }
+
+/* jedno prevedivo polje = HR/EN/DE retci jedan ispod drugog */
+.lang-field{ display: grid; gap: 0.35rem; }
+.lang-row{ display: grid; grid-template-columns: 32px 1fr; gap: 0.5rem; align-items: start; }
+.lang-tag{
+  display: flex; align-items: center; justify-content: center;
+  height: 38px; border-radius: 8px;
+  background: rgba(201,160,99,0.14); color: var(--gold-soft);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+}
+.lang-row textarea{ min-height: 60px; }
 @media (min-width: 640px){
   .field-grid{ grid-template-columns: 1fr 1fr; }
   .field-wide{ grid-column: 1 / -1; }

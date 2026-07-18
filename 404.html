@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Jost:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/styles.css?v=24">
+<script src="/assets/js/i18n.js?v=1"></script>
 <style>
   .nf{ min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem 1.5rem; }
   .nf img{ width: 88px; height: auto; margin-bottom: 2rem; opacity: 0.9; }
@@ -22,12 +23,22 @@
 </head>
 <body>
 <main class="nf">
+  <div class="lang-switch" id="lang-switch" style="margin: 0 0 2rem; order: 0;">
+    <button type="button" class="lang-switch-btn" aria-haspopup="true" aria-expanded="false" aria-label="Odaberi jezik / Choose language / Sprache wählen">
+      <span class="lang-flag" data-flag="hr" aria-hidden="true"></span>
+    </button>
+    <div class="lang-switch-menu" hidden>
+      <button type="button" data-lang="hr" aria-current="true"><span class="lang-flag" data-flag="hr" aria-hidden="true"></span>Hrvatski</button>
+      <button type="button" data-lang="en"><span class="lang-flag" data-flag="en" aria-hidden="true"></span>English</button>
+      <button type="button" data-lang="de"><span class="lang-flag" data-flag="de" aria-hidden="true"></span>Deutsch</button>
+    </div>
+  </div>
   <img src="/assets/images/monogram.png" alt="" aria-hidden="true">
   <h1 class="nf-code">404</h1>
-  <p>Ova stranica ne postoji — ali bar postoji. Vratite se na početnu ili pogledajte katalog ponude.</p>
+  <p data-i18n="notfound.copy">Ova stranica ne postoji — ali bar postoji. Vratite se na početnu ili pogledajte katalog ponude.</p>
   <div class="hero-actions">
-    <a href="/" class="btn btn-gold">Početna</a>
-    <a href="/cjenik.html" class="btn btn-outline">Katalog</a>
+    <a href="/" class="btn btn-gold" data-i18n="notfound.home">Početna</a>
+    <a href="/cjenik.html" class="btn btn-outline" data-i18n="footer.katalog">Katalog</a>
   </div>
 </main>
 </body>

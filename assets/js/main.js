@@ -12,6 +12,8 @@
   (function cookies(){
     var CONSENT_KEY = 'hedonistCookieConsent';
 
+    function t(key, fallback){ return window.HedonistI18n ? window.HedonistI18n.t(key, fallback) : fallback; }
+
     function loadGA(){
       fetch('/api/ga').then(function(r){ return r.json(); }).then(function(d){
         if (!d.id || document.getElementById('ga4-script')) return;
@@ -64,21 +66,35 @@
 
     var banner = null;
 
+    /* prijevodi za banner dohvaćaju se tek kod (ponovnog) iscrtavanja, ne
+       jednom pri učitavanju skripte, jer se jezik može promijeniti nakon
+       što je banner već izgrađen (vidi hedonist:langchange niže) */
+    function bannerStrings(){
+      return {
+        title: t('cookie.title', 'Kolačići'),
+        textHtml: t('cookie.text_html', 'Koristimo analitičke kolačiće da vidimo koje stranice ljudi posjećuju — ništa se ne dijeli s oglašivačima. Možeš prihvatiti ili nastaviti bez njih. Detalji u <a href="privatnost.html" target="_blank" rel="noopener">politici privatnosti</a>.'),
+        accept: t('cookie.accept', 'Prihvaćam'),
+        decline: t('cookie.decline', 'Samo nužno'),
+        ariaLabel: t('cookie.aria_label', 'Postavke kolačića')
+      };
+    }
+
     function buildBanner(){
       if (banner) return banner;
+      var s = bannerStrings();
       banner = document.createElement('div');
       banner.className = 'cookie-banner';
       banner.setAttribute('role', 'dialog');
-      banner.setAttribute('aria-label', 'Postavke kolačića');
+      banner.setAttribute('aria-label', s.ariaLabel);
       banner.innerHTML =
         '<div class="cookie-card">' +
           '<span class="cookie-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="15" r="1" fill="currentColor" stroke="none"/></svg></span>' +
           '<div class="cookie-body">' +
-            '<p class="cookie-title">Kolačići</p>' +
-            '<p class="cookie-text">Koristimo analitičke kolačiće da vidimo koje stranice ljudi posjećuju — ništa se ne dijeli s oglašivačima. Možeš prihvatiti ili nastaviti bez njih. Detalji u <a href="privatnost.html" target="_blank" rel="noopener">politici privatnosti</a>.</p>' +
+            '<p class="cookie-title">' + s.title + '</p>' +
+            '<p class="cookie-text">' + s.textHtml + '</p>' +
             '<div class="cookie-actions">' +
-              '<button type="button" class="btn btn-gold" data-cookie="accept">Prihvaćam</button>' +
-              '<button type="button" class="btn btn-outline" data-cookie="decline">Samo nužno</button>' +
+              '<button type="button" class="btn btn-gold" data-cookie="accept">' + s.accept + '</button>' +
+              '<button type="button" class="btn btn-outline" data-cookie="decline">' + s.decline + '</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -93,6 +109,16 @@
         updateMaps();
       });
       return banner;
+    }
+
+    function refreshBannerText(){
+      if (!banner) return;
+      var s = bannerStrings();
+      banner.setAttribute('aria-label', s.ariaLabel);
+      banner.querySelector('.cookie-title').textContent = s.title;
+      banner.querySelector('.cookie-text').innerHTML = s.textHtml;
+      banner.querySelector('[data-cookie="accept"]').textContent = s.accept;
+      banner.querySelector('[data-cookie="decline"]').textContent = s.decline;
     }
 
     function showBanner(){
@@ -118,10 +144,16 @@
       var link = document.createElement('button');
       link.type = 'button';
       link.className = 'cookie-settings-link';
-      link.textContent = 'Kolačići';
+      link.textContent = t('cookie.title', 'Kolačići');
       link.addEventListener('click', showBanner);
       footerLinks.appendChild(link);
     }
+
+    document.addEventListener('hedonist:langchange', function(){
+      refreshBannerText();
+      var settingsLink = document.querySelector('.cookie-settings-link');
+      if (settingsLink) settingsLink.textContent = t('cookie.title', 'Kolačići');
+    });
   })();
 
   /* ---- tajni pristup CMS-u: drži (7s) logo gore lijevo na naslovnoj
@@ -288,18 +320,25 @@
   }
 
   /* ---- CMS tekstovi: elementi s data-cms="ključ" dobiju sadržaj
-     uređen na /admin.html; ako API ne radi, ostaje tekst iz HTML-a ---- */
+     uređen na /admin.html; polja su {hr,en,de} (ili plain string za staru
+     rezervu), pa se biraju po trenutnom jeziku i ponovno iscrtaju kad se
+     jezik promijeni. Ako API ne radi, ostaje tekst iz HTML-a. ---- */
   var cmsEls = document.querySelectorAll('[data-cms]');
   if (cmsEls.length) {
+    var cmsTekstovi = null;
+    var renderCms = function(){
+      if (!cmsTekstovi) return;
+      var pick = window.HedonistI18n ? window.HedonistI18n.pick : function(f){ return typeof f === 'string' ? f : ''; };
+      cmsEls.forEach(function(el){
+        var v = pick(cmsTekstovi[el.getAttribute('data-cms')]);
+        if (v) el.textContent = v;
+      });
+    };
     fetch('/api/tekstovi')
       .then(function(r){ if (!r.ok) throw 0; return r.json(); })
-      .then(function(t){
-        cmsEls.forEach(function(el){
-          var v = t[el.getAttribute('data-cms')];
-          if (typeof v === 'string' && v) el.textContent = v;
-        });
-      })
+      .then(function(t){ cmsTekstovi = t; renderCms(); })
       .catch(function(){ /* rezerva: statični tekst */ });
+    document.addEventListener('hedonist:langchange', renderCms);
   }
 
   /* ---- prijelaz među stranicama: zavjesa s monogramom prekrije ekran

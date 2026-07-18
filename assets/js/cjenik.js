@@ -14,11 +14,16 @@
     return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  /* ---- izgradnja popisa iz CMS podataka ---- */
+  function pick(field){
+    return window.HedonistI18n ? window.HedonistI18n.pick(field) : (typeof field === 'string' ? field : '');
+  }
+
+  /* ---- izgradnja popisa iz CMS podataka (naziv/opis su {hr,en,de} ili
+     plain string za staru rezervu) — bira se po trenutnom jeziku ---- */
   function build(data){
     if (navInner) {
       navInner.innerHTML = data.kategorije.map(function(c){
-        return '<a href="#' + esc(c.id) + '">' + esc(c.naziv) + '</a>';
+        return '<a href="#' + esc(c.id) + '">' + esc(pick(c.naziv)) + '</a>';
       }).join('');
       /* klik na pilulu mora otvoriti kategoriju (main.js je to vezao na
          stare linkove koji su upravo zamijenjeni) */
@@ -31,16 +36,18 @@
     }
     sectionInner.innerHTML = data.kategorije.map(function(c, i){
       return '<details class="price-category" id="' + esc(c.id) + '"' + (i === 0 ? ' open' : '') + '>' +
-        '<summary><span class="price-category-title">' + esc(c.naziv) + '</span>' +
+        '<summary><span class="price-category-title">' + esc(pick(c.naziv)) + '</span>' +
         '<svg class="price-category-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary>' +
         '<div class="price-category-body">' +
         c.grupe.map(function(g){
+          var gNaziv = pick(g.naziv);
           return '<div class="price-group">' +
-            (g.naziv ? '<h3 class="price-group-title">' + esc(g.naziv) + '</h3>' : '') +
+            (gNaziv ? '<h3 class="price-group-title">' + esc(gNaziv) + '</h3>' : '') +
             '<div class="price-items"' + (g.ikona ? ' data-icon="' + esc(g.ikona) + '"' : '') + '>' +
             g.stavke.map(function(s){
-              return '<div class="price-item"><div class="price-item-name"><strong>' + esc(s.naziv) + '</strong>' +
-                (s.opis ? '<em>' + esc(s.opis) + '</em>' : '') +
+              var sOpis = pick(s.opis);
+              return '<div class="price-item"><div class="price-item-name"><strong>' + esc(pick(s.naziv)) + '</strong>' +
+                (sOpis ? '<em>' + esc(sOpis) + '</em>' : '') +
                 '</div></div>';
             }).join('') +
             '</div></div>';
@@ -64,10 +71,10 @@
         hasMenuSection: data.kategorije.map(function(c){
           return {
             '@type': 'MenuSection',
-            name: c.naziv,
+            name: pick(c.naziv),
             hasMenuItem: c.grupe.reduce(function(items, g){
               return items.concat(g.stavke.map(function(s){
-                return { '@type': 'MenuItem', name: s.naziv };
+                return { '@type': 'MenuItem', name: pick(s.naziv) };
               }));
             }, [])
           };
@@ -206,20 +213,29 @@
      na mobitelu je scroll-kroz-sve mučenje -- filtrira po nazivu i
      sastojcima, otvara sve kategorije dok se traži i vraća ih na
      "samo prva otvorena" kad se pretraga isprazni ---- */
+  var searchBound = false;
   function setupSearch(){
     var input = document.getElementById('price-search-input');
     var countEl = document.getElementById('price-search-count');
     if (!input) return;
 
-    var categories = document.querySelectorAll('.price-category');
     var wasOpen = null;
 
     function norm(s){
       return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
     }
 
+    function resultsText(matches){
+      if (matches === 0) return window.HedonistI18n ? window.HedonistI18n.t('cjenik.no_results', 'Nema rezultata') : 'Nema rezultata';
+      if (window.HedonistI18n && window.HedonistI18n.lang() !== 'hr') {
+        return matches + ' ' + window.HedonistI18n.t('cjenik.results', 'rezultata');
+      }
+      return matches + (matches === 1 ? ' rezultat' : ' rezultata');
+    }
+
     function run(){
       var q = norm(input.value.trim());
+      var categories = document.querySelectorAll('.price-category');
       var items = document.querySelectorAll('.price-item');
 
       if (!q) {
@@ -247,18 +263,28 @@
       categories.forEach(function(c){
         c.hidden = !c.querySelector('.price-item:not([hidden])');
       });
-      if (countEl) countEl.textContent = matches === 0 ? 'Nema rezultata' : (matches + (matches === 1 ? ' rezultat' : ' rezultata'));
+      if (countEl) countEl.textContent = resultsText(matches);
     }
 
-    input.addEventListener('input', run);
+    if (!searchBound) { input.addEventListener('input', run); searchBound = true; }
+    else { input.value = ''; run(); }
   }
 
+  var cjenikData = null;
   fetch('/api/cjenik')
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
     .then(function(data){
-      if (data && Array.isArray(data.kategorije) && data.kategorije.length) build(data);
+      if (data && Array.isArray(data.kategorije) && data.kategorije.length) cjenikData = data;
+      if (cjenikData) build(cjenikData);
       enhance();
       setupSearch();
     })
     .catch(function(){ enhance(); setupSearch(); });
+
+  document.addEventListener('hedonist:langchange', function(){
+    if (!cjenikData) return;
+    build(cjenikData);
+    enhance();
+    setupSearch();
+  });
 })();

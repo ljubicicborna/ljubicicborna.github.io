@@ -3,39 +3,51 @@
 
 (function(){
   var FALLBACK_NAZIVI = {};
+  var nazivi = null;
+
+  function pick(field){
+    if (window.HedonistI18n) return window.HedonistI18n.pick(field);
+    return typeof field === 'string' ? field : '';
+  }
 
   fetch('/api/nazivi')
     .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
     .then(function(data){
       if (!data || typeof data !== 'object') return;
-      applyNazivi(data);
+      nazivi = data;
+      applyNazivi(nazivi);
     })
     .catch(function(){
       /* ako API zataji, koristi fallback — obavezno je hardkodirati u <head> kao prije */
     });
 
+  document.addEventListener('hedonist:langchange', function(){
+    if (nazivi) applyNazivi(nazivi);
+  });
+
   function applyNazivi(nazivi){
-    /* <title> tag — index.title, cjenik.title, itd. */
+    /* <title> tag — index.title, cjenik.title, itd. — polja su {hr,en,de}
+       (ili plain string za staru rezervu), biraju se po trenutnom jeziku */
     var titleKey = getTitleKey();
-    if (titleKey && nazivi[titleKey]) {
-      document.title = nazivi[titleKey];
-    }
+    var titleVal = titleKey ? pick(nazivi[titleKey]) : '';
+    if (titleVal) document.title = titleVal;
 
     /* <meta name="description"> */
     var metaDescKey = titleKey ? titleKey + '-meta-desc' : null;
-    if (metaDescKey && nazivi[metaDescKey]) {
+    var descVal = metaDescKey ? pick(nazivi[metaDescKey]) : '';
+    if (descVal) {
       var metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) metaDesc.setAttribute('content', nazivi[metaDescKey]);
+      if (metaDesc) metaDesc.setAttribute('content', descVal);
     }
 
     /* <meta property="og:title"> i og:description */
-    if (titleKey && nazivi[titleKey]) {
+    if (titleVal) {
       var ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) ogTitle.setAttribute('content', nazivi[titleKey]);
+      if (ogTitle) ogTitle.setAttribute('content', titleVal);
     }
-    if (metaDescKey && nazivi[metaDescKey]) {
+    if (descVal) {
       var ogDesc = document.querySelector('meta[property="og:description"]');
-      if (ogDesc) ogDesc.setAttribute('content', nazivi[metaDescKey]);
+      if (ogDesc) ogDesc.setAttribute('content', descVal);
     }
 
     /* nav linkovi */
@@ -52,29 +64,18 @@
   }
 
   function applyNavText(nazivi){
-    var nav = document.querySelector('.nav-links');
-    if (!nav) return;
-    var links = nav.querySelectorAll('a');
-    links.forEach(function(link){
-      var href = link.getAttribute('href');
-      if (href && href.includes('zaposlenje')) {
-        if (nazivi['nav.zaposlenje']) link.textContent = nazivi['nav.zaposlenje'];
-      } else if (href && href.includes('lokacija')) {
-        if (nazivi['nav.lokacija']) link.textContent = nazivi['nav.lokacija'];
-      }
-    });
+    var zaposlenje = pick(nazivi['nav.zaposlenje']);
+    var lokacija = pick(nazivi['nav.lokacija']);
+    if (!zaposlenje && !lokacija) return;
 
-    /* također u mobilnoj navigaciji */
-    var mobileNav = document.querySelector('.mobile-nav');
-    if (!mobileNav) return;
-    var mobileLinks = mobileNav.querySelectorAll('a');
-    mobileLinks.forEach(function(link){
-      var href = link.getAttribute('href');
-      if (href && href.includes('zaposlenje')) {
-        if (nazivi['nav.zaposlenje']) link.textContent = nazivi['nav.zaposlenje'];
-      } else if (href && href.includes('lokacija')) {
-        if (nazivi['nav.lokacija']) link.textContent = nazivi['nav.lokacija'];
-      }
+    ['.nav-links', '.mobile-nav'].forEach(function(sel){
+      var nav = document.querySelector(sel);
+      if (!nav) return;
+      nav.querySelectorAll('a').forEach(function(link){
+        var href = link.getAttribute('href');
+        if (zaposlenje && href && href.includes('zaposlenje')) link.textContent = zaposlenje;
+        else if (lokacija && href && href.includes('lokacija')) link.textContent = lokacija;
+      });
     });
   }
 })();

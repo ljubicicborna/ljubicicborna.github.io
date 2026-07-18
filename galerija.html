@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galerija — Hedonist Bar Osijek</title>
-<meta name="description" content="Pogledajte atmosferu Hedonist bara u Osijeku — kava, kokteli, pivo i noćni život na Vukovarskoj cesti.">
+<title data-i18n="meta.galerija.title">Galerija — Hedonist Bar Osijek</title>
+<meta name="description" content="Pogledajte atmosferu Hedonist bara u Osijeku — kava, kokteli, pivo i noćni život na Vukovarskoj cesti." data-i18n-attr="content:meta.galerija.desc">
 <meta name="theme-color" content="#17110d">
 <link rel="canonical" href="https://hedonist-bar.vercel.app/galerija.html">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="hr_HR">
 <meta property="og:site_name" content="Hedonist Bar Osijek">
-<meta property="og:title" content="Galerija — Hedonist Bar Osijek">
-<meta property="og:description" content="Pogledajte atmosferu Hedonist bara u Osijeku — kava, kokteli, pivo i noćni život na Vukovarskoj cesti.">
+<meta property="og:title" content="Galerija — Hedonist Bar Osijek" data-i18n-attr="content:meta.galerija.title">
+<meta property="og:description" content="Pogledajte atmosferu Hedonist bara u Osijeku — kava, kokteli, pivo i noćni život na Vukovarskoj cesti." data-i18n-attr="content:meta.galerija.desc">
 <meta property="og:url" content="https://hedonist-bar.vercel.app/galerija.html">
 <meta property="og:image" content="https://hedonist-bar.vercel.app/assets/images/gallery/monogram-bottles-disco.jpg">
 <meta property="og:image:width" content="1750">
@@ -25,36 +25,47 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css?v=24">
+<script src="assets/js/i18n.js?v=1"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
-<a class="skip-link" href="#main">Preskoči na sadržaj</a>
+<a class="skip-link" href="#main" data-i18n="skip.link">Preskoči na sadržaj</a>
 
 <header class="site-nav" id="site-nav">
   <div class="nav-inner">
     <a href="index.html" class="nav-mark" aria-label="Hedonist Bar, početna">
       <img src="assets/images/logo.svg" alt="Hedonist Bar" width="1198" height="250">
     </a>
+    <div class="lang-switch" id="lang-switch">
+      <button type="button" class="lang-switch-btn" aria-haspopup="true" aria-expanded="false" aria-label="Odaberi jezik / Choose language / Sprache wählen">
+        <span class="lang-flag" data-flag="hr" aria-hidden="true"></span>
+      </button>
+      <div class="lang-switch-menu" hidden>
+        <button type="button" data-lang="hr" aria-current="true"><span class="lang-flag" data-flag="hr" aria-hidden="true"></span>Hrvatski</button>
+        <button type="button" data-lang="en"><span class="lang-flag" data-flag="en" aria-hidden="true"></span>English</button>
+        <button type="button" data-lang="de"><span class="lang-flag" data-flag="de" aria-hidden="true"></span>Deutsch</button>
+      </div>
+    </div>
     <nav class="nav-links" aria-label="Primarna navigacija">
-      <a href="lokacija.html">Lokacija</a>
-      <a href="zaposlenje.html">Zapošljavanje</a>
+      <a href="lokacija.html" data-i18n="nav.lokacija">Lokacija</a>
+      <a href="zaposlenje.html" data-i18n="nav.zaposlenje">Zapošljavanje</a>
     </nav>
-    <a href="cjenik.html" class="btn btn-gold btn-small">Otvori katalog</a>
+    <a href="cjenik.html" class="btn btn-gold btn-small" data-i18n="nav.katalog_cta">Otvori katalog</a>
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Otvori izbornik">
       <span></span><span></span><span></span>
     </button>
   </div>
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primarna navigacija (mobilna)">
-    <a href="lokacija.html">Lokacija</a>
-    <a href="zaposlenje.html">Zapošljavanje</a>
-    <a href="cjenik.html" class="btn btn-gold">Otvori katalog</a>
+    <a href="lokacija.html" data-i18n="nav.lokacija">Lokacija</a>
+    <a href="zaposlenje.html" data-i18n="nav.zaposlenje">Zapošljavanje</a>
+    <a href="cjenik.html" class="btn btn-gold" data-i18n="nav.katalog_cta">Otvori katalog</a>
   </nav>
 </header>
 
 <main id="main">
 
-  <h1 class="visually-hidden">Galerija — Hedonist Bar Osijek</h1>
+  <h1 class="visually-hidden" data-i18n="meta.galerija.title">Galerija — Hedonist Bar Osijek</h1>
 
   <section class="gallery-page">
     <div class="gallery-grid" role="region" aria-label="Galerija fotografija u mreži, slike se izmjenjuju otprilike svakih 5 sekundi">
@@ -140,11 +151,11 @@
     <div class="reserve-overlay" aria-hidden="true"></div>
     <div class="section-inner">
       <img class="reserve-mark" src="assets/images/monogram.png" alt="" width="56" height="56">
-      <h2 class="section-title">Vidimo se u Hedonistu</h2>
-      <p class="reserve-copy">Bez rezervacije, bez žurbe — samo svratite.</p>
+      <h2 class="section-title" data-i18n="reserve.title">Vidimo se u Hedonistu</h2>
+      <p class="reserve-copy" data-i18n="reserve.copy">Bez rezervacije, bez žurbe — samo svratite.</p>
       <div class="hero-actions">
-        <a href="cjenik.html" class="btn btn-gold">Pogledaj katalog</a>
-        <a href="https://www.instagram.com/hedonistbarosijek/" class="btn btn-outline" target="_blank" rel="noopener">Prati nas na Instagramu</a>
+        <a href="cjenik.html" class="btn btn-gold" data-i18n="reserve.catalog">Pogledaj katalog</a>
+        <a href="https://www.instagram.com/hedonistbarosijek/" class="btn btn-outline" target="_blank" rel="noopener" data-i18n="reserve.instagram">Prati nas na Instagramu</a>
       </div>
     </div>
   </section>
@@ -157,10 +168,10 @@
       <img src="assets/images/logo.svg" alt="Hedonist Bar" width="1198" height="250">
     </a>
     <nav class="footer-links" aria-label="Podnožje">
-      <a href="cjenik.html">Katalog</a>
-      <a href="lokacija.html">Lokacija</a>
-      <a href="zaposlenje.html">Zapošljavanje</a>
-      <a href="privatnost.html#impressum">Impressum</a>
+      <a href="cjenik.html" data-i18n="footer.katalog">Katalog</a>
+      <a href="lokacija.html" data-i18n="nav.lokacija">Lokacija</a>
+      <a href="zaposlenje.html" data-i18n="nav.zaposlenje">Zapošljavanje</a>
+      <a href="privatnost.html#impressum" data-i18n="footer.impressum">Impressum</a>
     </nav>
     <div class="footer-social">
       <a href="https://www.instagram.com/hedonistbarosijek/" target="_blank" rel="noopener" aria-label="Hedonist Bar na Instagramu">
@@ -171,7 +182,7 @@
       </a>
     </div>
     <p class="footer-copy">© 2026 Hedonist Bar · Osijek</p>
-    <p class="footer-legal">UGO INVEST d.o.o. · OIB 45829131706 · Ulica Petra Zoranića 21, 31207 Tenja · <a href="privatnost.html">Politika privatnosti</a></p>
+    <p class="footer-legal">UGO INVEST d.o.o. · OIB 45829131706 · Ulica Petra Zoranića 21, 31207 Tenja · <a href="privatnost.html" data-i18n="footer.privacy">Politika privatnosti</a></p>
   </div>
 </footer>
 

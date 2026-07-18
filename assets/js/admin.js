@@ -85,6 +85,32 @@
     return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  /* ================= VIŠEJEZIČNA POLJA (HR / EN / DE) =================
+     Svako prevedivo polje (naziv, opis, tekst) čuva se kao { hr, en, de }.
+     toLangObj normalizira stari plain-string oblik (rezerva) u taj obrazac. */
+  var LANGS = ['hr', 'en', 'de'];
+  var LANG_LABELS = { hr: 'HR', en: 'EN', de: 'DE' };
+  function toLangObj(v){
+    if (v && typeof v === 'object') return { hr: v.hr || '', en: v.en || '', de: v.de || '' };
+    return { hr: v || '', en: '', de: '' };
+  }
+  function langHr(v){
+    if (v && typeof v === 'object') return v.hr || '';
+    return v || '';
+  }
+  /* iscrtaj HR/EN/DE retke za jedno polje; tag je 'input' ili 'textarea' */
+  function langFieldHtml(obj, tag, dataAttr, extra){
+    obj = toLangObj(obj);
+    return '<div class="lang-field">' + LANGS.map(function(l){
+      var val = esc(obj[l]);
+      var ph = l === 'hr' ? '' : ' placeholder="(nije prevedeno — ostaje HR na stranici)"';
+      var field = tag === 'textarea'
+        ? '<textarea ' + dataAttr + ' data-lang="' + l + '"' + ph + (extra||'') + '>' + val + '</textarea>'
+        : '<input ' + dataAttr + ' data-lang="' + l + '" value="' + val + '"' + ph + (extra||'') + '>';
+      return '<div class="lang-row"><span class="lang-tag">' + LANG_LABELS[l] + '</span>' + field + '</div>';
+    }).join('') + '</div>';
+  }
+
   function todayStr(){
     var n = new Date();
     return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
@@ -106,22 +132,27 @@
   function renderTexts(){
     document.querySelectorAll('.text-fields').forEach(function(box){
       var page = box.getAttribute('data-texts');
+      var store = state[PAGE_TO_STORE[page] || 'tekstovi'];
       box.innerHTML = TEKST_POLJA[page].map(function(f){
-        var val = esc(state.tekstovi[f[0]] || '');
-        var field = f[2] === 'input'
-          ? '<input data-tkey="' + f[0] + '" value="' + val + '">'
-          : '<textarea data-tkey="' + f[0] + '">' + val + '</textarea>';
+        var field = langFieldHtml(store[f[0]], f[2], 'data-tkey="' + f[0] + '"');
         return '<div class="field"><label>' + esc(f[1]) + '</label>' + field + '</div>';
       }).join('');
     });
   }
+  /* svi "text-fields" paneli (nazivi/cjenik/pocetna/zaposlenje) spremaju se
+     preko dva stvarna CMS spremišta: nazivi ide u state.nazivi, sve ostalo
+     (cjenik.uvod, pocetna.*, zaposlenje.*) ide u state.tekstovi */
+  var PAGE_TO_STORE = { nazivi: 'nazivi', cjenik: 'tekstovi', pocetna: 'tekstovi', zaposlenje: 'tekstovi' };
   document.addEventListener('input', function(e){
     var k = e.target.getAttribute && e.target.getAttribute('data-tkey');
     if (!k) return;
+    var lang = e.target.getAttribute('data-lang') || 'hr';
     var target = e.target.closest('[data-texts]');
-    var section = target ? target.getAttribute('data-texts') : 'tekstovi';
-    state[section][k] = e.target.value;
-    markDirty(section);
+    var page = target ? target.getAttribute('data-texts') : 'tekstovi';
+    var store = PAGE_TO_STORE[page] || 'tekstovi';
+    state[store][k] = toLangObj(state[store][k]);
+    state[store][k][lang] = e.target.value;
+    markDirty(store);
   });
 
   /* ================= SLIKE ================= */
@@ -211,10 +242,10 @@
       }).join('');
       return '<article class="oglas-card' + (p.aktivno ? '' : ' is-inactive') + '" data-i="' + i + '">' +
         '<div class="field-grid">' +
-          '<div class="field field-wide"><label>Naslov</label><input data-f="naslov" value="' + esc(p.naslov) + '" placeholder="npr. Tražimo konobara/icu — studentski posao"></div>' +
+          '<div class="field field-wide"><label>Naslov</label>' + langFieldHtml(p.naslov, 'input', 'data-f="naslov"', ' placeholder="npr. Tražimo konobara/icu — studentski posao"') + '</div>' +
           '<div class="field"><label>Vrsta</label><select data-f="vrsta">' + vrstaOpts + '</select></div>' +
           '<div class="field"><label>Satnica (€/h, nije obavezno)</label><input data-f="satnica" value="' + esc(p.satnica) + '" placeholder="7,50"></div>' +
-          '<div class="field field-wide"><label>Opis</label><textarea data-f="opis">' + esc(p.opis) + '</textarea></div>' +
+          '<div class="field field-wide"><label>Opis</label>' + langFieldHtml(p.opis, 'textarea', 'data-f="opis"') + '</div>' +
         '</div>' +
         '<label class="oglas-active"><input type="checkbox" data-f="aktivno"' + (p.aktivno ? ' checked' : '') + '> Aktivno (prikazano na stranici)</label>' +
         '<button type="button" class="artist-del" data-del-oglas="' + i + '">Obriši oglas</button>' +
@@ -227,7 +258,13 @@
     var f = e.target.getAttribute && e.target.getAttribute('data-f');
     if (!card || !f) return;
     var p = state.oglasi.pozicije[Number(card.getAttribute('data-i'))];
-    p[f] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (f === 'naslov' || f === 'opis') {
+      var lang = e.target.getAttribute('data-lang') || 'hr';
+      p[f] = toLangObj(p[f]);
+      p[f][lang] = e.target.value;
+    } else {
+      p[f] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    }
     if (f === 'aktivno') card.classList.toggle('is-inactive', !p.aktivno);
     markDirty('oglasi');
   });
@@ -236,7 +273,7 @@
     var del = e.target.closest('[data-del-oglas]');
     if (!del) return;
     var i = Number(del.getAttribute('data-del-oglas'));
-    if (!confirm('Obrisati oglas "' + (state.oglasi.pozicije[i].naslov || 'bez naslova') + '"?')) return;
+    if (!confirm('Obrisati oglas "' + (langHr(state.oglasi.pozicije[i].naslov) || 'bez naslova') + '"?')) return;
     state.oglasi.pozicije.splice(i, 1);
     markDirty('oglasi');
     renderOglasi();
@@ -260,8 +297,8 @@
       return '<article class="oglas-card' + (d.aktivno ? '' : ' is-inactive') + '" data-i="' + i + '">' +
         '<div class="field-grid">' +
           '<div class="field"><label>Dan</label><input data-f="dan" value="' + esc(d.dan) + '" placeholder="npr. Petak"></div>' +
-          '<div class="field"><label>Naziv</label><input data-f="naziv" value="' + esc(d.naziv) + '" placeholder="npr. Music Night"></div>' +
-          '<div class="field field-wide"><label>Opis (podnaslov)</label><input data-f="opis" value="' + esc(d.opis) + '" placeholder="npr. Ex-Yu glazba cijelu večer"></div>' +
+          '<div class="field"><label>Naziv</label>' + langFieldHtml(d.naziv, 'input', 'data-f="naziv"', ' placeholder="npr. Music Night"') + '</div>' +
+          '<div class="field field-wide"><label>Opis (podnaslov)</label>' + langFieldHtml(d.opis, 'input', 'data-f="opis"', ' placeholder="npr. Ex-Yu glazba cijelu večer"') + '</div>' +
         '</div>' +
         '<label class="oglas-active"><input type="checkbox" data-f="aktivno"' + (d.aktivno ? ' checked' : '') + '> Aktivno (prikazano na početnoj)</label>' +
         '<button type="button" class="artist-del" data-del-dogadjaj="' + i + '">Obriši događaj</button>' +
@@ -274,7 +311,13 @@
     var f = e.target.getAttribute && e.target.getAttribute('data-f');
     if (!card || !f) return;
     var d = state.dogadjaji.dogadjaji[Number(card.getAttribute('data-i'))];
-    d[f] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (f === 'naziv' || f === 'opis') {
+      var lang = e.target.getAttribute('data-lang') || 'hr';
+      d[f] = toLangObj(d[f]);
+      d[f][lang] = e.target.value;
+    } else {
+      d[f] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    }
     if (f === 'aktivno') card.classList.toggle('is-inactive', !d.aktivno);
     markDirty('dogadjaji');
   });
@@ -283,7 +326,7 @@
     var del = e.target.closest('[data-del-dogadjaj]');
     if (!del) return;
     var i = Number(del.getAttribute('data-del-dogadjaj'));
-    if (!confirm('Obrisati događaj "' + (state.dogadjaji.dogadjaji[i].naziv || 'bez naziva') + '"?')) return;
+    if (!confirm('Obrisati događaj "' + (langHr(state.dogadjaji.dogadjaji[i].naziv) || 'bez naziva') + '"?')) return;
     state.dogadjaji.dogadjaji.splice(i, 1);
     markDirty('dogadjaji');
     renderDogadjaji();
@@ -321,14 +364,14 @@
         }).join('');
         var items = g.stavke.map(function(s, si){
           return '<div class="itm" data-it="' + si + '">' +
-            '<input data-if="naziv" value="' + esc(s.naziv) + '" placeholder="Naziv pića">' +
-            '<input data-if="opis" value="' + esc(s.opis) + '" placeholder="Sastojci / napomena (nije obavezno)">' +
+            langFieldHtml(s.naziv, 'input', 'data-if="naziv"', ' placeholder="Naziv pića"') +
+            langFieldHtml(s.opis, 'input', 'data-if="opis"', ' placeholder="Sastojci / napomena (nije obavezno)"') +
             '<button type="button" class="row-x itm-del" aria-label="Obriši stavku">✕</button>' +
           '</div>';
         }).join('');
         return '<div class="grp" data-g="' + gi + '">' +
           '<div class="grp-head">' +
-            '<input data-gf="naziv" value="' + esc(g.naziv) + '" placeholder="Naziv grupe (npr. Kave)">' +
+            langFieldHtml(g.naziv, 'input', 'data-gf="naziv"', ' placeholder="Naziv grupe (npr. Kave)"') +
             '<select data-gf="ikona">' + ikonaOpts + '</select>' +
             '<button type="button" class="row-x grp-del" aria-label="Obriši grupu">✕</button>' +
           '</div>' +
@@ -336,11 +379,12 @@
           '<button type="button" class="btn-mini itm-add">+ stavka</button>' +
         '</div>';
       }).join('');
+      var cNaziv = toLangObj(c.naziv);
       return '<details class="cat" data-c="' + ci + '"' + (ci === openIndex ? ' open' : '') + '>' +
-        '<summary><span class="cat-sum-name">' + esc(c.naziv || 'Nova kategorija') + '</span>' +
+        '<summary><span class="cat-sum-name">' + esc(cNaziv.hr || 'Nova kategorija') + '</span>' +
         '<span class="cat-sum-count">' + catCount(c) + '</span></summary>' +
         '<div class="cat-body">' +
-          '<div class="field"><label>Naziv kategorije</label><input data-cf="naziv" value="' + esc(c.naziv) + '"></div>' +
+          '<div class="field"><label>Naziv kategorije</label>' + langFieldHtml(c.naziv, 'input', 'data-cf="naziv"') + '</div>' +
           groups +
           '<div class="cat-actions">' +
             '<button type="button" class="btn-mini grp-add">+ Dodaj grupu</button>' +
@@ -365,13 +409,24 @@
     var t = e.target;
     if (!t.closest('.cat')) return;
     var ctx = cjenikCtx(t);
+    var lang = t.getAttribute('data-lang') || 'hr';
     if (t.hasAttribute('data-cf')) {
-      ctx.c.naziv = t.value;
-      ctx.catEl.querySelector('.cat-sum-name').textContent = t.value || 'Nova kategorija';
+      ctx.c.naziv = toLangObj(ctx.c.naziv);
+      ctx.c.naziv[lang] = t.value;
+      if (lang === 'hr') ctx.catEl.querySelector('.cat-sum-name').textContent = t.value || 'Nova kategorija';
     } else if (t.hasAttribute('data-gf')) {
-      ctx.c.grupe[ctx.gi][t.getAttribute('data-gf')] = t.value;
+      var gf = t.getAttribute('data-gf');
+      if (gf === 'ikona') {
+        ctx.c.grupe[ctx.gi].ikona = t.value;
+      } else {
+        ctx.c.grupe[ctx.gi][gf] = toLangObj(ctx.c.grupe[ctx.gi][gf]);
+        ctx.c.grupe[ctx.gi][gf][lang] = t.value;
+      }
     } else if (t.hasAttribute('data-if')) {
-      ctx.c.grupe[ctx.gi].stavke[ctx.si][t.getAttribute('data-if')] = t.value;
+      var iff = t.getAttribute('data-if');
+      var stavka = ctx.c.grupe[ctx.gi].stavke[ctx.si];
+      stavka[iff] = toLangObj(stavka[iff]);
+      stavka[iff][lang] = t.value;
     } else {
       return;
     }
@@ -400,7 +455,7 @@
     } else if (t.closest('.grp-del')) {
       var ctx3 = cjenikCtx(t);
       var g = ctx3.c.grupe[ctx3.gi];
-      if (g.stavke.length && !confirm('Obrisati grupu "' + (g.naziv || 'bez naziva') + '" i njenih ' + g.stavke.length + ' stavki?')) return;
+      if (g.stavke.length && !confirm('Obrisati grupu "' + (langHr(g.naziv) || 'bez naziva') + '" i njenih ' + g.stavke.length + ' stavki?')) return;
       ctx3.c.grupe.splice(ctx3.gi, 1);
       markDirty('cjenik');
       renderCjenik(ctx3.ci);
@@ -412,7 +467,7 @@
     } else if (t.closest('.cat-del')) {
       var ctx5 = cjenikCtx(t);
       var total = ctx5.c.grupe.reduce(function(m, gr){ return m + gr.stavke.length; }, 0);
-      if (!confirm('Obrisati kategoriju "' + (ctx5.c.naziv || 'bez naziva') + '"' + (total ? ' i njenih ' + total + ' stavki' : '') + '?')) return;
+      if (!confirm('Obrisati kategoriju "' + (langHr(ctx5.c.naziv) || 'bez naziva') + '"' + (total ? ' i njenih ' + total + ' stavki' : '') + '?')) return;
       state.cjenik.kategorije.splice(ctx5.ci, 1);
       markDirty('cjenik');
       renderCjenik(-1);
@@ -432,20 +487,20 @@
     if (dirty.slike && state.slike.slike.some(function(s){ return !String(s.id).trim() || !String(s.url).trim(); })) {
       return 'Svaka slika mora imati ID i URL.';
     }
-    if (dirty.oglasi && state.oglasi.pozicije.some(function(p){ return !String(p.naslov).trim(); })) {
-      return 'Svaki oglas mora imati naslov.';
+    if (dirty.oglasi && state.oglasi.pozicije.some(function(p){ return !langHr(p.naslov).trim(); })) {
+      return 'Svaki oglas mora imati naslov (barem na hrvatskom).';
     }
-    if (dirty.dogadjaji && state.dogadjaji.dogadjaji.some(function(d){ return !String(d.naziv).trim(); })) {
-      return 'Svaki događaj mora imati naziv.';
+    if (dirty.dogadjaji && state.dogadjaji.dogadjaji.some(function(d){ return !langHr(d.naziv).trim(); })) {
+      return 'Svaki događaj mora imati naziv (barem na hrvatskom).';
     }
     if (dirty.cjenik) {
       for (var i = 0; i < state.cjenik.kategorije.length; i++) {
         var c = state.cjenik.kategorije[i];
-        if (!String(c.naziv).trim()) return 'Svaka kategorija cjenika mora imati naziv.';
+        if (!langHr(c.naziv).trim()) return 'Svaka kategorija cjenika mora imati naziv (barem na hrvatskom).';
         for (var j = 0; j < c.grupe.length; j++) {
           for (var k = 0; k < c.grupe[j].stavke.length; k++) {
             var s = c.grupe[j].stavke[k];
-            if (!String(s.naziv).trim()) return 'U kategoriji "' + c.naziv + '" postoji stavka bez naziva.';
+            if (!langHr(s.naziv).trim()) return 'U kategoriji "' + langHr(c.naziv) + '" postoji stavka bez naziva (barem na hrvatskom).';
           }
         }
       }

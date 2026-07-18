@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zapošljavanje — Hedonist Bar Osijek</title>
-<meta name="description" content="Pridruži se ekipi Hedonist bara u Osijeku — prijavi se za stalno zaposlenje ili studentski posao.">
+<title data-i18n="meta.zaposlenje.title">Zapošljavanje — Hedonist Bar Osijek</title>
+<meta name="description" content="Pridruži se ekipi Hedonist bara u Osijeku — prijavi se za stalno zaposlenje ili studentski posao." data-i18n-attr="content:meta.zaposlenje.desc">
 <meta name="theme-color" content="#17110d">
 <link rel="canonical" href="https://hedonist-bar.vercel.app/zaposlenje.html">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="hr_HR">
 <meta property="og:site_name" content="Hedonist Bar Osijek">
-<meta property="og:title" content="Zapošljavanje — Hedonist Bar Osijek">
-<meta property="og:description" content="Pridruži se ekipi Hedonist bara u Osijeku — prijavi se za stalno zaposlenje ili studentski posao.">
+<meta property="og:title" content="Zapošljavanje — Hedonist Bar Osijek" data-i18n-attr="content:meta.zaposlenje.title">
+<meta property="og:description" content="Pridruži se ekipi Hedonist bara u Osijeku — prijavi se za stalno zaposlenje ili studentski posao." data-i18n-attr="content:meta.zaposlenje.desc">
 <meta property="og:url" content="https://hedonist-bar.vercel.app/zaposlenje.html">
 <meta property="og:image" content="https://hedonist-bar.vercel.app/assets/images/og-image.jpg?v=3">
 <meta property="og:image:width" content="1200">
@@ -25,30 +25,41 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css?v=24">
+<script src="assets/js/i18n.js?v=1"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
-<a class="skip-link" href="#main">Preskoči na sadržaj</a>
+<a class="skip-link" href="#main" data-i18n="skip.link">Preskoči na sadržaj</a>
 
 <header class="site-nav" id="site-nav">
   <div class="nav-inner">
     <a href="index.html" class="nav-mark" aria-label="Hedonist Bar, početna">
       <img src="assets/images/logo.svg" alt="Hedonist Bar" width="1198" height="250">
     </a>
+    <div class="lang-switch" id="lang-switch">
+      <button type="button" class="lang-switch-btn" aria-haspopup="true" aria-expanded="false" aria-label="Odaberi jezik / Choose language / Sprache wählen">
+        <span class="lang-flag" data-flag="hr" aria-hidden="true"></span>
+      </button>
+      <div class="lang-switch-menu" hidden>
+        <button type="button" data-lang="hr" aria-current="true"><span class="lang-flag" data-flag="hr" aria-hidden="true"></span>Hrvatski</button>
+        <button type="button" data-lang="en"><span class="lang-flag" data-flag="en" aria-hidden="true"></span>English</button>
+        <button type="button" data-lang="de"><span class="lang-flag" data-flag="de" aria-hidden="true"></span>Deutsch</button>
+      </div>
+    </div>
     <nav class="nav-links" aria-label="Primarna navigacija">
-      <a href="galerija.html">Galerija</a>
-      <a href="lokacija.html">Lokacija</a>
+      <a href="galerija.html" data-i18n="nav.galerija">Galerija</a>
+      <a href="lokacija.html" data-i18n="nav.lokacija">Lokacija</a>
     </nav>
-    <a href="cjenik.html" class="btn btn-gold btn-small">Otvori katalog</a>
+    <a href="cjenik.html" class="btn btn-gold btn-small" data-i18n="nav.katalog_cta">Otvori katalog</a>
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Otvori izbornik">
       <span></span><span></span><span></span>
     </button>
   </div>
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primarna navigacija (mobilna)">
-    <a href="galerija.html">Galerija</a>
-    <a href="lokacija.html">Lokacija</a>
-    <a href="cjenik.html" class="btn btn-gold">Otvori katalog</a>
+    <a href="galerija.html" data-i18n="nav.galerija">Galerija</a>
+    <a href="lokacija.html" data-i18n="nav.lokacija">Lokacija</a>
+    <a href="cjenik.html" class="btn btn-gold" data-i18n="nav.katalog_cta">Otvori katalog</a>
   </nav>
 </header>
 
@@ -58,16 +69,16 @@
     <img class="price-hero-photo" src="assets/images/gallery/pouring-shot.webp" alt="" aria-hidden="true">
     <div class="price-hero-overlay" aria-hidden="true"></div>
     <div class="section-inner">
-      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Zapošljavanje</p>
-      <h1 class="section-title">Postani dio ekipe</h1>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span><span data-i18n="nav.zaposlenje">Zapošljavanje</span></p>
+      <h1 class="section-title" data-i18n="zaposlenje.hero.title">Postani dio ekipe</h1>
       <p class="price-intro" data-cms="zaposlenje.uvod">Voliš dobar kafić i još bolju atmosferu? Prijavi se u par klikova — javljamo se u par dana, otvorena pozicija ili ne.</p>
     </div>
   </section>
 
   <section class="job-openings" id="pozicije" hidden>
     <div class="section-inner">
-      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Novosti</p>
-      <h2 class="section-title">Otvorene pozicije</h2>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span><span data-i18n="index.novosti.eyebrow">Novosti</span></p>
+      <h2 class="section-title" data-i18n="zaposlenje.openings_title">Otvorene pozicije</h2>
       <div id="oglasi-list" class="job-ad-list"></div>
     </div>
   </section>
@@ -76,9 +87,9 @@
     <div class="section-inner">
 
       <div class="job-success" id="job-success" hidden>
-        <h2 class="section-title">Prijava je poslana ✓</h2>
-        <p>Hvala na interesu! Pregledat ćemo prijavu i javiti se na ostavljeni mail ili broj.</p>
-        <a href="index.html" class="btn btn-outline btn-small">Natrag na početnu</a>
+        <h2 class="section-title" data-i18n="zaposlenje.success.title">Prijava je poslana ✓</h2>
+        <p data-i18n="zaposlenje.success.copy">Hvala na interesu! Pregledat ćemo prijavu i javiti se na ostavljeni mail ili broj.</p>
+        <a href="index.html" class="btn btn-outline btn-small" data-i18n="zaposlenje.success.back">Natrag na početnu</a>
       </div>
 
       <form class="job-form" id="job-form" action="https://formsubmit.co/crokiborg@gmail.com" method="POST">
@@ -90,43 +101,43 @@
 
         <div class="form-row">
           <div class="form-field">
-            <label for="ime">Ime</label>
+            <label for="ime" data-i18n="zaposlenje.form.ime">Ime</label>
             <input required id="ime" name="Ime" type="text" autocomplete="given-name" placeholder="Ana">
           </div>
           <div class="form-field">
-            <label for="prezime">Prezime</label>
+            <label for="prezime" data-i18n="zaposlenje.form.prezime">Prezime</label>
             <input required id="prezime" name="Prezime" type="text" autocomplete="family-name" placeholder="Anić">
           </div>
         </div>
 
         <div class="form-field">
-          <label for="email">E-mail</label>
+          <label for="email" data-i18n="zaposlenje.form.email">E-mail</label>
           <input required id="email" name="E-mail" type="email" autocomplete="email" placeholder="ana.anic@gmail.com">
         </div>
 
         <div class="form-field">
-          <label for="broj">Broj mobitela</label>
+          <label for="broj" data-i18n="zaposlenje.form.broj">Broj mobitela</label>
           <input required id="broj" name="Broj mobitela" type="tel" autocomplete="tel" placeholder="09x xxx xxxx">
         </div>
 
         <fieldset class="form-choice">
-          <legend>Vrsta zaposlenja</legend>
+          <legend data-i18n="zaposlenje.form.vrsta">Vrsta zaposlenja</legend>
           <label class="choice-pill">
             <input type="radio" name="Vrsta zaposlenja" value="Stalno zaposlenje" required>
-            <span>Stalno</span>
+            <span data-i18n="zaposlenje.form.stalno">Stalno</span>
           </label>
           <label class="choice-pill">
             <input type="radio" name="Vrsta zaposlenja" value="Studentski posao">
-            <span>Student</span>
+            <span data-i18n="zaposlenje.form.student">Student</span>
           </label>
         </fieldset>
 
         <label class="job-consent">
           <input type="checkbox" name="Privola" value="Da" required>
-          <span>Slažem se da Hedonist bar koristi ove podatke isključivo za obradu ove prijave za posao, u skladu s <a href="privatnost.html" target="_blank" rel="noopener">politikom privatnosti</a>.</span>
+          <span data-i18n="zaposlenje.form.consent" data-i18n-html>Slažem se da Hedonist bar koristi ove podatke isključivo za obradu ove prijave za posao, u skladu s <a href="privatnost.html" target="_blank" rel="noopener">politikom privatnosti</a>.</span>
         </label>
 
-        <button class="btn btn-gold btn-wide" type="submit">Pošalji prijavu</button>
+        <button class="btn btn-gold btn-wide" type="submit" data-i18n="zaposlenje.form.submit">Pošalji prijavu</button>
         <p class="job-note" data-cms="zaposlenje.napomena">Prijava stiže direktno na naš mail. Podatke koristimo samo za kontakt oko posla.</p>
       </form>
 
@@ -141,11 +152,11 @@
       <img src="assets/images/logo.svg" alt="Hedonist Bar" width="1198" height="250">
     </a>
     <nav class="footer-links" aria-label="Podnožje">
-      <a href="cjenik.html">Katalog</a>
-      <a href="galerija.html">Galerija</a>
-      <a href="lokacija.html">Lokacija</a>
-      <a href="zaposlenje.html">Zapošljavanje</a>
-      <a href="privatnost.html#impressum">Impressum</a>
+      <a href="cjenik.html" data-i18n="footer.katalog">Katalog</a>
+      <a href="galerija.html" data-i18n="nav.galerija">Galerija</a>
+      <a href="lokacija.html" data-i18n="nav.lokacija">Lokacija</a>
+      <a href="zaposlenje.html" data-i18n="nav.zaposlenje">Zapošljavanje</a>
+      <a href="privatnost.html#impressum" data-i18n="footer.impressum">Impressum</a>
     </nav>
     <div class="footer-social">
       <a href="https://www.instagram.com/hedonistbarosijek/" target="_blank" rel="noopener" aria-label="Hedonist Bar na Instagramu">
@@ -156,7 +167,7 @@
       </a>
     </div>
     <p class="footer-copy">© 2026 Hedonist Bar · Osijek</p>
-    <p class="footer-legal">UGO INVEST d.o.o. · OIB 45829131706 · Ulica Petra Zoranića 21, 31207 Tenja · <a href="privatnost.html">Politika privatnosti</a></p>
+    <p class="footer-legal">UGO INVEST d.o.o. · OIB 45829131706 · Ulica Petra Zoranića 21, 31207 Tenja · <a href="privatnost.html" data-i18n="footer.privacy">Politika privatnosti</a></p>
   </div>
 </footer>
 
