@@ -1,5 +1,5 @@
 /* =====================================================================
-   I18N — jezični prekidač (HR zadano; klik na zastavicu kruži HR→EN→DE→HR)
+   I18N — jezični prekidač (HR zadano; tri zastavice, klik izravno bira jezik)
    ---------------------------------------------------------------------
    - Hrvatski tekst ostaje izravno u HTML-u (zadano stanje, bez mreže).
    - EN/DE dolaze iz assets/i18n/en.json i assets/i18n/de.json, primijenjeno
@@ -68,19 +68,12 @@
     });
   }
 
-  var ARIA_LABELS = {
-    hr: 'Trenutni jezik: hrvatski. Klikni za engleski.',
-    en: 'Current language: English. Click for German.',
-    de: 'Aktuelle Sprache: Deutsch. Klicken für Kroatisch.'
-  };
-
   function updateSwitcherUI(lang){
     document.querySelectorAll('.lang-switch').forEach(function(box){
-      var btn = box.querySelector('.lang-switch-btn');
-      if (!btn) return;
-      var flag = btn.querySelector('.lang-flag');
-      if (flag) flag.setAttribute('data-flag', lang);
-      btn.setAttribute('aria-label', ARIA_LABELS[lang] || ARIA_LABELS[DEFAULT_LANG]);
+      box.querySelectorAll('[data-lang]').forEach(function(btn){
+        var isCurrent = btn.getAttribute('data-lang') === lang;
+        btn.setAttribute('aria-current', isCurrent ? 'true' : 'false');
+      });
     });
   }
 
@@ -94,19 +87,14 @@
     });
   }
 
-  /* jedan klik na zastavicu odmah prebacuje na sljedeći jezik u krugu —
-     nema padajućeg izbornika, nema drugog klika koji nešto "ne napravi" */
-  function nextLang(current){
-    var i = SUPPORTED.indexOf(current);
-    return SUPPORTED[(i + 1) % SUPPORTED.length];
-  }
-
+  /* tri odvojene zastavice jedna do druge — klik na bilo koju izravno
+     postavlja taj jezik, nema skrivenog izbornika niti kruženja */
   function initSwitcher(){
     document.querySelectorAll('.lang-switch').forEach(function(box){
-      var btn = box.querySelector('.lang-switch-btn');
-      if (!btn) return;
-      btn.addEventListener('click', function(){
-        setLang(nextLang(getLang()));
+      box.querySelectorAll('[data-lang]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          setLang(btn.getAttribute('data-lang'));
+        });
       });
     });
   }
