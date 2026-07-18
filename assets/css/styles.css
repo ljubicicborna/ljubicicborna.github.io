@@ -331,13 +331,15 @@ a{ color: inherit; text-decoration: none; }
 .marquee-track{
   display: flex;
   width: max-content;
-  animation: marquee 32s linear infinite;
   will-change: transform;
 }
-/* two identical groups, each carrying its own trailing gap -- a shift of
-   exactly one group width (-50%) loops without a seam. two is the
-   minimum this technique needs (more copies were pure DOM bloat, no
-   visual difference) */
+/* position is driven by assets/js/main.js (rAF, computed from elapsed
+   wall-clock time) rather than a CSS `animation: infinite` -- some mobile
+   browsers permanently freeze that kind of animation after the tab is
+   backgrounded or the track spends a while off-screen, and a frozen
+   ticker doesn't self-heal. two identical groups, each carrying its own
+   trailing gap, is still the technique: JS shifts by up to one group's
+   width so the loop has no seam. */
 .marquee-group{
   display: flex;
   align-items: center;
@@ -354,13 +356,6 @@ a{ color: inherit; text-decoration: none; }
   color: rgba(244,236,219,0.8);
 }
 .marquee-dot{ color: var(--gold); }
-@keyframes marquee{
-  from{ transform: translateX(0); }
-  to{ transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce){
-  .marquee-track{ animation: none; }
-}
 
 /* ================= Philosophy (cream band) ================= */
 .philosophy{

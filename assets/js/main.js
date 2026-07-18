@@ -124,6 +124,37 @@
     }
   })();
 
+  /* ---- marquee traka (naslovnica): pozicija se svaki frame računa iz
+     proteklog vremena, ne iz CSS `animation: infinite` -- neki mobilni
+     preglednici znaju trajno "zamrznuti" CSS animaciju nakon što karticu
+     prebaciš u pozadinu ili je traka dulje izvan vidljivog dijela
+     zaslona (poznat bug, prijavljen: traka stane i ostane stati). rAF
+     pristup ne može ostati "zaglavljen" jer svaki frame iznova računa
+     poziciju iz apsolutnog proteklog vremena -- kad preglednik nastavi
+     pozivati rAF, traka odmah skoči na točnu poziciju, nikad ne stoji. ---- */
+  (function marquee(){
+    var track = document.querySelector('.marquee-track');
+    var group = track && track.querySelector('.marquee-group');
+    if (!track || !group) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var PERIOD_MS = 32000; /* jedan puni ciklus širine jedne grupe, kao stari CSS 32s */
+    var groupWidth = 0;
+
+    function measure(){ groupWidth = group.getBoundingClientRect().width; }
+    measure();
+    window.addEventListener('resize', measure);
+
+    function frame(ts){
+      if (groupWidth) {
+        var fraction = (ts % PERIOD_MS) / PERIOD_MS;
+        track.style.transform = 'translate3d(-' + (fraction * groupWidth) + 'px,0,0)';
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
   /* ---- tajni pristup CMS-u: drži (7s) logo gore lijevo na naslovnoj
      da otvoriš /admin.html — nema vidljivog gumba za uređivanje na sajtu ---- */
   var navMark = document.querySelector('.nav-mark');
