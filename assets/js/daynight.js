@@ -20,6 +20,21 @@
   var track = section.querySelector('.daynight-track');
   var STORAGE_KEY = 'hedonistDayNight';
 
+  /* video s kavom se ne vrti u krug: krene 8 s prije kraja, odsvira do
+     zadnjeg kadra (gotov latte art) i tu ostane kao fotografija —
+     loop atributa u HTML-u više nema, pa "ended" jednostavno stane */
+  var video = section.querySelector('video.daytime-inset');
+  if (video) {
+    var TAIL_SECONDS = 8;
+    var seekToTail = function(){
+      if (isFinite(video.duration) && video.duration > TAIL_SECONDS) {
+        try { video.currentTime = video.duration - TAIL_SECONDS; } catch (e) {}
+      }
+    };
+    if (video.readyState >= 1) seekToTail();
+    else video.addEventListener('loadedmetadata', seekToTail, { once: true });
+  }
+
   function applyAria(mode){
     buttons.forEach(function(b){
       b.setAttribute('aria-pressed', b.getAttribute('data-mode') === mode ? 'true' : 'false');
@@ -71,6 +86,11 @@
     setMode(dx > 0 ? 'night' : 'day');
   }
   function onDown(e){
+    /* bez ovoga: touchstart prekine se, ali preglednik nakon podignutog
+       prsta ipak simulira mousedown/mouseup/click na isti track — onUp
+       se tada odradi DVA puta za jedan dodir i prekidač se prebaci pa
+       smjesta vrati natrag, pa dodir izgleda kao da ništa ne radi */
+    if (e.cancelable) e.preventDefault();
     dragging = true; moved = false; startX = pointerX(e);
     window.addEventListener('mousemove', onMove);
     window.addEventListener('touchmove', onMove, { passive: true });
@@ -79,7 +99,7 @@
   }
 
   track.addEventListener('mousedown', onDown);
-  track.addEventListener('touchstart', onDown, { passive: true });
+  track.addEventListener('touchstart', onDown, { passive: false });
 
   track.addEventListener('keydown', function(e){
     if (e.key === 'ArrowLeft') setMode('day');

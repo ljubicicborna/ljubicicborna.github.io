@@ -28,6 +28,40 @@
       }).catch(function(){ /* GA nije kritičan */ });
     }
 
+    /* ---- karta lokacije: ilustracija je default u HTML-u (radi bez
+       ijednog Googleovog zahtjeva); tek uz privolu se zamijeni pravom
+       interaktivnom Google kartom, jer njen iframe postavlja Googleove
+       kolačiće. Povlačenjem privole iframe se ukloni iz DOM-a. ---- */
+    var MAP_EMBED_URL = 'https://www.google.com/maps?q=Hedonist+bar+Osijek+Vukovarska+cesta+31&z=16&hl=hr&output=embed';
+
+    function updateMaps(){
+      var accepted = localStorage.getItem(CONSENT_KEY) === 'accepted';
+      var statics = document.querySelectorAll('.map-static');
+      for (var i = 0; i < statics.length; i++) {
+        var link = statics[i];
+        var embed = link.parentNode.querySelector('.map-embed');
+        if (accepted) {
+          if (!embed) {
+            embed = document.createElement('div');
+            embed.className = 'map-embed';
+            var frame = document.createElement('iframe');
+            frame.src = MAP_EMBED_URL;
+            frame.title = 'Google karta — Hedonist bar, Vukovarska cesta 31, Osijek';
+            frame.loading = 'lazy';
+            frame.referrerPolicy = 'no-referrer-when-downgrade';
+            frame.setAttribute('allowfullscreen', '');
+            embed.appendChild(frame);
+            link.parentNode.insertBefore(embed, link);
+          }
+          /* [hidden] ne bi nadjačao .map-static{display:block} */
+          link.style.display = 'none';
+        } else {
+          if (embed) embed.parentNode.removeChild(embed);
+          link.style.display = '';
+        }
+      }
+    }
+
     var banner = null;
 
     function buildBanner(){
@@ -56,6 +90,7 @@
         localStorage.setItem(CONSENT_KEY, accepted ? 'accepted' : 'declined');
         hideBanner();
         if (accepted) loadGA();
+        updateMaps();
       });
       return banner;
     }
@@ -72,6 +107,7 @@
     var consent = localStorage.getItem(CONSENT_KEY);
     if (consent === 'accepted') {
       loadGA();
+      updateMaps();
     } else if (consent !== 'declined') {
       showBanner();
     }
