@@ -21,27 +21,35 @@
   var track = section.querySelector('.daynight-track');
   var STORAGE_KEY = 'hedonistDayNight';
 
-  /* video s kavom se ne vrti u krug: prikazuje samo zadnjih ~8 s (gotov
-     latte art) i tu ostane kao fotografija — loop atributa u HTML-u
-     nema, pa "ended" jednostavno stane na zadnjem kadru.
+  /* video s kavom sada odigra cijeli isječak (27 s) od početka i stane
+     na zadnjem kadru (gotov latte art) -- loop atributa u HTML-u nema,
+     pa "ended" jednostavno stane tu.
 
-     Ta točka (19.25 s od ukupno 27.25 s, pročitano izravno iz mvhd
-     atoma) je zadana kao HTML5 Media Fragment u samom URL-u
-     (#t=19.25), NE postavljanjem video.currentTime nakon 'loadedmetadata'
-     -- ono je isprobano i na produkciji je mjereno GORE, ne bolje: Chromium
-     je zbog seeka odmah po metapodacima znao povući ~12MB za 2.6MB fajl
-     (višestruko preklopljeni Range zahtjevi) i video bi na kraju ostao
-     zaustavljen NEreproduciran (play() nakon 'seeked' se pouzdano ne bi
-     dogodio pod stvarnim mrežnim uvjetima). Fragment u URL-u je
-     ugrađena, puno stabilnija platforma-native funkcija za točno ovaj
-     slučaj — preglednik cilja taj raspon od PRVOG zahtjeva, nema
-     naknadnog seeka koji bi se s bilo čime sudario.
+     Dvije stvari su namjerno ODBAČENE nakon mjerenja na produkciji, ne
+     samo lokalno:
+     1) video.currentTime = duration - 8 postavljen nakon 'loadedmetadata'
+        (skoči na rep umjesto reproduciranja od početka) -- Chromium je
+        zbog toga povlačio ~12MB za 2.6MB fajl (višestruko preklopljeni
+        Range zahtjevi) i video bi na kraju ostao zaustavljen
+        NEreproduciran (play() nakon 'seeked' se pouzdano ne bi dogodio
+        pod stvarnim mrežnim uvjetima).
+     2) HTML5 Media Fragment u URL-u (#t=19.25) kao "native" alternativa
+        istom cilju -- radilo je na Chromiumu, ali WebKit na TOČNO ovom
+        fajlu baci 'error' i play() odbije s "The operation is not
+        supported" ČIM je fragment prisutan u src-u; bez fragmenta isti
+        video na WebKitu radi besprijekorno. Potvrđeno izoliranim testom
+        (isti URL, s i bez #t=), nije nagađanje.
+     Obično igranje od početka je jedina varijanta koja je i pouzdana na
+     oba enginea I mrežno jeftinija od obje "pametnije" varijante (nema
+     seeka, nema preklapajućih zahtjeva -- preglednik samo linearno
+     strimira naprijed).
 
-     <source> nosi samo data-src (preload="none", video ostaje na
+     <source> ipak nosi samo data-src (preload="none", video ostaje na
      poster slici) dok sekcija stvarno ne uđe u viewport -- tek tada se
      src postavi i video.load() pokrene, pa se mrežna cijena plaća
      najviše jednom, i samo za posjetitelje koji tu sekciju stvarno
-     vide. */
+     vide (prije ove izmjene taj fetch je krenuo NA SVAKOM posjetu
+     početnoj, bez obzira je li se ikad doguralo scrollom dovde). */
   var video = section.querySelector('video.daynight-pane-media');
   if (video) {
     function loadVideo(){
