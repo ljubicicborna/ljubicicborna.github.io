@@ -6,7 +6,13 @@
    ostaje kao rezerva ako API ne radi.
 ===================================================================== */
 (function(){
-  var sectionInner = document.querySelector('.price-categories .section-inner');
+  /* NIKAD document.querySelector('.price-categories .section-inner') --
+     taj čvor nosi i .price-search i .price-notice (18+/alergeni upozorenje)
+     kao svoju BRAĆU, pa bi ih .innerHTML zamjena izbrisala čim CMS podaci
+     stignu (a stignu gotovo uvijek). #price-categories-list je poseban
+     omot SAMO oko <details> kategorija, uveden baš zato da ostatak
+     section-inner preživi svaki rebuild. */
+  var sectionInner = document.getElementById('price-categories-list');
   var navInner = document.querySelector('.price-nav-inner');
   if (!sectionInner) return;
 
