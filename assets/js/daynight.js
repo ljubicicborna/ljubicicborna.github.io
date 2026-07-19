@@ -23,17 +23,50 @@
 
   /* video s kavom se ne vrti u krug: krene 8 s prije kraja, odsvira do
      zadnjeg kadra (gotov latte art) i tu ostane kao fotografija —
-     loop atributa u HTML-u više nema, pa "ended" jednostavno stane */
+     loop atributa u HTML-u više nema, pa "ended" jednostavno stane.
+
+     Mjereno na produkciji: sam preload="metadata" + autoplay + seek-na-
+     -rep čim stignu metapodaci ionako natjera Chromium da povuče skoro
+     CIJELI 2.6MB fajl (dvaput preklopljeno, ~4MB ukupno) -- to je
+     poznato ponašanje browsera oko velikih <video> raspona, ne nešto
+     što se lako popravi timingom seeka. Umjesto da se time bavimo,
+     izbjegnut je veći problem: taj fetch se prije pokretao NA SVAKOM
+     posjetu početnoj, čak i za nekoga tko nikad ne dogura scrollom do
+     sekcije "Dan i noć". <source> nosi samo data-src (preload="none",
+     video ostaje na poster slici) dok sekcija stvarno ne uđe u
+     viewport -- tek tada se src postavi i video.load() pokrene, pa se
+     bilo koja mrežna cijena plaća najviše jednom, i samo za posjetitelje
+     koji tu sekciju stvarno vide. */
   var video = section.querySelector('video.daynight-pane-media');
   if (video) {
     var TAIL_SECONDS = 8;
-    var seekToTail = function(){
+    function startFromTail(){
       if (isFinite(video.duration) && video.duration > TAIL_SECONDS) {
-        try { video.currentTime = video.duration - TAIL_SECONDS; } catch (e) {}
+        video.addEventListener('seeked', function(){ video.play().catch(function(){}); }, { once: true });
+        try { video.currentTime = video.duration - TAIL_SECONDS; return; } catch (e) {}
       }
-    };
-    if (video.readyState >= 1) seekToTail();
-    else video.addEventListener('loadedmetadata', seekToTail, { once: true });
+      video.play().catch(function(){});
+    }
+    function loadVideo(){
+      var source = video.querySelector('source[data-src]');
+      if (!source) return;
+      source.src = source.getAttribute('data-src');
+      source.removeAttribute('data-src');
+      video.addEventListener('loadedmetadata', startFromTail, { once: true });
+      video.load();
+    }
+    if ('IntersectionObserver' in window) {
+      var videoObserver = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (!entry.isIntersecting) return;
+          loadVideo();
+          videoObserver.disconnect();
+        });
+      }, { rootMargin: '200px 0px' });
+      videoObserver.observe(section);
+    } else {
+      loadVideo();
+    }
   }
 
   function applyAria(mode){
