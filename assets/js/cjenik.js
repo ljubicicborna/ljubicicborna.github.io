@@ -1,9 +1,8 @@
 /* =====================================================================
    CJENIK — katalog ponude (bez cijena), prikaz i interakcije
    ---------------------------------------------------------------------
-   Ponuda se uređuje na admin stranici (/admin.html); ova skripta je
-   dohvaća s /api/cjenik i izgradi popis. Statični HTML u cjenik.html
-   ostaje kao rezerva ako API ne radi.
+   Ponuda je statični HTML u cjenik.html; ova skripta ga samo oživi
+   (sklapanje detalja u pločice, pretraga, scrollspy nad kategorijama).
 ===================================================================== */
 (function(){
   /* NIKAD document.querySelector('.price-categories .section-inner') --
@@ -13,7 +12,6 @@
      omot SAMO oko <details> kategorija, uveden baš zato da ostatak
      section-inner preživi svaki rebuild. */
   var sectionInner = document.getElementById('price-categories-list');
-  var navInner = document.querySelector('.price-nav-inner');
   if (!sectionInner) return;
 
   /* mora se poklapati s html.age-restricted pravilima u styles.css --
@@ -46,80 +44,7 @@
       }
     });
   }
-  function esc(s){
-    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  /* ---- izgradnja popisa iz CMS podataka ---- */
-  function build(data){
-    if (navInner) {
-      navInner.innerHTML = data.kategorije.map(function(c){
-        return '<a href="#' + esc(c.id) + '">' + esc(c.naziv) + '</a>';
-      }).join('');
-      /* klik na pilulu mora otvoriti kategoriju (main.js je to vezao na
-         stare linkove koji su upravo zamijenjeni) */
-      navInner.querySelectorAll('a').forEach(function(link){
-        link.addEventListener('click', function(){
-          var target = document.getElementById(link.getAttribute('href').slice(1));
-          if (target && target.tagName === 'DETAILS') target.open = true;
-        });
-      });
-    }
-    sectionInner.innerHTML = data.kategorije.map(function(c, i){
-      return '<details class="price-category" id="' + esc(c.id) + '"' + (i === 0 ? ' open' : '') + '>' +
-        '<summary><span class="price-category-title">' + esc(c.naziv) + '</span>' +
-        '<svg class="price-category-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary>' +
-        '<div class="price-category-body">' +
-        c.grupe.map(function(g){
-          return '<div class="price-group">' +
-            (g.naziv ? '<h3 class="price-group-title">' + esc(g.naziv) + '</h3>' : '') +
-            '<div class="price-items"' + (g.ikona ? ' data-icon="' + esc(g.ikona) + '"' : '') + '>' +
-            g.stavke.map(function(s){
-              return '<div class="price-item"><div class="price-item-name"><strong>' + esc(s.naziv) + '</strong>' +
-                (s.opis ? '<em>' + esc(s.opis) + '</em>' : '') +
-                '</div></div>';
-            }).join('') +
-            '</div></div>';
-        }).join('') +
-        '</div></details>';
-    }).join('');
-    if (location.hash) {
-      var current = document.getElementById(location.hash.slice(1));
-      if (current && current.tagName === 'DETAILS') current.open = true;
-    }
-
-    /* ---- Menu structured data za tražilice ---- */
-    var oldLd = document.getElementById('ld-menu');
-    if (oldLd) oldLd.remove();
-    if (data.kategorije.length) {
-      var ld = {
-        '@context': 'https://schema.org',
-        '@type': 'Menu',
-        name: 'Katalog ponude — Hedonist Bar Osijek',
-        url: 'https://hedonist-bar.vercel.app/cjenik.html',
-        hasMenuSection: data.kategorije.map(function(c){
-          return {
-            '@type': 'MenuSection',
-            name: c.naziv,
-            hasMenuItem: c.grupe.reduce(function(items, g){
-              return items.concat(g.stavke.map(function(s){
-                var item = { '@type': 'MenuItem', name: s.naziv };
-                if (s.opis) item.description = s.opis;
-                return item;
-              }));
-            }, [])
-          };
-        })
-      };
-      var ldScript = document.createElement('script');
-      ldScript.type = 'application/ld+json';
-      ldScript.id = 'ld-menu';
-      ldScript.textContent = JSON.stringify(ld);
-      document.head.appendChild(ldScript);
-    }
-  }
-
-  /* ---- interakcije nad trenutnim DOM-om (CMS ili statična rezerva) ---- */
+  /* ---- interakcije nad trenutnim DOM-om (statični katalog iz cjenik.html) ---- */
   function enhance(){
     var categories = document.querySelectorAll('.price-category');
     var navLinks = document.querySelectorAll('.price-nav-inner a');
@@ -298,12 +223,6 @@
     input.addEventListener('input', run);
   }
 
-  fetch('/api/cjenik')
-    .then(function(r){ if (!r.ok) throw new Error('api'); return r.json(); })
-    .then(function(data){
-      if (data && Array.isArray(data.kategorije) && data.kategorije.length) build(data);
-      enhance();
-      setupSearch();
-    })
-    .catch(function(){ enhance(); setupSearch(); });
+  enhance();
+  setupSearch();
 })();

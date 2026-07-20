@@ -58,30 +58,13 @@
     });
   })();
 
-  /* ---- kolačići: prvi upit koji posjetitelj vidi pri ulasku na stranicu
-     (naslovnica ili bilo koja druga) — banner traži privolu prije nego se
-     učita Google Analytics. Vercel Analytics (script tag u <head>) je bez kolačića pa radi uvijek;
-     GA4 se učita tek nakon "Prihvaćam", i samo ako je GA_MEASUREMENT_ID
-     postavljen na Vercelu (vidi /api/ga.js) — dok nije, gumb i dalje radi,
-     samo se ništa ne učita. ---- */
+  /* ---- kolačići: jedini kolačići na stranici dolaze od ugrađene Google
+     karte na stranici Lokacija (njen iframe postavlja Googleove kolačiće).
+     Banner traži privolu prije nego se ta karta učita; bez privole se
+     prikazuje statična ilustracija karte, bez ijednog Googleovog zahtjeva.
+     Nema analitike ni pratećih skripti. ---- */
   (function cookies(){
     var CONSENT_KEY = 'hedonistCookieConsent';
-
-    function loadGA(){
-      fetch('/api/ga').then(function(r){ return r.json(); }).then(function(d){
-        if (!d.id || document.getElementById('ga4-script')) return;
-        var s = document.createElement('script');
-        s.id = 'ga4-script';
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(d.id);
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ window.dataLayer.push(arguments); }
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', d.id, { anonymize_ip: true });
-      }).catch(function(){ /* GA nije kritičan */ });
-    }
 
     /* ---- karta lokacije: ilustracija je default u HTML-u (radi bez
        ijednog Googleovog zahtjeva); tek uz privolu se zamijeni pravom
@@ -130,7 +113,7 @@
           '<span class="cookie-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="15" r="1" fill="currentColor" stroke="none"/></svg></span>' +
           '<div class="cookie-body">' +
             '<p class="cookie-title">Kolačići</p>' +
-            '<p class="cookie-text">Koristimo analitičke kolačiće da vidimo koje stranice ljudi posjećuju — ništa se ne dijeli s oglašivačima. Možeš prihvatiti ili nastaviti bez njih. Detalji u <a href="privatnost.html" target="_blank" rel="noopener">politici privatnosti</a>.</p>' +
+            '<p class="cookie-text">Karta lokacije koristi Google Maps, koji postavlja svoje kolačiće. Prihvati da vidiš interaktivnu kartu ili nastavi bez nje — sve ostalo na stranici radi jednako. Detalji u <a href="privatnost.html" target="_blank" rel="noopener">politici privatnosti</a>.</p>' +
             '<div class="cookie-actions">' +
               '<button type="button" class="btn btn-gold" data-cookie="accept">Prihvaćam</button>' +
               '<button type="button" class="btn btn-outline" data-cookie="decline">Samo nužno</button>' +
@@ -144,7 +127,6 @@
         var accepted = btn.getAttribute('data-cookie') === 'accept';
         localStorage.setItem(CONSENT_KEY, accepted ? 'accepted' : 'declined');
         hideBanner();
-        if (accepted) loadGA();
         updateMaps();
       });
       return banner;
@@ -161,7 +143,6 @@
 
     var consent = localStorage.getItem(CONSENT_KEY);
     if (consent === 'accepted') {
-      loadGA();
       updateMaps();
     } else if (consent !== 'declined') {
       showBanner();
@@ -422,21 +403,6 @@
     });
   }
 
-  /* ---- CMS tekstovi: elementi s data-cms="ključ" dobiju sadržaj
-     uređen na /admin.html; ako API ne radi, ostaje tekst iz HTML-a ---- */
-  var cmsEls = document.querySelectorAll('[data-cms]');
-  if (cmsEls.length) {
-    fetch('/api/tekstovi')
-      .then(function(r){ if (!r.ok) throw 0; return r.json(); })
-      .then(function(t){
-        cmsEls.forEach(function(el){
-          var v = t[el.getAttribute('data-cms')];
-          if (typeof v === 'string' && v) el.textContent = v;
-        });
-      })
-      .catch(function(){ /* rezerva: statični tekst */ });
-  }
-
   /* ---- prijelaz među stranicama: zavjesa s monogramom prekrije ekran
      prije odlaska, a nova stranica se otvori već pokrivena pa se
      zavjesa digne — klasično "bijelo učitavanje" se nikad ne vidi ---- */
@@ -515,24 +481,9 @@
   }
   }
 
-  /* ---- prije animacije, dohvati stvarni broj stavki iz cjenika (ako
-     brojač postoji na stranici) — u HTML-u ostaje rezervni broj dok API
-     ne odgovori, pa se brojač nikad ne "zaglavi" na 0 ---- */
-  var menuCounter = document.querySelector('.menu-counter-num');
-  var cjenikLinkCount = document.querySelector('.cjenik-link-count');
-  if (menuCounter) {
-    fetch('/api/cjenik').then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(data){
-      var total = (data.kategorije || []).reduce(function(sum, c){
-        return sum + (c.grupe || []).reduce(function(s, g){ return s + (g.stavke ? g.stavke.length : 0); }, 0);
-      }, 0);
-      if (total > 0) {
-        menuCounter.setAttribute('data-count-to', total);
-        if (cjenikLinkCount) cjenikLinkCount.textContent = 'Kave, kokteli, pivo, vino i žestica — ' + total + ' stavki';
-      }
-    }).catch(function(){ /* ostaje rezervni broj iz HTML-a */ }).then(setupCounters);
-  } else {
-    setupCounters();
-  }
+  /* ---- brojač stavki: broj je statičan u HTML-u (data-count-to), pa ga
+     samo animiramo ---- */
+  setupCounters();
 
   /* ---- atmosphere carousel dots (mobile swipe indicator) ---- */
   var gallery = document.querySelector('.atmosphere-gallery');

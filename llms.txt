@@ -6,12 +6,12 @@ Hedonist djeluje u Eurodomu, na Vukovarskoj cesti 31, 31000 Osijek — na granic
 
 ## Stranice
 
-- [Početna](https://hedonist-bar.vercel.app/): O baru, atmosfera, DJ vikendom, radno vrijeme.
-- [Katalog ponude](https://hedonist-bar.vercel.app/cjenik.html): Cijeli katalog — kave, bezalkoholna pića, pivo, vino, žestoka pića, kokteli, cigarete i cigare, sa sastojcima za svaku stavku.
-- [Galerija](https://hedonist-bar.vercel.app/galerija.html): Fotografije interijera, terase i atmosfere.
-- [Lokacija](https://hedonist-bar.vercel.app/lokacija.html): Adresa, karta, radno vrijeme, kako doći.
-- [Zapošljavanje](https://hedonist-bar.vercel.app/zaposlenje.html): Otvorene pozicije, prijava.
-- [Politika privatnosti](https://hedonist-bar.vercel.app/privatnost.html): Pravne informacije, impressum (UGO INVEST d.o.o.).
+- [Početna](https://ljubicicborna.github.io/): O baru, atmosfera, DJ vikendom, radno vrijeme.
+- [Katalog ponude](https://ljubicicborna.github.io/cjenik.html): Cijeli katalog — kave, bezalkoholna pića, pivo, vino, žestoka pića, kokteli, cigarete i cigare, sa sastojcima za svaku stavku.
+- [Galerija](https://ljubicicborna.github.io/galerija.html): Fotografije interijera, terase i atmosfere.
+- [Lokacija](https://ljubicicborna.github.io/lokacija.html): Adresa, karta, radno vrijeme, kako doći.
+- [Zapošljavanje](https://ljubicicborna.github.io/zaposlenje.html): Otvorene pozicije, prijava.
+- [Politika privatnosti](https://ljubicicborna.github.io/privatnost.html): Pravne informacije, impressum (UGO INVEST d.o.o.).
 
 ## Kontakt i društvene mreže
 
