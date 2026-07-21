@@ -49,10 +49,18 @@
       <option value="zaposlenje">Zapošljavanje</option>
       <option value="slike">Slike</option>
       <option value="galerija">Galerija</option>
+      <option value="faq">Pitanja (FAQ)</option>
     </select>
   </nav>
 
   <main class="wrap">
+
+    <!-- PITANJA (FAQ) -->
+    <div class="panel" id="panel-faq" hidden>
+      <p class="hint">Pitanja i odgovori na stranici "Pitanja". Grupirani su; odgovor smije sadržavati poveznicu (npr. na Katalog). Ikona je nebavezna.</p>
+      <div id="faq-groups"></div>
+      <button id="add-faq-group" class="btn-add" type="button">+ Dodaj grupu pitanja</button>
+    </div>
 
     <!-- SLIKE PO STRANICAMA -->
     <div class="panel" id="panel-slike" hidden>
@@ -103,6 +111,6 @@
   </div>
 </div>
 
-<script src="assets/js/admin.js?v=7"></script>
+<script src="assets/js/admin.js?v=8"></script>
 </body>
 </html>

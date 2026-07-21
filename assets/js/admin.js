@@ -12,13 +12,13 @@
 ===================================================================== */
 (function(){
   var SAVE = 'save.php';
-  var VRSTE = ['cjenik', 'tekstovi', 'dogadjaji', 'slike', 'galerija'];
+  var VRSTE = ['cjenik', 'tekstovi', 'dogadjaji', 'slike', 'galerija', 'faq'];
 
   var saveMode = 'export';       /* 'php' (izravno spremanje) ili 'export' (preuzimanje) */
   var adminPassword = '';
 
-  var state = { cjenik: null, tekstovi: null, dogadjaji: null, slike: null, galerija: null };
-  var dirty = { cjenik: false, tekstovi: false, dogadjaji: false, slike: false, galerija: false };
+  var state = { cjenik: null, tekstovi: null, dogadjaji: null, slike: null, galerija: null, faq: null };
+  var dirty = { cjenik: false, tekstovi: false, dogadjaji: false, slike: false, galerija: false, faq: false };
 
   var loginView = document.getElementById('login-view');
   var appView = document.getElementById('app-view');
@@ -26,6 +26,7 @@
   var dogadjajiEl = document.getElementById('dogadjaji');
   var slikeEl = document.getElementById('slike-slots');
   var galerijaEl = document.getElementById('galerija-tiles');
+  var faqEl = document.getElementById('faq-groups');
   var saveBtn = document.getElementById('save');
   var statusEl = document.getElementById('save-status');
 
@@ -72,7 +73,7 @@
     statusEl.textContent = text;
     statusEl.className = 'save-status' + (cls ? ' ' + cls : '');
   }
-  function anyDirty(){ return dirty.cjenik || dirty.tekstovi || dirty.dogadjaji || dirty.slike || dirty.galerija; }
+  function anyDirty(){ return dirty.cjenik || dirty.tekstovi || dirty.dogadjaji || dirty.slike || dirty.galerija || dirty.faq; }
   function markDirty(vrsta){
     dirty[vrsta] = true;
     saveBtn.disabled = false;
@@ -84,7 +85,7 @@
   var viewLink = document.getElementById('view-link');
   function showPanel(){
     var page = pagePick.value;
-    ['cjenik', 'pocetna', 'zaposlenje', 'slike', 'galerija'].forEach(function(p){
+    ['cjenik', 'pocetna', 'zaposlenje', 'slike', 'galerija', 'faq'].forEach(function(p){
       var el = document.getElementById('panel-' + p);
       if (el) el.hidden = p !== page;
     });
@@ -253,6 +254,63 @@
     if (cards.length) cards[cards.length - 1].scrollIntoView({ block: 'center' });
   });
 
+  /* ================= PITANJA (FAQ) ================= */
+  function renderFaq(openIndex){
+    faqEl.innerHTML = state.faq.grupe.map(function(g, gi){
+      var qs = g.pitanja.map(function(p, pi){
+        var opts = IKONE.map(function(o){ return '<option value="' + o[0] + '"' + (o[0] === p.ikona ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+        return '<div class="itm faq-q" data-q="' + pi + '">' +
+          '<div class="field"><label>Pitanje</label><input data-qf="pitanje" value="' + esc(p.pitanje) + '"></div>' +
+          '<div class="field"><label>Odgovor</label><textarea data-qf="odgovor">' + esc(p.odgovor) + '</textarea></div>' +
+          '<div class="field"><label>Ikona (nebavezno)</label><select data-qf="ikona">' + opts + '</select></div>' +
+          '<button type="button" class="row-x faq-q-del" aria-label="Obriši pitanje">✕ pitanje</button>' +
+        '</div>';
+      }).join('');
+      return '<details class="cat" data-g="' + gi + '"' + (gi === openIndex ? ' open' : '') + '>' +
+        '<summary><span class="cat-sum-name">' + esc(g.naziv || 'Nova grupa') + '</span>' +
+        '<span class="cat-sum-count">' + g.pitanja.length + ' pitanja</span></summary>' +
+        '<div class="cat-body">' +
+          '<div class="field"><label>Naziv grupe</label><input data-gf="naziv" value="' + esc(g.naziv) + '"></div>' +
+          qs +
+          '<div class="cat-actions"><button type="button" class="btn-mini faq-q-add">+ Dodaj pitanje</button>' +
+          '<button type="button" class="cat-del faq-g-del">Obriši grupu</button></div>' +
+        '</div></details>';
+    }).join('') || '<p class="hint">Nema grupa — dodaj prvu gumbom ispod.</p>';
+  }
+  function faqCtx(el){
+    var g = el.closest('.cat'); var gi = Number(g.getAttribute('data-g'));
+    var q = el.closest('.faq-q'); var qi = q ? Number(q.getAttribute('data-q')) : -1;
+    return { g: state.faq.grupe[gi], gi: gi, qi: qi, gEl: g };
+  }
+  faqEl.addEventListener('input', function(e){
+    var t = e.target; if (!t.closest('.cat')) return;
+    var ctx = faqCtx(t);
+    if (t.hasAttribute('data-gf')) { ctx.g.naziv = t.value; ctx.gEl.querySelector('.cat-sum-name').textContent = t.value || 'Nova grupa'; }
+    else if (t.hasAttribute('data-qf')) { ctx.g.pitanja[ctx.qi][t.getAttribute('data-qf')] = t.value; }
+    else return;
+    markDirty('faq');
+  });
+  faqEl.addEventListener('click', function(e){
+    var t = e.target;
+    if (t.closest('.faq-q-del')) {
+      var c = faqCtx(t); c.g.pitanja.splice(c.qi, 1); markDirty('faq'); renderFaq(c.gi);
+    } else if (t.closest('.faq-q-add')) {
+      var c2 = faqCtx(t); c2.g.pitanja.push({ pitanje: '', odgovor: '', ikona: '' }); markDirty('faq'); renderFaq(c2.gi);
+      var q = faqEl.querySelector('.cat[data-g="' + c2.gi + '"] .faq-q:last-child input[data-qf="pitanje"]');
+      if (q) { q.focus(); q.scrollIntoView({ block: 'center' }); }
+    } else if (t.closest('.faq-g-del')) {
+      var c3 = faqCtx(t);
+      if (c3.g.pitanja.length && !confirm('Obrisati grupu "' + (c3.g.naziv || 'bez naziva') + '" i njenih ' + c3.g.pitanja.length + ' pitanja?')) return;
+      state.faq.grupe.splice(c3.gi, 1); markDirty('faq'); renderFaq(-1);
+    }
+  });
+  document.getElementById('add-faq-group').addEventListener('click', function(){
+    state.faq.grupe.push({ naziv: '', pitanja: [{ pitanje: '', odgovor: '', ikona: '' }] });
+    markDirty('faq'); renderFaq(state.faq.grupe.length - 1);
+    var inp = faqEl.querySelector('.cat[open] input[data-gf="naziv"]');
+    if (inp) { inp.focus(); inp.scrollIntoView({ block: 'center' }); }
+  });
+
   /* ================= KATALOG (cjenik) ================= */
   var IKONE = [
     ['', 'bez ikone'], ['coffee', 'kava'], ['juice', 'sok'], ['beer', 'pivo'],
@@ -413,6 +471,13 @@
         }).filter(function(im){ return im.src; }) };
       }).filter(function(t){ return t.slike.length; }) };
     }
+    if (vrsta === 'faq') {
+      return { grupe: state.faq.grupe.map(function(g){
+        return { naziv: String(g.naziv || '').trim(), pitanja: (g.pitanja || []).map(function(p){
+          return { pitanje: String(p.pitanje || '').trim(), odgovor: String(p.odgovor || '').trim(), ikona: String(p.ikona || '').trim() };
+        }).filter(function(p){ return p.pitanje; }) };
+      }).filter(function(g){ return g.naziv || g.pitanja.length; }) };
+    }
     /* tekstovi */
     var out = {};
     Object.keys(state.tekstovi).forEach(function(k){ out[k] = String(state.tekstovi[k]).trim(); });
@@ -487,18 +552,21 @@
       getJSON('data/tekstovi.json', {}),
       getJSON('data/dogadjaji.json', { dogadjaji: [] }),
       getJSON('data/slike.json', {}),
-      getJSON('data/galerija.json', { ploce: [] })
+      getJSON('data/galerija.json', { ploce: [] }),
+      getJSON('data/faq.json', { grupe: [] })
     ]).then(function(res){
       state.cjenik = { kategorije: (res[0] && res[0].kategorije) || [] };
       state.tekstovi = (res[1] && typeof res[1] === 'object') ? res[1] : {};
       state.dogadjaji = { dogadjaji: (res[2] && res[2].dogadjaji) || [] };
       state.slike = (res[3] && typeof res[3] === 'object') ? res[3] : {};
       state.galerija = { ploce: (res[4] && res[4].ploce) || [] };
+      state.faq = { grupe: (res[5] && res[5].grupe) || [] };
       renderCjenik(-1);
       renderTexts();
       renderDogadjaji();
       renderSlike();
       renderGalerija();
+      renderFaq(-1);
       showPanel();
       loginView.hidden = true;
       appView.hidden = false;
@@ -512,7 +580,7 @@
   /* ================= PRIJAVA ================= */
   document.getElementById('logout').addEventListener('click', function(){
     if (anyDirty() && !confirm('Imaš nespremljene promjene — svejedno se odjaviti?')) return;
-    dirty = { cjenik: false, tekstovi: false, dogadjaji: false, slike: false, galerija: false };
+    dirty = { cjenik: false, tekstovi: false, dogadjaji: false, slike: false, galerija: false, faq: false };
     adminPassword = '';
     location.reload();
   });

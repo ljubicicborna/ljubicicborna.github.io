@@ -1,0 +1,89 @@
+{
+  "grupe": [
+    {
+      "naziv": "Prije dolaska",
+      "pitanja": [
+        {
+          "pitanje": "Koje je radno vrijeme Hedonist bara?",
+          "odgovor": "Hedonist je otvoren ponedjeljkom, utorkom i srijedom od 7 do 23 h, četvrtkom i petkom od 7 do 00 h, subotom od 8 do 00 h te nedjeljom od 8 do 23 h.",
+          "ikona": ""
+        },
+        {
+          "pitanje": "Gdje se nalazi Hedonist bar?",
+          "odgovor": "U Eurodomu, na Vukovarskoj cesti 31 u Osijeku — na granici barokne Tvrđe i modernog centra grada. Karta i upute na stranici <a href=\"lokacija.html\">Lokacija</a>.",
+          "ikona": ""
+        },
+        {
+          "pitanje": "Treba li rezervacija za posjet Hedonistu?",
+          "odgovor": "Ne, Hedonist radi bez rezervacija — dođite kad vam paše.",
+          "ikona": ""
+        },
+        {
+          "pitanje": "Ima li Hedonist DJ-a ili glazbu uživo?",
+          "odgovor": "Da, petkom i subotom navečer Hedonist ima DJ-a ili glazbu uživo koja drži atmosferu do kasno u noć.",
+          "ikona": ""
+        }
+      ]
+    },
+    {
+      "naziv": "Što se pije",
+      "pitanja": [
+        {
+          "pitanje": "Koje vrste pića Hedonist nudi?",
+          "odgovor": "Kavu i tople napitke, bezalkoholna pića i sokove, pivo i cider, vino, žestoka pića te autorske koktele — cijeli katalog sa sastojcima dostupan je na stranici <a href=\"cjenik.html\">Katalog ponude</a>.",
+          "ikona": "cocktail"
+        },
+        {
+          "pitanje": "Nudi li Hedonist kavu bez kofeina?",
+          "odgovor": "Da. Katalog uključuje posebnu skupinu Kave bez kofeina — espresso, kavu s mlijekom, cappuccino, bijelu kavu i late macchiato u verziji bez kofeina (decaf).",
+          "ikona": "coffee"
+        },
+        {
+          "pitanje": "Ima li Hedonist opcije s biljnim mlijekom za kavu?",
+          "odgovor": "Da, kave se mogu naručiti i s biljnim mlijekom — zobenim, bademovim ili sojinim.",
+          "ikona": "coffee"
+        },
+        {
+          "pitanje": "Nudi li Hedonist bezalkoholno pivo?",
+          "odgovor": "Da, u ponudi je Heineken bezalkoholno, s do 0,03% alkohola.",
+          "ikona": "beer"
+        },
+        {
+          "pitanje": "Ima li Hedonist bezalkoholne koktele?",
+          "odgovor": "Da, u koktel ponudi je Cranberry Spritz — bezalkoholni koktel od Sprite-a, brusnice i pirea od jagode.",
+          "ikona": "cocktail"
+        },
+        {
+          "pitanje": "Gdje mogu vidjeti cijeli katalog ponude sa sastojcima?",
+          "odgovor": "Cijeli katalog, s podacima o sastojcima svake stavke, dostupan je na stranici <a href=\"cjenik.html\">Katalog ponude</a>.",
+          "ikona": ""
+        }
+      ]
+    },
+    {
+      "naziv": "Pravila kuće",
+      "pitanja": [
+        {
+          "pitanje": "Prodaje li Hedonist alkohol i duhanske proizvode maloljetnicima?",
+          "odgovor": "Ne. Hedonist ne prodaje alkoholna pića ni duhanske proizvode (cigarete, cigare, uloške za uređaje za grijanje duhana) osobama mlađim od 18 godina. Katalog na web stranici traži potvrdu punoljetnosti prije prikaza tih stavki.",
+          "ikona": ""
+        },
+        {
+          "pitanje": "Prodaje li Hedonist cigare i uloške za uređaje za grijanje duhana?",
+          "odgovor": "Da, Hedonist u ponudi ima cigare i cigarilose, uz standardne cigarete i uloške za uređaje za grijanje duhana (IQOS Terea) — ne prodaju se osobama mlađim od 18 godina.",
+          "ikona": "cigar"
+        },
+        {
+          "pitanje": "Ima li Hedonist upozorenje o alergenima?",
+          "odgovor": "Da. Neka pića i namirnice u ponudi mogu sadržavati alergene poput glutena, mlijeka, jaja i orašastih plodova. Osoblje na upit daje detalje o alergenima prije naručivanja.",
+          "ikona": ""
+        },
+        {
+          "pitanje": "Prikazuju li se cijene pića na web stranici?",
+          "odgovor": "Ne. Katalog na web stranici prikazuje ponudu i sastojke svake stavke, ali ne i cijene. Cijene su dostupne u baru.",
+          "ikona": ""
+        }
+      ]
+    }
+  ]
+}

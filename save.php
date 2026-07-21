@@ -91,7 +91,7 @@ if ($action === 'save') {
     exit;
   }
   $vrsta = isset($body['vrsta']) ? $body['vrsta'] : '';
-  $allowed = ['cjenik', 'tekstovi', 'dogadjaji', 'slike', 'galerija'];
+  $allowed = ['cjenik', 'tekstovi', 'dogadjaji', 'slike', 'galerija', 'faq'];
   if (!in_array($vrsta, $allowed, true)) {
     http_response_code(400);
     echo json_encode(['error' => 'unknown-vrsta']);
