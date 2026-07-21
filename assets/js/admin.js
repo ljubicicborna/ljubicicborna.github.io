@@ -46,24 +46,9 @@
     'pitanja-hero': 'Pitanja — hero fotka'
   };
 
-  var TEKST_POLJA = {
-    cjenik: [
-      ['cjenik.uvod', 'Uvodni tekst na vrhu stranice', 'textarea']
-    ],
-    pocetna: [
-      ['pocetna.filozofija-citat', 'Citat (sekcija Misija – vizija)', 'input'],
-      ['pocetna.filozofija', 'Tekst — Misija – vizija', 'textarea'],
-      ['pocetna.cjenik-napomena', 'Tekst — Katalog', 'textarea'],
-      ['pocetna.podanu', 'Tekst — Po danu', 'textarea'],
-      ['pocetna.atmosfera', 'Tekst — Atmosfera', 'textarea']
-    ],
-    zaposlenje: [
-      ['zaposlenje.uvod', 'Uvodni tekst na vrhu stranice', 'textarea'],
-      ['zaposlenje.napomena', 'Napomena ispod obrasca', 'textarea']
-    ]
-  };
+  var TEKST_META = {};  /* ključ → ljudski opis polja (učita se iz data/tekstovi-meta.json) */
 
-  var PAGE_URLS = { cjenik: 'cjenik.html', pocetna: 'index.html', zaposlenje: 'zaposlenje.html' };
+  var PAGE_URLS = { cjenik: 'cjenik.html', pocetna: 'index.html', zaposlenje: 'zaposlenje.html', lokacija: 'lokacija.html', galerija: 'galerija.html', faq: 'pitanja.html' };
 
   function esc(s){
     return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -85,7 +70,7 @@
   var viewLink = document.getElementById('view-link');
   function showPanel(){
     var page = pagePick.value;
-    ['cjenik', 'pocetna', 'zaposlenje', 'slike', 'galerija', 'faq'].forEach(function(p){
+    ['cjenik', 'pocetna', 'zaposlenje', 'lokacija', 'slike', 'galerija', 'faq'].forEach(function(p){
       var el = document.getElementById('panel-' + p);
       if (el) el.hidden = p !== page;
     });
@@ -93,18 +78,20 @@
   }
   pagePick.addEventListener('change', showPanel);
 
-  /* ================= TEKSTOVI ================= */
+  /* ================= TEKSTOVI (dinamički iz data/tekstovi.json) ================= */
   function renderTexts(){
     document.querySelectorAll('.text-fields').forEach(function(box){
       var page = box.getAttribute('data-texts');
-      if (!TEKST_POLJA[page]) return;
-      box.innerHTML = TEKST_POLJA[page].map(function(f){
-        var val = esc(state.tekstovi[f[0]] || '');
-        var field = f[2] === 'input'
-          ? '<input data-tkey="' + f[0] + '" value="' + val + '">'
-          : '<textarea data-tkey="' + f[0] + '">' + val + '</textarea>';
-        return '<div class="field"><label>' + esc(f[1]) + '</label>' + field + '</div>';
-      }).join('');
+      var keys = Object.keys(state.tekstovi).filter(function(k){ return k.indexOf(page + '.') === 0; }).sort();
+      box.innerHTML = keys.map(function(k){
+        var raw = state.tekstovi[k] || '';
+        var val = esc(raw);
+        var label = esc(TEKST_META[k] || k);
+        var field = raw.length > 60
+          ? '<textarea data-tkey="' + k + '">' + val + '</textarea>'
+          : '<input data-tkey="' + k + '" value="' + val + '">';
+        return '<div class="field"><label>' + label + '</label>' + field + '</div>';
+      }).join('') || '<p class="hint">Nema tekstova za ovu stranicu.</p>';
     });
   }
   document.addEventListener('input', function(e){
@@ -553,7 +540,8 @@
       getJSON('data/dogadjaji.json', { dogadjaji: [] }),
       getJSON('data/slike.json', {}),
       getJSON('data/galerija.json', { ploce: [] }),
-      getJSON('data/faq.json', { grupe: [] })
+      getJSON('data/faq.json', { grupe: [] }),
+      getJSON('data/tekstovi-meta.json', {})
     ]).then(function(res){
       state.cjenik = { kategorije: (res[0] && res[0].kategorije) || [] };
       state.tekstovi = (res[1] && typeof res[1] === 'object') ? res[1] : {};
@@ -561,6 +549,7 @@
       state.slike = (res[3] && typeof res[3] === 'object') ? res[3] : {};
       state.galerija = { ploce: (res[4] && res[4].ploce) || [] };
       state.faq = { grupe: (res[5] && res[5].grupe) || [] };
+      TEKST_META = (res[6] && typeof res[6] === 'object') ? res[6] : {};
       renderCjenik(-1);
       renderTexts();
       renderDogadjaji();

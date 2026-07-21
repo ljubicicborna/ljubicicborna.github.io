@@ -47,6 +47,7 @@
       <option value="cjenik">Katalog ponude</option>
       <option value="pocetna">Početna</option>
       <option value="zaposlenje">Zapošljavanje</option>
+      <option value="lokacija">Lokacija</option>
       <option value="slike">Slike</option>
       <option value="galerija">Galerija</option>
       <option value="faq">Pitanja (FAQ)</option>
@@ -55,9 +56,17 @@
 
   <main class="wrap">
 
+    <!-- LOKACIJA -->
+    <div class="panel" id="panel-lokacija" hidden>
+      <p class="hint">Tekstovi na stranici Lokacija.</p>
+      <div class="text-fields" data-texts="lokacija"></div>
+    </div>
+
     <!-- PITANJA (FAQ) -->
     <div class="panel" id="panel-faq" hidden>
-      <p class="hint">Pitanja i odgovori na stranici "Pitanja". Grupirani su; odgovor smije sadržavati poveznicu (npr. na Katalog). Ikona je nebavezna.</p>
+      <p class="hint">Tekstovi na vrhu stranice, pa pitanja i odgovori (grupirani). Odgovor smije sadržavati poveznicu (npr. na Katalog). Ikona je nebavezna.</p>
+      <div class="text-fields" data-texts="pitanja"></div>
+      <h2 class="block-title">Grupe pitanja</h2>
       <div id="faq-groups"></div>
       <button id="add-faq-group" class="btn-add" type="button">+ Dodaj grupu pitanja</button>
     </div>
@@ -70,6 +79,7 @@
 
     <!-- GALERIJA -->
     <div class="panel" id="panel-galerija" hidden>
+      <div class="text-fields" data-texts="galerija"></div>
       <p class="hint">Fotografije u galeriji. Svaka pločica izmjenjuje dvije fotke. Prva ima opis (alt) za pristupačnost i SEO.</p>
       <div id="galerija-tiles" class="slike-cards"></div>
       <button id="add-tile" class="btn-add" type="button">+ Dodaj pločicu</button>
@@ -111,6 +121,6 @@
   </div>
 </div>
 
-<script src="assets/js/admin.js?v=8"></script>
+<script src="assets/js/admin.js?v=9"></script>
 </body>
 </html>
